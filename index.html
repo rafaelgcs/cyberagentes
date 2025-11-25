@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Cyber Agentes - Missão Neon</title>
-    
+    <title>Cyber Agentes - Central de Comando</title>
+
     <!-- Fontes -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap');
@@ -13,7 +14,7 @@
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #050510; /* Fundo da página bem escuro */
+            background-color: #050510;
             font-family: 'Rajdhani', sans-serif;
             user-select: none;
             -webkit-user-select: none;
@@ -26,15 +27,15 @@
             width: 100vw;
             height: 100vh;
             z-index: 1;
-            visibility: hidden; 
+            visibility: hidden;
             cursor: grab;
         }
-        
+
         #game-container:active {
             cursor: grabbing;
         }
 
-        /* --- SISTEMA DE TELAS (MENU) --- */
+        /* --- UI --- */
         .screen {
             position: absolute;
             top: 0;
@@ -46,10 +47,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            /* Degradê Cyberpunk: Roxo para Azul */
-            background: linear-gradient(135deg, #240b36 0%, #c31432 100%); 
+            background: linear-gradient(135deg, #240b36 0%, #332574 50%, #860faa 100%);
             color: white;
             transition: opacity 0.5s;
+            background-image: url('./assets/img/bg_app.png');
         }
 
         .hidden {
@@ -59,19 +60,13 @@
         }
 
         h1 {
-            font-family: 'Press Start 2P', cursive; /* Fonte Pixelada */
+            font-family: 'Press Start 2P', cursive;
             font-size: 3rem;
             margin-bottom: 20px;
-            text-shadow: 4px 4px 0px #00eaff; /* Sombra Neon Cyan */
+            text-shadow: 4px 4px 0px #00eaff;
             text-align: center;
             line-height: 1.5;
-            color: #ff00ff; /* Rosa Neon */
-        }
-
-        h2 {
-            font-size: 2rem;
-            color: #00eaff;
-            text-shadow: 0 0 10px #00eaff;
+            color: #ff00ff;
         }
 
         .btn {
@@ -103,6 +98,7 @@
             color: #ff00ff;
             box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
         }
+
         .btn-secondary:hover {
             background: #ff00ff;
             color: #fff;
@@ -110,7 +106,7 @@
         }
 
         .credits-content {
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid #00eaff;
             padding: 30px;
             border-radius: 15px;
@@ -118,7 +114,7 @@
             max-width: 600px;
             line-height: 1.6;
             font-family: 'Roboto', sans-serif;
-            box-shadow: 0 0 20px rgba(0,234,255,0.2);
+            box-shadow: 0 0 20px rgba(0, 234, 255, 0.2);
         }
 
         .agent-selector {
@@ -128,7 +124,7 @@
         }
 
         .agent-card {
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             border: 2px solid #444;
             padding: 20px;
             border-radius: 15px;
@@ -140,7 +136,7 @@
 
         .agent-card:hover {
             border-color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .agent-card.selected {
@@ -150,8 +146,15 @@
             box-shadow: 0 0 25px #ffd54f;
         }
 
-        #agent-1 .agent-icon { color: #00eaff; text-shadow: 0 0 15px #00eaff; }
-        #agent-2 .agent-icon { color: #d500f9; text-shadow: 0 0 15px #d500f9; }
+        #agent-1 .agent-icon {
+            color: #00eaff;
+            text-shadow: 0 0 15px #00eaff;
+        }
+
+        #agent-2 .agent-icon {
+            color: #d500f9;
+            text-shadow: 0 0 15px #d500f9;
+        }
 
         .agent-icon {
             font-size: 4rem;
@@ -172,7 +175,7 @@
             padding: 15px;
             width: 280px;
             color: #fff;
-            box-shadow: 0 0 15px rgba(0,234,255,0.3);
+            box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
             z-index: 10;
             border-radius: 10px;
             font-family: 'Rajdhani', sans-serif;
@@ -184,7 +187,7 @@
             text-transform: uppercase;
             font-size: 16px;
             letter-spacing: 1px;
-            border-bottom: 1px solid rgba(0,234,255,0.3);
+            border-bottom: 1px solid rgba(0, 234, 255, 0.3);
             padding-bottom: 5px;
         }
 
@@ -200,7 +203,7 @@
             border-radius: 15px;
             padding: 20px;
             display: none;
-            box-shadow: 0 0 20px rgba(255,0,255,0.4);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
             z-index: 20;
             color: #fff;
         }
@@ -228,7 +231,6 @@
             z-index: 20;
         }
 
-        /* Tela de Transição (Loading) */
         #transition-screen {
             position: absolute;
             top: 0;
@@ -246,12 +248,14 @@
             text-shadow: 0 0 10px #00eaff;
         }
 
-        /* --- INTERFACE DO COMPUTADOR --- */
+        /* --- COMPUTADOR --- */
         #computer-overlay {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
             z-index: 60;
             display: none;
             justify-content: center;
@@ -265,7 +269,7 @@
             background: #0d0d1a;
             border: 2px solid #00eaff;
             border-radius: 15px;
-            box-shadow: 0 0 50px rgba(0,234,255,0.3);
+            box-shadow: 0 0 50px rgba(0, 234, 255, 0.3);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -304,57 +308,71 @@
             align-items: center;
             justify-content: center;
             color: #00eaff;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 234, 255, 0.05) 0px,
-                rgba(0, 234, 255, 0.05) 1px,
-                transparent 1px,
-                transparent 20px
-            );
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 234, 255, 0.05) 0px,
+                    rgba(0, 234, 255, 0.05) 1px,
+                    transparent 1px,
+                    transparent 20px);
         }
 
-        /* Tela de Login */
         .login-form input {
             padding: 15px;
             width: 300px;
             margin-bottom: 15px;
             border-radius: 5px;
             border: 2px solid #00eaff;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             color: #fff;
             font-size: 16px;
             outline: none;
         }
-        
+
         .password-feedback {
             font-size: 14px;
             margin-top: 15px;
             color: #ff5555;
             min-height: 20px;
-            text-shadow: 0 0 5px rgba(255,85,85,0.5);
+            text-shadow: 0 0 5px rgba(255, 85, 85, 0.5);
         }
 
-        /* Puzzle de Memória */
         .memory-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
         }
+
         .memory-card {
-            width: 80px; height: 80px;
+            width: 80px;
+            height: 80px;
             background: #1a1a2e;
             border: 2px solid #333;
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-size: 30px;
             cursor: pointer;
             border-radius: 10px;
             transition: transform 0.2s, border-color 0.2s;
         }
-        .memory-card:hover { border-color: #00eaff; box-shadow: 0 0 10px #00eaff; }
-        .memory-card.flipped { background: #00eaff; color: #000; border-color: #fff; }
-        .memory-card.matched { background: #00ff88; border-color: #00ff88; opacity: 0.8; pointer-events: none; }
 
-        /* Rede Social Falsa */
+        .memory-card:hover {
+            border-color: #00eaff;
+            box-shadow: 0 0 10px #00eaff;
+        }
+
+        .memory-card.flipped {
+            background: #00eaff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .memory-card.matched {
+            background: #00ff88;
+            border-color: #00ff88;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
         .social-feed {
             width: 100%;
             height: 100%;
@@ -363,23 +381,40 @@
             color: #333;
             padding: 20px;
         }
+
         .post {
             background: #fff;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd;
         }
-        .post-header { font-weight: bold; margin-bottom: 5px; color: #1877f2; display: flex; align-items: center; }
+
+        .post-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #1877f2;
+            display: flex;
+            align-items: center;
+        }
+
         .fake-news-btn {
-            background: #ff0055; color: white; border: none; padding: 10px 20px;
-            border-radius: 25px; cursor: pointer; margin-top: 10px;
-            font-weight: bold; box-shadow: 0 4px 10px rgba(255,0,85,0.4);
+            background: #ff0055;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 0, 85, 0.4);
             transition: transform 0.2s;
         }
-        .fake-news-btn:hover { transform: scale(1.05); }
 
+        .fake-news-btn:hover {
+            transform: scale(1.05);
+        }
     </style>
 
     <!-- Scripts -->
@@ -394,11 +429,16 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
 </head>
+
 <body>
 
     <div id="screen-menu" class="screen">
-        <h1>CYBER AGENTES</h1>
-        <p style="letter-spacing: 2px; margin-bottom: 40px; color: #00eaff; text-shadow: 0 0 5px #00eaff;">AVENTURA DIGITAL</p>
+        <div>
+            <img src="./assets/img/logo_cyber_agentes.png" width="500" />
+        </div>
+        <h1>Segurança<br />Digital</h1>
+        <!-- <p style="letter-spacing: 2px; margin-bottom: 40px; color: #00eaff; text-shadow: 0 0 5px #00eaff;">AVENTURA
+            DIGITAL</p> -->
         <div>
             <button class="btn" onclick="goToSelect()">INICIAR</button>
             <button class="btn btn-secondary" onclick="goToCredits()">CRÉDITOS</button>
@@ -412,7 +452,8 @@
             <p><strong>Arte & Design:</strong> Baseado em Cyberpunk Infantil</p>
             <p><strong>Agradecimentos:</strong> A todos os mentores e professores.</p>
             <br>
-            <p style="font-size: 0.9em; font-style: italic; color: #ff00ff;">"Protegendo o futuro, um pixel de cada vez."</p>
+            <p style="font-size: 0.9em; font-style: italic; color: #ff00ff;">"Protegendo o futuro, um pixel de cada
+                vez."</p>
         </div>
         <button class="btn btn-secondary" onclick="goToMenu()" style="margin-top: 30px;">VOLTAR</button>
     </div>
@@ -433,15 +474,16 @@
                 <p style="font-size: 12px; margin-top: 5px; color: #aaa;">Mochila Roxa</p>
             </div>
         </div>
-        <button id="btn-start-game" class="btn" style="opacity: 0.5; pointer-events: none;" onclick="launchGame()">ENTRAR NA REDE</button>
+        <button id="btn-start-game" class="btn" style="opacity: 0.5; pointer-events: none;"
+            onclick="launchGame()">ENTRAR NA REDE</button>
         <br>
-        <button class="btn btn-secondary" style="font-size: 1rem; padding: 10px 20px;" onclick="goToMenu()">VOLTAR</button>
+        <button class="btn btn-secondary" style="font-size: 1rem; padding: 10px 20px;"
+            onclick="goToMenu()">VOLTAR</button>
     </div>
 
     <div id="game-container"></div>
     <div id="transition-screen">CARREGANDO MUNDO...</div>
 
-    <!-- INTERFACE DO COMPUTADOR -->
     <div id="computer-overlay">
         <div class="pc-window">
             <div class="pc-header">
@@ -451,10 +493,12 @@
             <div class="pc-content" id="pc-view-login">
                 <h3 style="margin-bottom: 20px; text-shadow: 0 0 10px #00eaff;">AUTENTICAÇÃO NECESSÁRIA</h3>
                 <div class="login-form" style="text-align: center;">
-                    <p style="font-size: 14px; margin-bottom: 10px; color: #aaa;">Crie uma senha forte (Maiúscula, Número, Símbolo).</p>
+                    <p style="font-size: 14px; margin-bottom: 10px; color: #aaa;">Crie uma senha forte (Maiúscula,
+                        Número, Símbolo).</p>
                     <input type="password" id="pc-pass-input" placeholder="Senha...">
                     <br>
-                    <button class="btn" style="padding: 10px 30px; font-size: 1rem; border-radius: 25px;" onclick="checkPassword()">ENTRAR</button>
+                    <button class="btn" style="padding: 10px 30px; font-size: 1rem; border-radius: 25px;"
+                        onclick="checkPassword()">ENTRAR</button>
                     <div class="password-feedback" id="pass-feedback"></div>
                 </div>
             </div>
@@ -467,8 +511,10 @@
             </div>
             <div class="pc-content hidden" id="pc-view-social" style="padding: 0;">
                 <div class="social-feed">
-                    <div style="background: #1877f2; color: white; padding: 15px; margin-bottom: 15px; font-weight: bold; border-radius: 8px;">FaceLook Feed</div>
-                    
+                    <div
+                        style="background: #1877f2; color: white; padding: 15px; margin-bottom: 15px; font-weight: bold; border-radius: 8px;">
+                        FaceLook Feed</div>
+
                     <div class="post">
                         <div class="post-header"> <span style="margin-right: 5px;">😺</span> Gatinhos Fofos</div>
                         <p>Olha que foto linda do meu gato dormindo! 💤 #bomdia</p>
@@ -476,8 +522,10 @@
 
                     <div class="post" style="border: 2px solid #ff0055;">
                         <div class="post-header" style="color: #d32f2f;">⚠️ URGENTE!!!</div>
-                        <p style="font-weight: bold;">ATENÇÃO! O governo vai proibir a internet amanhã! Clique aqui para impedir agora!!! 😱🚫</p>
-                        <p style="font-size: 12px; color: #666; margin-top: 5px;">Link suspeito: www.virus-gratis.com</p>
+                        <p style="font-weight: bold;">ATENÇÃO! O governo vai proibir a internet amanhã! Clique aqui para
+                            impedir agora!!! 😱🚫</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 5px;">Link suspeito: www.virus-gratis.com
+                        </p>
                         <button class="fake-news-btn" onclick="reportFakeNews()">🚨 DENUNCIAR FAKE NEWS</button>
                     </div>
 
@@ -502,43 +550,45 @@
         <div id="dialog-box" onclick="advanceDialog()">
             <span id="npc-name">SISTEMA</span>
             <div id="dialog-text">...</div>
-            <div style="text-align: right; color: #aaa; font-size: 12px; margin-top: 10px;">[ CLIQUE PARA CONTINUAR ]</div>
+            <div style="text-align: right; color: #aaa; font-size: 12px; margin-top: 10px;">[ CLIQUE PARA CONTINUAR ]
+            </div>
         </div>
-        
+
         <div id="joystick-zone"></div>
     </div>
 
     <script type="module">
         import * as THREE from 'three';
 
-        // --- CONFIGURAÇÃO VISUAL CYBERPUNK ---
+        // --- CONFIGURAÇÃO VISUAL ---
         const CONFIG = {
-            speed: 10, // Personagens mais rápidos
+            speed: 12,
             colors: {
-                background: 0x050510, 
-                fog: 0x100020,        
-                floorGrid: 0x220044,  
-                floorLine: 0x00eaff,  
-                wallBase: 0x111111,   
-                wallDetail: 0xff00ff, 
-                furniture: 0x222233,  
-                agent1: 0x00eaff,     
-                agent2: 0xd500f9,     
-                commander: 0xff6f00,  
-                npc: 0x00ff88,        
-                skin: 0xffdbac,       
+                background: 0x050510,
+                fog: 0x100020,
+                floorGrid: 0x220044,
+                floorLine: 0x00eaff,
+                wallBase: 0x111111,
+                wallDetail: 0xff00ff,
+                furniture: 0x222233,
+                agent1: 0x00eaff,
+                agent2: 0xd500f9,
+                commander: 0xff6f00,
+                npc: 0x00ff88,
+                skin: 0xffdbac,
                 backpack: 0x111111,
                 doorFrame: 0x444444
             }
         };
 
-        // Variáveis Globais
+        // Variáveis
         let scene, camera, renderer, clock;
         let player, playerBody;
-        let levelObjects = []; 
-        let obstacles = [];    
-        let interactables = []; 
-        
+        let levelObjects = [];
+        let obstacles = [];
+        let interactables = [];
+        let floors = [];
+
         let selectedAgentId = null;
         let missionProgress = 0;
         let currentLevel = "LOBBY";
@@ -549,6 +599,8 @@
         let wallTextureBase = null;
         let doorTextureBase = null;
         let floorTextureBase = null;
+        let brickFloorTexture = null;
+        let carpetTexture = null;
 
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3();
@@ -556,16 +608,48 @@
         let isDraggingView = false;
         let dragStartX = 0;
         let isMouseDown = false;
-        let walkTime = 0; 
+        let walkTime = 0;
 
         const raycaster = new THREE.Raycaster();
+        const groundRaycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        // --- LÓGICA DO COMPUTADOR ---
+        // --- UI GLOBAL FUNCTIONS (Attached to Window) ---
+        window.goToSelect = () => {
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-select').classList.remove('hidden');
+        };
+        window.goToCredits = () => {
+            document.getElementById('screen-menu').classList.add('hidden');
+            document.getElementById('screen-credits').classList.remove('hidden');
+        };
+        window.goToMenu = () => {
+            document.getElementById('screen-credits').classList.add('hidden');
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-menu').classList.remove('hidden');
+        };
+        window.selectAgent = (id) => {
+            selectedAgentId = id;
+            document.getElementById('agent-1').classList.remove('selected');
+            document.getElementById('agent-2').classList.remove('selected');
+            if (id === 1) document.getElementById('agent-1').classList.add('selected');
+            if (id === 2) document.getElementById('agent-2').classList.add('selected');
+            const btn = document.getElementById('btn-start-game');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+            btn.style.background = '#ffd54f';
+            btn.style.color = '#000';
+            btn.style.boxShadow = '0 0 20px #ffd54f';
+        };
+        window.launchGame = () => {
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('game-container').style.visibility = 'visible';
+            document.getElementById('game-ui').style.display = 'block';
+            initGame();
+        };
         window.checkPassword = () => {
             const pass = document.getElementById('pc-pass-input').value;
             const feedback = document.getElementById('pass-feedback');
-            
             const hasUpper = /[A-Z]/.test(pass);
             const hasNumber = /[0-9]/.test(pass);
             const hasSpecial = /[!@#$%^&*]/.test(pass);
@@ -582,33 +666,50 @@
             } else {
                 feedback.style.color = "#ff5555";
                 let msg = "⚠️ SENHA FRACA: ";
-                if(!isLong) msg += "Mínimo 8 caracteres. ";
-                else if(!hasUpper) msg += "Use uma Maiúscula. ";
-                else if(!hasNumber) msg += "Use um Número. ";
-                else if(!hasSpecial) msg += "Use um Símbolo (!@#).";
+                if (!isLong) msg += "Mínimo 8 caracteres. ";
+                else if (!hasUpper) msg += "Use uma Maiúscula. ";
+                else if (!hasNumber) msg += "Use um Número. ";
+                else if (!hasSpecial) msg += "Use um Símbolo (!@#).";
                 feedback.innerText = msg;
             }
         };
+        window.reportFakeNews = () => {
+            alert("FAKE NEWS DETECTADA! Você salvou a rede!");
+            document.getElementById('computer-overlay').style.display = 'none';
+            startDialog("COMANDANTE", ["Excelente, Agente!", "Ameaça neutralizada.", "Retorne à base pela porta de teleporte."]);
+            missionProgress = 4;
+            updateHUD("Volte para a Central", "#00ff88");
+        };
+        window.closePC = () => {
+            document.getElementById('computer-overlay').style.display = 'none';
+        };
+        window.advanceDialog = function () {
+            if (!isDialogOpen) return;
+            if (currentDialogQueue.length > 0) {
+                document.getElementById('dialog-text').innerText = currentDialogQueue.shift();
+            } else {
+                document.getElementById('dialog-box').style.display = 'none';
+                isDialogOpen = false;
+            }
+        }
 
-        // Puzzle
+        // --- LÓGICA DO PUZZLE ---
         let flippedCards = [];
         let matchedPairs = 0;
-        const icons = ['🛡️', '👾', '🔑', '💾']; 
+        const icons = ['🛡️', '👾', '🔑', '💾'];
 
         window.startPuzzle = () => {
             const grid = document.getElementById('memory-game');
             grid.innerHTML = '';
             flippedCards = [];
             matchedPairs = 0;
-
             let deck = [...icons, ...icons];
             deck.sort(() => Math.random() - 0.5);
-
             deck.forEach((icon, index) => {
                 const card = document.createElement('div');
                 card.className = 'memory-card';
                 card.dataset.icon = icon;
-                card.innerText = '?'; 
+                card.innerText = '?';
                 card.onclick = () => flipCard(card);
                 grid.appendChild(card);
             });
@@ -616,14 +717,10 @@
 
         function flipCard(card) {
             if (flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
-
             card.classList.add('flipped');
             card.innerText = card.dataset.icon;
             flippedCards.push(card);
-
-            if (flippedCards.length === 2) {
-                setTimeout(checkMatch, 800);
-            }
+            if (flippedCards.length === 2) setTimeout(checkMatch, 800);
         }
 
         function checkMatch() {
@@ -647,168 +744,66 @@
             flippedCards = [];
         }
 
-        window.reportFakeNews = () => {
-            alert("FAKE NEWS DETECTADA! Você salvou a rede!");
-            document.getElementById('computer-overlay').style.display = 'none';
-            startDialog("COMANDANTE", ["Excelente, Agente!", "Ameaça neutralizada.", "Retorne à base pela porta de teleporte."]);
-            
-            missionProgress = 4;
-            updateHUD("Volte para a Central", "#00ff88");
-        };
-
-        window.closePC = () => {
-            document.getElementById('computer-overlay').style.display = 'none';
-        };
-
-        // --- UI GERAL ---
-        window.goToSelect = () => {
-            document.getElementById('screen-menu').classList.add('hidden');
-            document.getElementById('screen-select').classList.remove('hidden');
-        };
-        window.goToCredits = () => {
-            document.getElementById('screen-menu').classList.add('hidden');
-            document.getElementById('screen-credits').classList.remove('hidden');
-        };
-        window.goToMenu = () => {
-            document.getElementById('screen-credits').classList.add('hidden');
-            document.getElementById('screen-select').classList.add('hidden');
-            document.getElementById('screen-menu').classList.remove('hidden');
-        };
-        window.selectAgent = (id) => {
-            selectedAgentId = id;
-            document.getElementById('agent-1').classList.remove('selected');
-            document.getElementById('agent-2').classList.remove('selected');
-            if(id === 1) document.getElementById('agent-1').classList.add('selected');
-            if(id === 2) document.getElementById('agent-2').classList.add('selected');
-            const btn = document.getElementById('btn-start-game');
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            btn.style.background = '#ffd54f';
-            btn.style.color = '#000';
-            btn.style.boxShadow = '0 0 20px #ffd54f';
-        };
-        window.launchGame = () => {
-            document.getElementById('screen-select').classList.add('hidden');
-            document.getElementById('game-container').style.visibility = 'visible';
-            document.getElementById('game-ui').style.display = 'block';
-            initGame();
-        };
-
-        // --- TEXTURAS RECIADAS DIGITALMENTE (CANVAS) ---
-        
-        // 1. CHÃO - Recriação do "tilechão.png" (Xadrez Azul)
+        // --- TEXTURAS (Canvas API) ---
         function createFloorTileTexture() {
-            const size = 512;
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d');
-
-            // Cores exatas aproximadas da imagem tilechão.png
-            const blueLight = '#5a7d9a'; // Azul acinzentado claro
-            const blueDark = '#34566d';  // Azul escuro
-
-            // Padrão 2x2 (4 quadrados)
-            const half = size / 2;
-
-            // Top-Left
-            ctx.fillStyle = blueLight;
-            ctx.fillRect(0, 0, half, half);
-            // Top-Right
-            ctx.fillStyle = blueDark;
-            ctx.fillRect(half, 0, half, half);
-            // Bottom-Left
-            ctx.fillStyle = blueDark;
-            ctx.fillRect(0, half, half, half);
-            // Bottom-Right
-            ctx.fillStyle = blueLight;
-            ctx.fillRect(half, half, half, half);
-
-            const texture = new THREE.CanvasTexture(canvas);
-            // Repetição densa para parecer piso
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(20, 20); 
-            texture.magFilter = THREE.NearestFilter; // Pixelado
-            texture.minFilter = THREE.NearestFilter;
-            return texture;
+            const size = 512; const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = size; ctx.canvas.height = size;
+            ctx.fillStyle = '#5a7d9a'; ctx.fillRect(0, 0, size / 2, size / 2); ctx.fillRect(size / 2, size / 2, size / 2, size / 2);
+            ctx.fillStyle = '#34566d'; ctx.fillRect(size / 2, 0, size / 2, size / 2); ctx.fillRect(0, size / 2, size / 2, size / 2);
+            const t = new THREE.CanvasTexture(ctx.canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(10, 10); t.magFilter = THREE.NearestFilter; return t;
         }
-
-        // 2. PAREDE - Recriação da "Parede da TV.png" (Painel com Luz Neon)
         function createWallTileTexture() {
-            const size = 512;
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size; // Textura quadrada para mapeamento
-            const ctx = canvas.getContext('2d');
-
-            // Fundo Azul Muito Escuro (quase preto)
-            ctx.fillStyle = '#08101a'; 
-            ctx.fillRect(0, 0, size, size);
-
-            // Detalhes mecânicos escuros nas laterais (parte superior)
-            ctx.fillStyle = '#050a10'; // Ainda mais escuro
-            // Bloco Esq
-            ctx.fillRect(0, 0, size * 0.3, size * 0.2);
-            // Bloco Dir
-            ctx.fillRect(size * 0.7, 0, size * 0.3, size * 0.2);
-
-            // Barra Neon Central (Ciano Brilhante)
-            // Glow
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = '#00eaff';
-            ctx.fillStyle = '#00eaff';
-            // A barra fica no topo, centralizada
-            const barWidth = size * 0.4;
-            const barHeight = size * 0.05;
-            ctx.fillRect((size - barWidth)/2, size * 0.1, barWidth, barHeight);
-            
-            // Reset Shadow
-            ctx.shadowBlur = 0;
-
-            // Linha fina inferior (rodapé da parede)
-            ctx.fillStyle = '#112233';
-            ctx.fillRect(0, size - 20, size, 20);
-
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            return texture;
-        }
-
-        function createDoorTexture() {
-            const size = 256;
-            const canvas = document.createElement('canvas');
-            canvas.width = size;
-            canvas.height = size * 2;
-            const ctx = canvas.getContext('2d');
-            
-            ctx.fillStyle = '#222';
-            ctx.fillRect(0, 0, size, size * 2);
-            
-            ctx.fillStyle = '#00eaff';
-            ctx.fillRect(size/2 - 2, 0, 4, size * 2);
-            
-            ctx.strokeStyle = '#444';
-            ctx.lineWidth = 10;
-            for(let i = -size; i < size * 2; i+=40) {
-                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i + size); ctx.stroke();
+            const size = 512; const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = size; ctx.canvas.height = size;
+            ctx.fillStyle = '#1f3b51'; ctx.fillRect(0, 0, size, size); ctx.fillStyle = '#3e6582';
+            const bw = size / 4, bh = size / 8, gap = 4;
+            for (let y = 0; y < 8; y++) {
+                const off = (y % 2 === 0) ? 0 : bw / 2;
+                for (let x = -1; x < 4; x++) ctx.fillRect((x * bw) + off + gap / 2, (y * bh) + gap / 2, bw - gap, bh - gap);
             }
-            
-            ctx.fillStyle = '#d500f9';
-            ctx.fillRect(20, 20, size - 40, 30);
-            
-            return new THREE.CanvasTexture(canvas);
+            const t = new THREE.CanvasTexture(ctx.canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.magFilter = THREE.NearestFilter; return t;
+        }
+        function createDoorTexture() {
+            const size = 256; const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = size; ctx.canvas.height = size * 2;
+            ctx.fillStyle = '#222'; ctx.fillRect(0, 0, size, size * 2);
+            ctx.fillStyle = '#00eaff'; ctx.fillRect(size / 2 - 2, 0, 4, size * 2);
+            ctx.strokeStyle = '#444'; ctx.lineWidth = 10;
+            for (let i = -size; i < size * 2; i += 40) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i + size); ctx.stroke(); }
+            ctx.fillStyle = '#d500f9'; ctx.fillRect(20, 20, size - 40, 30);
+            return new THREE.CanvasTexture(ctx.canvas);
+        }
+        function createBrickFloorTexture() {
+            const size = 512; const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = size; ctx.canvas.height = size;
+            ctx.fillStyle = '#333'; ctx.fillRect(0, 0, size, size);
+            ctx.fillStyle = '#444';
+            const bw = size / 8, bh = size / 16, gap = 2;
+            for (let y = 0; y < 16; y++) {
+                let off = (y % 2) * bw / 2;
+                for (let x = -1; x < 8; x++) ctx.fillRect((x * bw) + off + gap, (y * bh) + gap, bw - gap * 2, bh - gap * 2);
+            }
+            const t = new THREE.CanvasTexture(ctx.canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(6, 6); t.magFilter = THREE.NearestFilter; return t;
+        }
+        function createCarpetTexture() {
+            const size = 512; const ctx = document.createElement('canvas').getContext('2d');
+            ctx.canvas.width = size; ctx.canvas.height = size;
+            ctx.fillStyle = '#4a148c'; ctx.fillRect(0, 0, size, size);
+            for (let i = 0; i < 5000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b';
+                ctx.fillRect(Math.random() * size, Math.random() * size, 2, 2);
+            }
+            return new THREE.CanvasTexture(ctx.canvas);
         }
 
-        // --- ENGINE ---
+        // --- GAME ENGINE ---
         function initGame() {
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(CONFIG.colors.background); 
-            scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02); 
+            scene.background = new THREE.Color(CONFIG.colors.background);
+            scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 20, 20); 
+            camera.position.set(0, 30, 30);
             camera.lookAt(0, 0, 0);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -816,39 +811,31 @@
             renderer.shadowMap.enabled = true;
             document.getElementById('game-container').appendChild(renderer.domElement);
 
-            const ambient = new THREE.AmbientLight(0xffffff, 0.3); 
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambient);
-
-            const blueLight = new THREE.PointLight(0x00eaff, 1, 30);
-            blueLight.position.set(-10, 10, -10);
-            scene.add(blueLight);
-
-            const pinkLight = new THREE.PointLight(0xff00ff, 1, 30);
-            pinkLight.position.set(10, 10, 10);
-            scene.add(pinkLight);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            dirLight.position.set(0, 20, 10);
-            dirLight.castShadow = true;
+            const blueLight = new THREE.PointLight(0x00eaff, 1, 40); blueLight.position.set(-10, 15, -10); scene.add(blueLight);
+            const pinkLight = new THREE.PointLight(0xff00ff, 1, 40); pinkLight.position.set(10, 15, 10); scene.add(pinkLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.6); dirLight.position.set(0, 30, 15); dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048; dirLight.shadow.mapSize.height = 2048;
             scene.add(dirLight);
 
             clock = new THREE.Clock();
-            
-            // GERAR TEXTURAS RECIADAS
-            wallTextureBase = createWallTileTexture(); // Parede da TV
-            floorTextureBase = createFloorTileTexture(); // Tile Chão
+
+            wallTextureBase = createWallTileTexture();
+            floorTextureBase = createFloorTileTexture();
             doorTextureBase = createDoorTexture();
+            brickFloorTexture = createBrickFloorTexture();
+            carpetTexture = createCarpetTexture();
 
             loadScene("LOBBY");
-            createPlayer(selectedAgentId); 
+            createPlayer(selectedAgentId);
             setupInputs();
-            
+
             animate();
 
             startDialog("SISTEMA", [
-                "Agente, bem-vindo à Rede.",
-                "Sua missão começa agora.",
-                "Fale com o Comandante na mesa central."
+                "Agente, bem-vindo à Central.",
+                "Fale com o Comandante na Sala de Reunião (Esquerda)."
             ]);
         }
 
@@ -857,11 +844,12 @@
             levelObjects = [];
             obstacles = [];
             interactables = [];
+            floors = [];
         }
 
         function loadScene(sceneName) {
             const overlay = document.getElementById('transition-screen');
-            overlay.style.display = 'flex'; 
+            overlay.style.display = 'flex';
 
             setTimeout(() => {
                 clearLevel();
@@ -870,246 +858,211 @@
                 if (sceneName === "LOBBY") {
                     createLobbyLevel();
                     if (player) {
-                        if (missionProgress >= 4) {
-                            player.position.set(15, 0, 0); 
-                            player.rotation.y = Math.PI / 2; 
-                        }
-                        else player.position.set(0, 0, 0); 
+                        if (missionProgress >= 4) { player.position.set(0, 0, -6); player.rotation.y = Math.PI; }
+                        else player.position.set(0, 0, 5);
                     }
                 } else if (sceneName === "ROOM") {
                     createRoomLevel();
-                    if (player) {
-                        player.position.set(-8, 0, 0); 
-                        player.rotation.y = -Math.PI / 2; 
-                    }
+                    if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
                 }
 
                 overlay.style.display = 'none';
             }, 500);
         }
 
-        // --- CENÁRIO 1: LOBBY ---
+        // --- NOVO LAYOUT LOBBY (Baseado no Desenho) ---
         function createLobbyLevel() {
-            // Chão com TEXTURA NOVA
-            const floorGeo = new THREE.PlaneGeometry(60, 60);
-            const floorMat = new THREE.MeshStandardMaterial({ 
-                map: floorTextureBase, 
-                roughness: 0.5,
-                metalness: 0.1
-            });
-            const floor = new THREE.Mesh(floorGeo, floorMat);
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            scene.add(floor);
-            levelObjects.push(floor);
 
-            // Paredes com TEXTURA NOVA
-            createWall(-20, 3, -20, 40, 6, 1); 
-            createWall(-20, 3, 0, 1, 6, 40); 
-            createWall(20, 3, -10, 1, 6, 20); 
-            createWall(20, 3, 10, 1, 6, 20);  
-            createWall(0, 3, 20, 40, 6, 1);
+            // 1. SALA ESQUERDA (Reunião) - Tapete Roxo
+            const roomLeftGeo = new THREE.PlaneGeometry(14, 22);
+            const roomLeftMat = new THREE.MeshStandardMaterial({ map: carpetTexture });
+            const roomLeft = new THREE.Mesh(roomLeftGeo, roomLeftMat);
+            roomLeft.rotation.x = -Math.PI / 2;
+            roomLeft.position.set(-12, 0, 0);
+            roomLeft.receiveShadow = true;
+            scene.add(roomLeft); levelObjects.push(roomLeft); floors.push(roomLeft);
 
-            createDoor(19.5, 0, 0, "ROOM", -Math.PI / 2);
+            const table = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 8), new THREE.MeshStandardMaterial({ color: 0x222 }));
+            table.position.set(-12, 0.5, 0);
+            scene.add(table); levelObjects.push(table); addCollisionBox(table);
 
-            const tableGeo = new THREE.CylinderGeometry(4, 4, 1, 6);
-            const tableMat = new THREE.MeshStandardMaterial({ 
-                color: 0x222244, 
-                emissive: 0x00eaff, 
-                emissiveIntensity: 0.3 
-            });
-            const table = new THREE.Mesh(tableGeo, tableMat);
-            table.position.set(0, 0.5, -10);
-            scene.add(table);
-            levelObjects.push(table);
-            addCollisionBox(table);
+            const shelf = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 1), new THREE.MeshStandardMaterial({ color: 0x444 }));
+            shelf.position.set(-12, 1.5, -10);
+            scene.add(shelf); levelObjects.push(shelf); addCollisionBox(shelf);
 
-            createNPC(0, -10, CONFIG.colors.commander, "Comandante Motta", [
-                "Olá Agente. A rede está instável.",
-                "Detectamos invasores no Setor 2.",
-                "Fale com a Agente Júlia."
-            ]);
+            createNPC(-15, 0, CONFIG.colors.commander, "Comandante Motta", ["Bem-vindo à Sala de Estratégia.", "Vá para o Centro de Comando (Sala de baixo)."]);
 
-            createWorkstation(-12, -5);
-            createWorkstation(-12, 5);
-            createWorkstation(12, -5);
-            createWorkstation(12, 5);
 
-            createNPC(-12, -2, CONFIG.colors.npc, "Agente Júlia", []);
+            // 2. SALA CENTRO SUPERIOR (Hall/Entrada) - Tijolos Cinza
+            const hallGeo = new THREE.PlaneGeometry(14, 10);
+            const hallMat = new THREE.MeshStandardMaterial({ map: brickFloorTexture });
+            const hall = new THREE.Mesh(hallGeo, hallMat);
+            hall.rotation.x = -Math.PI / 2;
+            hall.position.set(2, 0, -6);
+            hall.receiveShadow = true;
+            scene.add(hall); levelObjects.push(hall); floors.push(hall);
+
+            createDoor(2, 0, -10.8, "ROOM", 0);
+
+            const vending = new THREE.Mesh(new THREE.BoxGeometry(1, 3, 3), new THREE.MeshStandardMaterial({ color: 0x0055aa, emissive: 0x001133 }));
+            vending.position.set(8, 1.5, -6);
+            scene.add(vending); levelObjects.push(vending); addCollisionBox(vending);
+
+
+            // 3. SALA CENTRO INFERIOR (Tech/Ops) - Xadrez Azul
+            const techGeo = new THREE.PlaneGeometry(14, 14);
+            const techMat = new THREE.MeshStandardMaterial({ map: floorTextureBase });
+            const tech = new THREE.Mesh(techGeo, techMat);
+            tech.rotation.x = -Math.PI / 2;
+            tech.position.set(2, 0, 6);
+            tech.receiveShadow = true;
+            scene.add(tech); levelObjects.push(tech); floors.push(tech);
+
+            const screen = new THREE.Mesh(new THREE.BoxGeometry(0.2, 3, 6), new THREE.MeshBasicMaterial({ color: 0x00eaff }));
+            screen.position.set(-4.8, 2, 6);
+            scene.add(screen); levelObjects.push(screen);
+
+            const pod = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.5), new THREE.MeshStandardMaterial({ color: 0x333 }));
+            pod.position.set(7, 0.25, 10);
+            scene.add(pod); levelObjects.push(pod); addCollisionBox(pod);
+
+            const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 6), new THREE.MeshBasicMaterial({ visible: false }));
+            pcHitbox.position.set(-4, 2, 6);
+            pcHitbox.userData = { isInteractable: true, name: "Mainframe", type: "PC" };
+            scene.add(pcHitbox); levelObjects.push(pcHitbox); interactables.push(pcHitbox);
+
+
+            // 4. SALA DIREITA (Lounge) - Piso Escuro
+            const loungeGeo = new THREE.PlaneGeometry(14, 22);
+            const loungeMat = new THREE.MeshStandardMaterial({ color: 0x111 });
+            const lounge = new THREE.Mesh(loungeGeo, loungeMat);
+            lounge.rotation.x = -Math.PI / 2;
+            lounge.position.set(16, 0, 0);
+            lounge.receiveShadow = true;
+            scene.add(lounge); levelObjects.push(lounge); floors.push(lounge);
+
+            createProp('Sofa', 16, -9);
+            createNPC(16, 0, CONFIG.colors.npc, "Agente Júlia", []);
+
+
+            // --- PAREDES ---
+            createWall(-12, 3, -11, 14, 6, 1);
+            createWall(16, 3, -11, 14, 6, 1);
+            createWall(2, 3, -11, 14, 6, 1);
+
+            createWall(-12, 3, 11, 14, 6, 1);
+            createWall(2, 3, 13, 14, 6, 1);
+            createWall(16, 3, 11, 14, 6, 1);
+
+            createWall(-19, 3, 0, 1, 6, 22);
+            createWall(23, 3, 0, 1, 6, 22);
+
+            createWall(-5, 3, -6, 1, 6, 10);
+            createWall(-5, 3, 6, 1, 6, 10);
+
+            createWall(9, 3, -6, 1, 6, 10);
+            createWall(9, 3, 6, 1, 6, 10);
+
+            createWall(-3, 3, -1, 4, 6, 1);
+            createWall(7, 3, -1, 4, 6, 1);
         }
 
-        // --- CENÁRIO 2: QUARTO ---
         function createRoomLevel() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(25, 20), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.5 }));
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 15), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.6 }));
             floor.rotation.x = -Math.PI / 2;
-            scene.add(floor);
-            levelObjects.push(floor);
+            floor.receiveShadow = true;
+            scene.add(floor); levelObjects.push(floor); floors.push(floor);
 
-            createWall(0, 3, -10, 25, 6, 1); 
-            createWall(0, 3, 10, 25, 6, 1);  
-            createWall(12.5, 3, 0, 1, 6, 20);   
-            createWall(-12.5, 3, 0, 1, 6, 20);  
+            createWall(0, 3, -7.5, 20, 6, 1);
+            createWall(0, 3, 7.5, 20, 6, 1);
+            createWall(10, 3, 0, 1, 6, 15);
+            createWall(-10, 3, 0, 1, 6, 15);
 
-            createDoor(-12, 0, 0, "LOBBY", Math.PI / 2);
+            createDoor(-9.5, 0, 0, "LOBBY", Math.PI / 2);
 
-            const bedBase = new THREE.Mesh(new THREE.BoxGeometry(5, 1, 7), new THREE.MeshStandardMaterial({ color: 0x333333 }));
-            bedBase.position.set(6, 0.5, -4);
-            scene.add(bedBase);
-            levelObjects.push(bedBase);
-            addCollisionBox(bedBase);
-            const matress = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.5, 6.5), new THREE.MeshStandardMaterial({ color: 0x00eaff, emissive: 0x00eaff, emissiveIntensity: 0.2 }));
-            matress.position.set(6, 1.0, -4);
-            scene.add(matress);
-            levelObjects.push(matress);
+            const bedBase = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 6), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+            bedBase.position.set(5, 0.5, -3); scene.add(bedBase); levelObjects.push(bedBase); addCollisionBox(bedBase);
 
-            const desk = new THREE.Mesh(new THREE.BoxGeometry(5, 1.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x111111 }));
-            desk.position.set(6, 0.75, 4); 
-            scene.add(desk);
-            levelObjects.push(desk);
-            addCollisionBox(desk);
+            const desk = new THREE.Mesh(new THREE.BoxGeometry(4, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+            desk.position.set(5, 0.75, 3); scene.add(desk); levelObjects.push(desk); addCollisionBox(desk);
 
-            const pcScreen = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 0.1), new THREE.MeshStandardMaterial({ color: 0x000000 }));
-            pcScreen.position.set(6, 2, 4);
-            scene.add(pcScreen);
-            levelObjects.push(pcScreen);
-
-            const screenGlow = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1), new THREE.MeshBasicMaterial({ color: 0xff00ff }));
-            screenGlow.position.set(6, 2, 3.94);
-            screenGlow.rotation.y = Math.PI;
-            scene.add(screenGlow);
-            levelObjects.push(screenGlow);
-
-            const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3), new THREE.MeshBasicMaterial({ visible: false }));
-            pcHitbox.position.set(6, 1.5, 3);
-            pcHitbox.userData = { isInteractable: true, name: "Terminal Seguro", dialogs: [], type: "PC" };
-            scene.add(pcHitbox);
-            levelObjects.push(pcHitbox);
-            interactables.push(pcHitbox);
+            const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({ visible: false }));
+            pcHitbox.position.set(5, 1.5, 2);
+            pcHitbox.userData = { isInteractable: true, name: "Computador Pessoal", type: "PC" };
+            scene.add(pcHitbox); levelObjects.push(pcHitbox); interactables.push(pcHitbox);
         }
 
         // --- OBJETOS ---
+        function createProp(type, x, z) {
+            if (type === 'Sofa') {
+                const mesh = new THREE.Mesh(new THREE.BoxGeometry(6, 1, 2), new THREE.MeshStandardMaterial({ color: 0x550000 }));
+                mesh.position.set(x, 0.5, z);
+                scene.add(mesh); levelObjects.push(mesh); addCollisionBox(mesh);
+            }
+        }
+
         function createDoor(x, y, z, targetScene, rotationY = 0) {
             const group = new THREE.Group();
             group.position.set(x, y, z);
-            group.rotation.y = rotationY; 
-
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 0.5), new THREE.MeshStandardMaterial({ color: CONFIG.colors.doorFrame }));
-            frame.position.y = 3;
-            group.add(frame);
-
-            const doorGeo = new THREE.PlaneGeometry(3, 5.5);
-            const doorMat = new THREE.MeshStandardMaterial({ 
-                map: doorTextureBase,
-                emissive: 0x222222
-            });
+            group.rotation.y = rotationY;
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x00eaff, emissive: 0x00eaff, emissiveIntensity: 0.5 }));
+            frame.position.y = 3; group.add(frame);
+            const doorGeo = new THREE.PlaneGeometry(3.5, 5.5);
+            const doorMat = new THREE.MeshStandardMaterial({ map: doorTextureBase, emissive: 0x222222 });
             const door = new THREE.Mesh(doorGeo, doorMat);
-            door.position.set(0, 2.75, 0.3);
-            group.add(door);
-
+            door.position.set(0, 3, 0.4); group.add(door);
             const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 2), new THREE.MeshBasicMaterial({ visible: false }));
             hitBox.position.set(0, 3, 0);
-            hitBox.userData = { isInteractable: true, name: "Portal de Acesso", type: "DOOR", target: targetScene };
+            hitBox.userData = { isInteractable: true, name: "Portal", type: "DOOR", target: targetScene };
             group.add(hitBox);
-
-            scene.add(group);
-            levelObjects.push(group);
-            interactables.push(hitBox); 
+            scene.add(group); levelObjects.push(group); interactables.push(hitBox);
         }
 
         function createWall(x, y, z, w, h, d) {
             const geo = new THREE.BoxGeometry(w, h, d);
             const localTex = wallTextureBase.clone();
-            
-            // Ajuste de Mapeamento da Parede da TV
-            // Como a textura é um "painel" específico e não um padrão repetitivo simples (tijolo),
-            // ajustamos a repetição para encaixar melhor nos módulos da parede.
-            localTex.wrapS = THREE.RepeatWrapping;
-            localTex.wrapT = THREE.RepeatWrapping;
-            
-            const len = Math.max(w, d);
-            // Repetimos a textura a cada 5 unidades de largura, por exemplo
-            localTex.repeat.set(len / 10, 1); 
-            localTex.needsUpdate = true;
-            
-            const mat = new THREE.MeshStandardMaterial({ 
-                map: localTex, 
-                color: 0xffffff, // Cor branca para mostrar a textura original
-                roughness: 0.2,
-                metalness: 0.1
-            });
-            
+            localTex.wrapS = THREE.RepeatWrapping; localTex.wrapT = THREE.RepeatWrapping;
+            localTex.repeat.set(w * 0.25, h * 0.25); localTex.needsUpdate = true;
+            const mat = new THREE.MeshStandardMaterial({ map: localTex, roughness: 0.8 });
             const wall = new THREE.Mesh(geo, mat);
             wall.position.set(x, y, z);
-            wall.castShadow = true;
-            wall.receiveShadow = true;
-            scene.add(wall);
-            levelObjects.push(wall);
-            addCollisionBox(wall);
+            wall.castShadow = true; wall.receiveShadow = true;
+            scene.add(wall); levelObjects.push(wall); addCollisionBox(wall);
         }
 
-        function createWorkstation(x, z) {
-            const desk = new THREE.Mesh(new THREE.BoxGeometry(5, 1.5, 2.5), new THREE.MeshStandardMaterial({ color: CONFIG.colors.furniture }));
-            desk.position.set(x, 0.75, z);
-            scene.add(desk);
-            levelObjects.push(desk);
-            addCollisionBox(desk);
-            
-            // Tela Holográfica
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(2, 1.2), new THREE.MeshBasicMaterial({ color: 0x00eaff, side: THREE.DoubleSide, transparent: true, opacity: 0.7 }));
-            screen.position.set(x, 2, z);
-            screen.rotation.x = 0.2;
-            scene.add(screen);
-            levelObjects.push(screen);
-        }
-
-        // --- PERSONAGENS ---
         function createHumanoid(color, hasBackpack = true) {
             const character = new THREE.Group();
-            character.scale.set(1.4, 1.4, 1.4); 
-
+            character.scale.set(1.4, 1.4, 1.4);
             const skinMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin });
             const shirtMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4 });
             const pantsMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
             const packMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack });
-
             const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), shirtMat);
             body.position.y = 1.1; character.add(body);
-
             const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), skinMat);
             head.position.y = 1.7; character.add(head);
-
-            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.1, 0.2), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-            visor.position.set(0, 1.75, 0.15);
-            character.add(visor);
-
             const armGeo = new THREE.BoxGeometry(0.15, 0.6, 0.15);
             const lArm = new THREE.Mesh(armGeo, shirtMat); lArm.position.set(0.4, 1.1, 0); character.add(lArm);
             const rArm = new THREE.Mesh(armGeo, shirtMat); rArm.position.set(-0.4, 1.1, 0); character.add(rArm);
-
             const legGeo = new THREE.BoxGeometry(0.2, 0.7, 0.2);
             const lLeg = new THREE.Mesh(legGeo, pantsMat); lLeg.position.set(0.15, 0.35, 0); character.add(lLeg);
             const rLeg = new THREE.Mesh(legGeo, pantsMat); rLeg.position.set(-0.15, 0.35, 0); character.add(rLeg);
-
-            if(hasBackpack) {
+            if (hasBackpack) {
                 const pack = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.25), packMat);
                 pack.position.set(0, 1.15, -0.3); character.add(pack);
             }
-
             character.userData.parts = { body, head, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg };
             return character;
         }
 
-        function createNPC(x, z, color, name, dialogs) {
-            const npc = createHumanoid(color, true); 
-            npc.position.set(x, 0, z);
+        function createNPC(x, y, color, name, dialogs) {
+            const npc = createHumanoid(color, true);
+            npc.position.set(x, 0, y);
             npc.userData = { isInteractable: true, name: name, dialogs: dialogs };
-            scene.add(npc);
-            levelObjects.push(npc);
-            interactables.push(npc);
-            
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(1.5, 3, 1.5), new THREE.MeshBasicMaterial({visible: false}));
-            hitBox.position.set(x, 1, z);
-            addCollisionBox(hitBox); 
+            scene.add(npc); levelObjects.push(npc); interactables.push(npc);
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshBasicMaterial({ visible: false }));
+            hitBox.position.set(x, 2, y);
+            addCollisionBox(hitBox);
         }
 
         function addCollisionBox(mesh) {
@@ -1124,68 +1077,47 @@
             playerBody = new THREE.Box3();
         }
 
-        // --- INPUTS ---
         function setupInputs() {
             document.addEventListener('keydown', (e) => {
-                if (['KeyW','ArrowUp'].includes(e.code)) keys.w = true;
-                if (['KeyS','ArrowDown'].includes(e.code)) keys.s = true;
-                if (['KeyA','ArrowLeft'].includes(e.code)) keys.a = true;
-                if (['KeyD','ArrowRight'].includes(e.code)) keys.d = true;
+                if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = true;
+                if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = true;
+                if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = true;
+                if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = true;
                 if (e.code === 'Space' || e.code === 'Enter') checkInteraction();
             });
             document.addEventListener('keyup', (e) => {
-                if (['KeyW','ArrowUp'].includes(e.code)) keys.w = false;
-                if (['KeyS','ArrowDown'].includes(e.code)) keys.s = false;
-                if (['KeyA','ArrowLeft'].includes(e.code)) keys.a = false;
-                if (['KeyD','ArrowRight'].includes(e.code)) keys.d = false;
+                if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = false;
+                if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = false;
+                if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = false;
+                if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = false;
             });
-
             window.addEventListener('pointerdown', (e) => {
-                if(e.target.closest('.screen')) return;
-                if (e.target.closest('#joystick-zone') || e.target.closest('#dialog-box')) return;
-                if (e.target.closest('#computer-overlay')) return; 
-
-                isMouseDown = true;
-                dragStartX = e.clientX;
-                isDraggingView = false;
+                if (e.target.closest('.screen') || e.target.closest('#joystick-zone') || e.target.closest('#dialog-box') || e.target.closest('#computer-overlay')) return;
+                isMouseDown = true; dragStartX = e.clientX; isDraggingView = false;
             });
-
             window.addEventListener('pointermove', (e) => {
                 if (isMouseDown) {
                     if (Math.abs(e.clientX - dragStartX) > 5) isDraggingView = true;
-                    if (isDraggingView) {
-                        cameraAngle -= (e.clientX - dragStartX) * 0.005; 
-                        dragStartX = e.clientX;
-                    }
+                    if (isDraggingView) { cameraAngle -= (e.clientX - dragStartX) * 0.005; dragStartX = e.clientX; }
                 }
             });
-
             window.addEventListener('pointerup', (e) => {
                 isMouseDown = false;
                 if (!isDraggingView) {
                     mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
                     mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
                     raycaster.setFromCamera(mouse, camera);
-                    
-                    const intersects = raycaster.intersectObjects(interactables, true); 
-                    
+                    const intersects = raycaster.intersectObjects(interactables, true);
                     if (intersects.length > 0) {
                         let target = intersects[0].object;
-                        while(target.parent && !target.userData.isInteractable) {
-                            target = target.parent;
-                            if(target === scene) break; 
-                        }
-
-                        if (target.userData && target.userData.isInteractable) {
-                            if (player.position.distanceTo(target.getWorldPosition(new THREE.Vector3())) < 10) {
-                                handleInteraction(target);
-                            }
+                        while (target.parent && !target.userData.isInteractable) { target = target.parent; if (target === scene) break; }
+                        if (target.userData && target.userData.isInteractable && player.position.distanceTo(target.getWorldPosition(new THREE.Vector3())) < 15) {
+                            handleInteraction(target);
                         }
                     }
                 }
                 isDraggingView = false;
             });
-
             const joyZone = document.getElementById('joystick-zone');
             if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
                 const manager = nipplejs.create({ zone: joyZone, mode: 'static', position: { left: '50%', top: '50%' }, color: 'cyan' });
@@ -1202,7 +1134,7 @@
 
         function checkInteraction() {
             let nearest = null;
-            let minDist = 7;
+            let minDist = 8;
             interactables.forEach(obj => {
                 const dist = player.position.distanceTo(obj.getWorldPosition(new THREE.Vector3()));
                 if (dist < minDist) nearest = obj;
@@ -1213,68 +1145,45 @@
         function handleInteraction(obj) {
             const data = obj.userData;
             let dialogs = data.dialogs || [];
-
             if (data.type === "DOOR") {
-                if (data.target === "LOBBY") { 
-                    loadScene("LOBBY"); 
-                    if (missionProgress === 4) {
-                        missionProgress = 5; 
-                        updateHUD("Aguardando Novas Ordens", "#ffffff");
-                        startDialog("SISTEMA", ["Bem-vindo de volta, Agente.", "Missão 01 registrada no sistema."]);
-                    }
-                    return; 
+                if (data.target === "LOBBY") {
+                    loadScene("LOBBY");
+                    if (missionProgress === 4) { missionProgress = 5; updateHUD("Aguardando Novas Ordens", "#ffffff"); startDialog("SISTEMA", ["Bem-vindo de volta, Agente.", "Missão 01 registrada."]); }
+                    return;
                 }
                 if (data.target === "ROOM") {
-                    if (missionProgress >= 2) { 
+                    if (missionProgress >= 2) {
                         loadScene(data.target);
-                        if(missionProgress < 3) {
-                            startDialog("SISTEMA", ["Acessando área segura..."]);
-                            missionProgress = 3;
-                            updateHUD("Acesse o Terminal Seguro", "#ff00ff"); 
-                        }
-                    } else {
-                        startDialog("SISTEMA", ["Acesso Bloqueado. Fale com a Agente Júlia."]);
-                    }
+                        if (missionProgress < 3) { startDialog("SISTEMA", ["Acessando área segura..."]); missionProgress = 3; updateHUD("Acesse o Terminal Seguro", "#ff00ff"); }
+                    } else { startDialog("SISTEMA", ["Acesso Bloqueado. Fale com a Agente Júlia."]); }
                     return;
                 }
             }
-
             if (data.type === "PC") {
-                if (missionProgress >= 3) { 
+                if (missionProgress >= 3 || data.name === "Mainframe") {
+                    if (data.name === "Mainframe" && missionProgress < 1) {
+                        startDialog("SISTEMA CENTRAL", ["Autenticação requerida.", "Fale com a Agente Júlia para obter credenciais."]);
+                        return;
+                    }
                     document.getElementById('computer-overlay').style.display = 'flex';
                     document.getElementById('pc-view-login').classList.remove('hidden');
                     document.getElementById('pc-view-puzzle').classList.add('hidden');
                     document.getElementById('pc-view-social').classList.add('hidden');
                     document.getElementById('pc-pass-input').value = '';
                     document.getElementById('pass-feedback').innerText = '';
-                } else {
-                    startDialog("SISTEMA", ["Terminal bloqueado."]);
-                }
+                } else { startDialog("SISTEMA", ["Terminal bloqueado."]); }
                 return;
             }
-
             const npcName = data.name;
             if (npcName === "Comandante Motta") {
-                if (missionProgress === 0) {
-                    updateHUD("Pegue o Tablet com a Agente Júlia", "#00ff88");
-                    missionProgress = 1;
-                } else if (missionProgress === 4) {
-                    dialogs = ["Incrível! A rede está segura novamente."];
-                    updateHUD("Missão Completa - Aguardando...", "#ffffff");
-                } else {
-                    dialogs = ["Vá falar com a Júlia."];
-                }
+                if (missionProgress === 0) { updateHUD("Pegue o Tablet com a Agente Júlia", "#00ff88"); missionProgress = 1; }
+                else if (missionProgress === 4) { dialogs = ["Incrível! A rede está segura novamente."]; updateHUD("Missão Completa", "#ffffff"); }
+                else { dialogs = ["Vá falar com a Júlia."]; }
             } else if (npcName === "Agente Júlia") {
                 if (missionProgress === 0) dialogs = ["Fale com o Comandante primeiro."];
-                else if (missionProgress === 1) {
-                    dialogs = ["Aqui está. Vá para o Quarto pela porta neon."];
-                    updateHUD("Entre na Porta Neon", "#d500f9");
-                    missionProgress = 2;
-                } else {
-                    dialogs = ["Vá logo! A porta está aberta."];
-                }
+                else if (missionProgress === 1) { dialogs = ["Aqui está. Vá para o Quarto pela porta."]; updateHUD("Entre na Porta", "#d500f9"); missionProgress = 2; }
+                else { dialogs = ["A porta está aberta."]; }
             }
-
             startDialog(npcName, dialogs);
         }
 
@@ -1286,7 +1195,7 @@
         }
 
         function startDialog(name, texts) {
-            if(!texts || texts.length === 0) return;
+            if (!texts || texts.length === 0) return;
             if (isDialogOpen) return;
             isDialogOpen = true;
             document.getElementById('dialog-box').style.display = 'block';
@@ -1295,7 +1204,7 @@
             advanceDialog();
         }
 
-        window.advanceDialog = function() {
+        window.advanceDialog = function () {
             if (!isDialogOpen) return;
             if (currentDialogQueue.length > 0) {
                 document.getElementById('dialog-text').innerText = currentDialogQueue.shift();
@@ -1305,38 +1214,52 @@
             }
         }
 
+        // --- FÍSICA E MOVIMENTO ---
         function update(dt) {
             if (isDialogOpen) return;
-
             const move = new THREE.Vector3(0, 0, 0);
-            if (keys.w) move.z -= 1;
-            if (keys.s) move.z += 1;
-            if (keys.a) move.x -= 1;
-            if (keys.d) move.x += 1;
-            if (joystickVec.lengthSq() > 0) move.add(new THREE.Vector3(joystickVec.x, 0, -joystickVec.z)); 
-            
-            if (move.lengthSq() > 0) {
-                move.normalize();
-                move.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngle);
+            if (keys.w) move.z -= 1; if (keys.s) move.z += 1; if (keys.a) move.x -= 1; if (keys.d) move.x += 1;
+            if (joystickVec.lengthSq() > 0) move.add(new THREE.Vector3(joystickVec.x, 0, -joystickVec.z));
 
+            // Gravidade / Altura do Chão
+            let groundY = 0;
+            let onGround = false;
+
+            if (player) {
+                const rayOrigin = player.position.clone();
+                rayOrigin.y += 5;
+                groundRaycaster.set(rayOrigin, new THREE.Vector3(0, -1, 0));
+
+                const intersections = groundRaycaster.intersectObjects(floors, true);
+                if (intersections.length > 0) {
+                    groundY = intersections[0].point.y;
+                    onGround = true;
+                } else {
+                    onGround = false;
+                }
+            }
+
+            if (move.lengthSq() > 0) {
+                move.normalize(); move.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngle);
                 const speed = CONFIG.speed * dt;
                 const nextPos = player.position.clone().add(move.multiplyScalar(speed));
 
-                playerBody.setFromCenterAndSize(nextPos, new THREE.Vector3(0.7, 2, 0.7)); 
-                
-                let collided = false;
-                for (let box of obstacles) {
-                    if (playerBody.intersectsBox(box)) {
-                        collided = true;
-                        break;
-                    }
-                }
+                // Verificar se o próximo ponto tem chão
+                const checkOrigin = nextPos.clone(); checkOrigin.y += 5;
+                groundRaycaster.set(checkOrigin, new THREE.Vector3(0, -1, 0));
+                const nextGround = groundRaycaster.intersectObjects(floors, true);
 
-                if (!collided) {
+                let canMove = true;
+                if (nextGround.length === 0) canMove = false;
+
+                playerBody.setFromCenterAndSize(nextPos, new THREE.Vector3(0.7, 2, 0.7));
+                for (let box of obstacles) { if (playerBody.intersectsBox(box)) { canMove = false; break; } }
+
+                if (canMove) {
                     player.position.copy(nextPos);
                     player.rotation.y = Math.atan2(move.x, move.z);
-                    
-                    walkTime += dt * 12; // Animação mais rápida
+
+                    walkTime += dt * 12;
                     player.userData.parts.body.position.y = 1.1 + Math.sin(walkTime) * 0.05;
                     player.userData.parts.head.position.y = 1.7 + Math.sin(walkTime) * 0.05;
                     player.userData.parts.leftArm.rotation.x = Math.sin(walkTime) * 0.6;
@@ -1345,44 +1268,39 @@
                     player.userData.parts.rightLeg.rotation.x = Math.sin(walkTime) * 0.6;
                 }
             } else {
-                player.userData.parts.body.position.y = 1.1;
-                player.userData.parts.head.position.y = 1.7;
-                player.userData.parts.leftArm.rotation.x = 0;
-                player.userData.parts.rightArm.rotation.x = 0;
-                player.userData.parts.leftLeg.rotation.x = 0;
-                player.userData.parts.rightLeg.rotation.x = 0;
+                player.userData.parts.body.position.y = 1.1; player.userData.parts.head.position.y = 1.7;
+                player.userData.parts.leftArm.rotation.x = 0; player.userData.parts.rightArm.rotation.x = 0;
+                player.userData.parts.leftLeg.rotation.x = 0; player.userData.parts.rightLeg.rotation.x = 0;
             }
 
-            const camDist = 22; 
-            const camHeight = 22; 
+            if (onGround) {
+                player.position.y += (groundY - player.position.y) * 0.2;
+            }
+
+            const camDist = 25; const camHeight = 25;
             const offsetX = Math.sin(cameraAngle) * camDist;
             const offsetZ = Math.cos(cameraAngle) * camDist;
-
             const targetCamX = player.position.x + offsetX;
             const targetCamZ = player.position.z + offsetZ;
-
             camera.position.x += (targetCamX - camera.position.x) * 0.1;
             camera.position.z += (targetCamZ - camera.position.z) * 0.1;
-            camera.position.y = camHeight; 
+            camera.position.y = camHeight;
             camera.lookAt(player.position);
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            if (clock && player) {
-                update(clock.getDelta());
-                renderer.render(scene, camera);
-            }
+            if (clock && player) { update(clock.getDelta()); renderer.render(scene, camera); }
         }
 
         window.addEventListener('resize', () => {
-            if(camera && renderer) {
+            if (camera && renderer) {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
         });
-
     </script>
 </body>
+
 </html>
