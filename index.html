@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Cyber Agentes - Central de Comando</title>
+    <title>Cyber Agentes - Operação Cyber Ops</title>
 
     <!-- Fontes -->
     <style>
@@ -312,6 +312,7 @@
                     rgba(0, 234, 255, 0.05) 1px,
                     transparent 1px,
                     transparent 20px);
+            overflow-y: auto;
         }
 
         /* Tela de Login */
@@ -417,6 +418,185 @@
         .fake-news-btn:hover {
             transform: scale(1.05);
         }
+
+        /* --- NOVA UI: CUSTOMIZAÇÃO DE AGENTE --- */
+        .custom-interface {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(13, 13, 26, 0.9);
+            border: 1px solid #00eaff;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .custom-interface h3 {
+            margin: 0 0 25px 0;
+            color: #fff;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px #00eaff;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #00eaff;
+            padding-bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .custom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .custom-section {
+            background: rgba(0, 234, 255, 0.05);
+            border: 1px solid rgba(0, 234, 255, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .custom-section label {
+            font-size: 0.9rem;
+            color: #00eaff;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Input de Texto Estilizado */
+        .cyber-input {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #555;
+            border-bottom: 2px solid #00eaff;
+            color: #fff;
+            padding: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .cyber-input:focus {
+            border-color: #fff;
+            background: rgba(0, 234, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 234, 255, 0.2);
+        }
+
+        /* Container de Cor */
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background: none;
+            padding: 0;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #fff;
+            border-radius: 50%;
+        }
+
+        /* Toggle Switch Futurista */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border: 1px solid #555;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #fff;
+        }
+
+        input:checked + .slider {
+            background-color: #00eaff;
+            border-color: #00eaff;
+            box-shadow: 0 0 15px #00eaff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+            background-color: #000;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .cyber-btn {
+            background: #00eaff;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            padding: 12px 30px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .cyber-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #00eaff;
+        }
+
+        .cyber-btn-sec {
+            background: transparent;
+            color: #ff0055;
+            border: 1px solid #ff0055;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .cyber-btn-sec:hover {
+            background: #ff0055;
+            color: #fff;
+            box-shadow: 0 0 20px #ff0055;
+        }
+
     </style>
 
     <!-- Scripts -->
@@ -483,13 +663,62 @@
     <div id="game-container"></div>
     <div id="transition-screen">CARREGANDO MUNDO...</div>
 
+    <!-- Interface Computador -->
     <div id="computer-overlay">
         <div class="pc-window">
             <div class="pc-header">
                 <span>🔒 CyberOS Kids - Acesso Seguro</span>
                 <span class="close-btn" onclick="closePC()">X</span>
             </div>
-            <div class="pc-content" id="pc-view-login">
+            
+            <!-- 1. Customização (UI Melhorada) -->
+            <div class="pc-content hidden" id="pc-view-custom">
+                <div class="custom-interface">
+                    <h3>CONFIGURAÇÃO DE AGENTE</h3>
+                    
+                    <div class="custom-grid">
+                        <!-- Nome -->
+                        <div class="custom-section">
+                            <label>IDENTIDADE (NOME)</label>
+                            <input type="text" id="custom-name" placeholder="Digite seu codinome..." class="cyber-input">
+                        </div>
+                        
+                        <!-- Mochila -->
+                        <div class="custom-section">
+                            <label>COR DA MOCHILA</label>
+                            <div class="color-picker-container">
+                                <input type="color" id="custom-backpack-color" value="#222222">
+                                <span style="font-size: 0.8em; color: #aaa;">Clique para alterar</span>
+                            </div>
+                        </div>
+
+                        <!-- Capacete Toggle -->
+                        <div class="custom-section">
+                            <label>CAPACETE TÁTICO</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="custom-helmet-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <!-- Capacete Cor -->
+                        <div class="custom-section">
+                            <label>COR DO CAPACETE</label>
+                            <div class="color-picker-container">
+                                <input type="color" id="custom-helmet-color" value="#00eaff">
+                                <span style="font-size: 0.8em; color: #aaa;">Clique para alterar</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn cyber-btn" onclick="applyCustomization()">SALVAR PERFIL</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Login (Para a Missão) -->
+            <div class="pc-content hidden" id="pc-view-login">
                 <h3 style="margin-bottom: 20px; text-shadow: 0 0 10px #00eaff;">AUTENTICAÇÃO NECESSÁRIA</h3>
                 <div class="login-form" style="text-align: center;">
                     <p style="font-size: 14px; margin-bottom: 10px; color: #aaa;">Crie uma senha forte (Maiúscula,
@@ -501,13 +730,15 @@
                     <div class="password-feedback" id="pass-feedback"></div>
                 </div>
             </div>
+
+            <!-- 3. Puzzle (Para a Missão) -->
             <div class="pc-content hidden" id="pc-view-puzzle">
                 <h3 style="margin-bottom: 10px; color: #ff0055;">⚠️ FIREWALL ATIVO</h3>
                 <p style="margin-bottom: 20px; font-size: 14px;">Conecte os ícones de segurança para desbloquear.</p>
-                <div class="memory-grid" id="memory-game">
-                    <!-- Cards gerados via JS -->
-                </div>
+                <div class="memory-grid" id="memory-game"></div>
             </div>
+
+            <!-- 4. Rede Social (Para a Missão) -->
             <div class="pc-content hidden" id="pc-view-social" style="padding: 0;">
                 <div class="social-feed">
                     <div
@@ -558,10 +789,13 @@
 
     <script type="module">
         import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
         // --- CONFIGURAÇÃO VISUAL ---
         const CONFIG = {
-            speed: 12, // Movimento ágil
+            speed: 12, 
             colors: {
                 background: 0x050510,
                 fog: 0x100020,
@@ -576,17 +810,18 @@
                 npc: 0x00ff88,
                 skin: 0xffdbac,
                 backpack: 0x111111,
-                doorFrame: 0x444444
+                doorFrame: 0x444444,
+                neonLight: 0x00eaff // Cor extra para luzes
             }
         };
 
-        // Variáveis
-        let scene, camera, renderer, clock;
+        // Variáveis Globais
+        let scene, camera, renderer, clock, composer;
         let player, playerBody;
         let levelObjects = [];
         let obstacles = [];
         let interactables = [];
-        let floors = []; // Array para detectar chão (Raycast)
+        let floors = [];
 
         let selectedAgentId = null;
         let missionProgress = 0;
@@ -594,6 +829,14 @@
 
         let isDialogOpen = false;
         let currentDialogQueue = [];
+
+        // Estado do Jogador (Para personalização)
+        let playerState = {
+            name: "Agente",
+            hasHelmet: false,
+            backpackColor: CONFIG.colors.backpack,
+            helmetColor: 0x00eaff
+        };
 
         let wallTextureBase, doorTextureBase, floorTextureBase, brickFloorTexture, carpetTexture;
 
@@ -606,10 +849,10 @@
         let walkTime = 0;
 
         const raycaster = new THREE.Raycaster();
-        const groundRaycaster = new THREE.Raycaster(); // Raycaster exclusivo para o chão
+        const groundRaycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
-        // --- LOGICA DO PC E UI (MANTIDA IGUAL) ---
+        // --- LOGICA DO PC E UI ---
         window.checkPassword = () => {
             const pass = document.getElementById('pc-pass-input').value;
             const feedback = document.getElementById('pass-feedback');
@@ -687,19 +930,52 @@
             flippedCards = [];
         }
 
+        // Função de Aplicar Customização
+        window.applyCustomization = () => {
+            const newName = document.getElementById('custom-name').value;
+            const backpackHex = document.getElementById('custom-backpack-color').value;
+            const hasHelmet = document.getElementById('custom-helmet-toggle').checked;
+            const helmetHex = document.getElementById('custom-helmet-color').value;
+
+            if(newName) playerState.name = newName;
+            playerState.backpackColor = parseInt(backpackHex.replace('#', ''), 16);
+            playerState.hasHelmet = hasHelmet;
+            playerState.helmetColor = parseInt(helmetHex.replace('#', ''), 16);
+
+            // Atualizar visual do Player
+            if(player && player.userData.parts) {
+                // Mochila
+                if(player.userData.parts.backpack) {
+                    player.userData.parts.backpack.material.color.setHex(playerState.backpackColor);
+                }
+                // Capacete
+                if(player.userData.parts.helmet) {
+                    player.userData.parts.helmet.visible = playerState.hasHelmet;
+                    player.userData.parts.helmet.material.color.setHex(playerState.helmetColor);
+                }
+            }
+
+            alert("Perfil Atualizado! Agora fale com a Agente Júlia.");
+            if(missionProgress === 1) {
+                missionProgress = 2;
+                updateHUD("Fale com a Agente Júlia", "#d500f9");
+            }
+            closePC();
+        };
+
         window.reportFakeNews = () => {
             alert("FAKE NEWS DETECTADA! Você salvou a rede!");
             document.getElementById('computer-overlay').style.display = 'none';
-            startDialog("COMANDANTE", ["Excelente, Agente!", "Ameaça neutralizada.", "Retorne à base pela porta de teleporte."]);
-            missionProgress = 4;
-            updateHUD("Volte para a Central", "#00ff88");
+            startDialog("COMANDANTE", ["Excelente, Agente " + playerState.name + "!", "Ameaça neutralizada.", "Retorne à base pela porta de teleporte."]);
+            missionProgress = 5;
+            updateHUD("Volte para o Lobby", "#00ff88");
         };
 
         window.closePC = () => {
             document.getElementById('computer-overlay').style.display = 'none';
         };
 
-        // --- UI GERAL ---
+        // --- UI GERAL (MANTIDA) ---
         window.goToSelect = () => {
             document.getElementById('screen-menu').classList.add('hidden');
             document.getElementById('screen-select').classList.remove('hidden');
@@ -733,7 +1009,7 @@
             initGame();
         };
 
-        // --- TEXTURAS (Canvas API) ---
+        // --- TEXTURAS ORIGINAIS (Pixel Art / Canvas) ---
         function createFloorTileTexture() {
             const size = 512; const ctx = document.createElement('canvas').getContext('2d');
             ctx.canvas.width = size; ctx.canvas.height = size;
@@ -762,14 +1038,12 @@
             ctx.fillStyle = '#d500f9'; ctx.fillRect(20, 20, size - 40, 30);
             return new THREE.CanvasTexture(ctx.canvas);
         }
-
         function createBrickFloorTexture() {
             const s = 512; const c = document.createElement('canvas').getContext('2d'); c.canvas.width = s; c.canvas.height = s;
             c.fillStyle = '#333'; c.fillRect(0, 0, s, s); c.fillStyle = '#444';
             const bw = s / 8, bh = s / 16, g = 2; for (let y = 0; y < 16; y++) { let o = (y % 2) * bw / 2; for (let x = -1; x < 8; x++) c.fillRect((x * bw) + o + g, (y * bh) + g, bw - g * 2, bh - g * 2); }
             const t = new THREE.CanvasTexture(c.canvas); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(6, 6); t.magFilter = THREE.NearestFilter; return t;
         }
-
         function createCarpetTexture() {
             const s = 512; const c = document.createElement('canvas').getContext('2d'); c.canvas.width = s; c.canvas.height = s;
             c.fillStyle = '#4a148c'; c.fillRect(0, 0, s, s);
@@ -777,21 +1051,35 @@
             return new THREE.CanvasTexture(c.canvas);
         }
 
-        // --- GAME ENGINE ---
+        // --- GAME ENGINE (COM BLOOM INJETADO) ---
         function initGame() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(CONFIG.colors.background);
             scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 35, 40); // Câmera mais alta para ver tudo
+            camera.position.set(0, 35, 40);
             camera.lookAt(0, 0, 0);
 
+            // Renderizador
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
+            renderer.toneMapping = THREE.ReinhardToneMapping;
             document.getElementById('game-container').appendChild(renderer.domElement);
 
+            // --- BLOOM SETUP ---
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0.2;
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0.5;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            // Luzes
             const ambient = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambient);
             const blueLight = new THREE.PointLight(0x00eaff, 1, 40); blueLight.position.set(-10, 15, -10); scene.add(blueLight);
@@ -802,6 +1090,7 @@
 
             clock = new THREE.Clock();
 
+            // Texturas Originais
             wallTextureBase = createWallTileTexture();
             floorTextureBase = createFloorTileTexture();
             doorTextureBase = createDoorTexture();
@@ -815,9 +1104,9 @@
             animate();
 
             startDialog("SISTEMA", [
-                "Agente, bem-vindo à nova Sede.",
-                "Explore as salas.",
-                "Fale com o Comandante na Sala de Reuniões (Esquerda)."
+                "Agente Iniciado.",
+                "Bem-vindo à Central de Comando.",
+                "Fale com o Comandante para iniciar."
             ]);
         }
 
@@ -826,7 +1115,7 @@
             levelObjects = [];
             obstacles = [];
             interactables = [];
-            floors = []; // Limpa lista de chãos
+            floors = [];
         }
 
         function loadScene(sceneName) {
@@ -840,10 +1129,10 @@
                 if (sceneName === "LOBBY") {
                     createLobbyLevel();
                     if (player) {
-                        if (missionProgress >= 4) { player.position.set(0, 0, -12); player.rotation.y = Math.PI; }
-                        else player.position.set(0, 0, 5); // Spawn mais amigável
+                        if (missionProgress >= 5) { player.position.set(0, 0, -12); player.rotation.y = Math.PI; }
+                        else player.position.set(0, 0, 5);
                     }
-                } else if (sceneName === "ROOM") {
+                } else if (sceneName === "CYBER_OPS") { // NOVA SALA
                     createRoomLevel();
                     if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
                 }
@@ -852,315 +1141,238 @@
             }, 500);
         }
 
-        // --- CENÁRIO 1: LOBBY EM 3 NÍVEIS ---
+        // --- FUNÇÕES DE OBJETOS MELHORADOS ---
+        
+        function createHoloWindow(x, y, z, rotY) {
+            const geo = new THREE.PlaneGeometry(6, 4);
+            const mat = new THREE.MeshBasicMaterial({
+                color: CONFIG.colors.neonLight,
+                side: THREE.DoubleSide,
+                transparent: true, opacity: 0.2,
+                blending: THREE.AdditiveBlending,
+                wireframe: true
+            });
+            const win = new THREE.Mesh(geo, mat);
+            win.position.set(x, y, z);
+            win.rotation.y = rotY;
+            const light = new THREE.PointLight(CONFIG.colors.neonLight, 2, 15);
+            light.position.set(x, y, z);
+            scene.add(win); scene.add(light);
+            levelObjects.push(win); levelObjects.push(light);
+        }
+
+        function createCyberBookshelf(x, z, rotY) {
+            const group = new THREE.Group();
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 5, 1), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+            frame.position.y = 2.5; group.add(frame);
+            const bookGeo = new THREE.BoxGeometry(0.2, 0.6, 0.8);
+            for(let i=0; i<10; i++) {
+                const isNeon = Math.random() > 0.6;
+                const col = isNeon ? (Math.random() > 0.5 ? 0xff00ff : 0x00eaff) : 0x555555;
+                const book = new THREE.Mesh(bookGeo, new THREE.MeshStandardMaterial({
+                    color: col, 
+                    emissive: isNeon ? col : 0x000000,
+                    emissiveIntensity: 1.5 
+                }));
+                book.position.set((Math.random()-0.5)*2, Math.random()*4 + 0.5, 0.2);
+                group.add(book);
+            }
+            group.position.set(x, 0, z); group.rotation.y = rotY;
+            scene.add(group); levelObjects.push(group);
+            addCollisionBox(frame, group.position);
+        }
+
+        // NOVO: Rack de Servidor Cyberpunk
+        function createServerRack(x, z, rotY) {
+            const group = new THREE.Group();
+            // Rack Principal
+            const rack = new THREE.Mesh(
+                new THREE.BoxGeometry(3, 6, 2),
+                new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 })
+            );
+            rack.position.y = 3;
+            group.add(rack);
+
+            // Luzes de Servidor
+            for(let i=0; i<5; i++) {
+                const lightStrip = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2.5, 0.2),
+                    new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide })
+                );
+                lightStrip.position.set(0, 1 + i, 1.01);
+                group.add(lightStrip);
+            }
+
+            group.position.set(x, 0, z);
+            group.rotation.y = rotY;
+            scene.add(group); levelObjects.push(group);
+            addCollisionBox(rack, group.position);
+        }
+
+        // --- CENÁRIOS ---
         function createLobbyLevel() {
-            // 1. CORREDOR CENTRAL (Nível 0, X: -8 a 8)
-            const floorCenterGeo = new THREE.PlaneGeometry(16, 30);
-            const floorMat = new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.5 });
-            const floorCenter = new THREE.Mesh(floorCenterGeo, floorMat);
-            floorCenter.rotation.x = -Math.PI / 2;
-            floorCenter.position.set(0, 0, 0);
-            floorCenter.receiveShadow = true;
-            scene.add(floorCenter); levelObjects.push(floorCenter); floors.push(floorCenter);
+            const floorCenter = new THREE.Mesh(new THREE.PlaneGeometry(16, 30), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.5 }));
+            floorCenter.rotation.x = -Math.PI/2; floorCenter.receiveShadow=true; scene.add(floorCenter); levelObjects.push(floorCenter); floors.push(floorCenter);
 
-            // 2. SALA ESQUERDA (Nível 1.5, X: -24 a -8)
-            const floorLeftGeo = new THREE.PlaneGeometry(16, 30);
-            const floorLeftMat = new THREE.MeshStandardMaterial({ map: carpetTexture, roughness: 0.8 }); // Carpete
-            const floorLeft = new THREE.Mesh(floorLeftGeo, floorLeftMat);
-            floorLeft.rotation.x = -Math.PI / 2;
-            floorLeft.position.set(-16, -1.5, 0);
-            floorLeft.receiveShadow = true;
-            scene.add(floorLeft); levelObjects.push(floorLeft); floors.push(floorLeft);
+            const floorLeft = new THREE.Mesh(new THREE.PlaneGeometry(16, 30), new THREE.MeshStandardMaterial({ map: carpetTexture, roughness: 0.8 }));
+            floorLeft.rotation.x = -Math.PI/2; floorLeft.position.set(-16, -1.5, 0); floorLeft.receiveShadow=true; scene.add(floorLeft); levelObjects.push(floorLeft); floors.push(floorLeft);
 
-            // Escada Esquerda
-            const rampL = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({ color: 0x444 }));
-            rampL.position.set(-8, -0.75, 0); // Meio caminho
-            rampL.rotation.z = 0.5; // Inclinação
-            scene.add(rampL); levelObjects.push(rampL);
-            // Hack de colisão para a rampa: um plano invisível inclinado
-            const rampLCol = new THREE.Mesh(new THREE.PlaneGeometry(2, 8), new THREE.MeshBasicMaterial({ visible: false }));
-            rampLCol.position.set(-8, -0.75, 0);
-            rampLCol.rotation.x = -Math.PI / 2;
-            rampLCol.rotation.y = 0.25; // Inclina para esquerda
-            // Na verdade, raycast resolve isso se o objeto estiver em 'floors'
-            // Vamos adicionar um Box inclinado ao floors
-            const rampLBox = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({ visible: false }));
-            rampLBox.position.set(-8, -0.75, 0);
-            rampLBox.rotation.z = 0.4;
-            scene.add(rampLBox); levelObjects.push(rampLBox); floors.push(rampLBox);
+            const floorRight = new THREE.Mesh(new THREE.PlaneGeometry(16, 30), new THREE.MeshStandardMaterial({ map: carpetTexture, roughness: 0.8 }));
+            floorRight.rotation.x = -Math.PI/2; floorRight.position.set(16, -1.5, 0); floorRight.receiveShadow=true; scene.add(floorRight); levelObjects.push(floorRight); floors.push(floorRight);
 
+            const r1 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({visible:false})); r1.position.set(-8, -0.75, 0); r1.rotation.z = 0.4; scene.add(r1); levelObjects.push(r1); floors.push(r1);
+            const r2 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({visible:false})); r2.position.set(8, -0.75, 0); r2.rotation.z = -0.4; scene.add(r2); levelObjects.push(r2); floors.push(r2);
+            const rampVisL = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({color: 0x444})); rampVisL.position.set(-8, -0.75, 0); rampVisL.rotation.z = 0.5; scene.add(rampVisL); levelObjects.push(rampVisL);
+            const rampVisR = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({color: 0x444})); rampVisR.position.set(8, -0.75, 0); rampVisR.rotation.z = -0.5; scene.add(rampVisR); levelObjects.push(rampVisR);
 
-            // 3. SALA DIREITA (Nível 1.5, X: 8 a 24)
-            const floorRightGeo = new THREE.PlaneGeometry(16, 30);
-            const floorRightMat = new THREE.MeshStandardMaterial({ map: carpetTexture, roughness: 0.8 }); // Piso Lounge
-            const floorRight = new THREE.Mesh(floorRightGeo, floorRightMat);
-            floorRight.rotation.x = -Math.PI / 2;
-            floorRight.position.set(16, -1.5, 0);
-            floorRight.receiveShadow = true;
-            scene.add(floorRight); levelObjects.push(floorRight); floors.push(floorRight);
+            createWall(0, 3, -15, 48, 8, 1); createWall(0, 3, 15, 48, 8, 1);
+            createWall(-24, 3, 0, 1, 8, 30); createWall(24, 3, 0, 1, 8, 30);
+            createWall(-8, 1, 9, 0.5, 5, 12); createWall(-8, 1, -9, 0.5, 5, 12);
+            createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
-            // Escada Direita
-            const rampR = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({ color: 0x444 }));
-            rampR.position.set(8, -0.75, 0);
-            rampR.rotation.z = -0.5;
-            scene.add(rampR); levelObjects.push(rampR);
+            createHoloWindow(-23.4, 4, 0, Math.PI/2);
+            createHoloWindow(23.4, 4, 0, -Math.PI/2);
 
-            const rampRBox = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({ visible: false }));
-            rampRBox.position.set(8, -0.75, 0);
-            rampRBox.rotation.z = -0.4;
-            scene.add(rampRBox); levelObjects.push(rampRBox); floors.push(rampRBox);
-
-
-            // --- PAREDES ESTRUTURAIS (Mais Altas) ---
-            // Fundo
-            createWall(0, 3, -15, 48, 8, 1);
-            // Frente
-            createWall(0, 3, 15, 48, 8, 1);
-            // Esquerda
-            createWall(-24, 3, 0, 1, 8, 30);
-            // Esquerda - meio
-            createWall(-8, 1, 9, 0.5, 5, 12);
-            createWall(-8, 1, -9, 0.5, 5, 12);
-            // Direita
-            createWall(24, 3, 0, 1, 8, 30);
-            // Direita - meio
-            createWall(8, 1, 9, 0.5, 5, 12);
-            createWall(8, 1, -9, 0.5, 5, 12);
-
-
-
-
-            // --- COMPUTADOR CENTRAL (MESA) ---
             const centralDesk = new THREE.Mesh(new THREE.CylinderGeometry(3, 2, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x111 }));
-            centralDesk.position.set(0, 0.6, 0);
-            scene.add(centralDesk); levelObjects.push(centralDesk); addCollisionBox(centralDesk);
+            centralDesk.position.set(0, 0.6, 0); scene.add(centralDesk); levelObjects.push(centralDesk); addCollisionBox(centralDesk);
+            
+            const holoGlobe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 16), new THREE.MeshBasicMaterial({ color: 0x00eaff, wireframe: true, emissive: 0x00eaff, emissiveIntensity: 0.5 }));
+            holoGlobe.position.set(0, 2.5, 0); scene.add(holoGlobe); levelObjects.push(holoGlobe);
+            const animateGlobe = () => { if (holoGlobe) holoGlobe.rotation.y += 0.01; requestAnimationFrame(animateGlobe); }; animateGlobe();
 
-            const holoGlobe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 16), new THREE.MeshBasicMaterial({ color: 0x00eaff, wireframe: true }));
-            holoGlobe.position.set(0, 2.5, 0);
-            scene.add(holoGlobe); levelObjects.push(holoGlobe);
-
-            // Animação do globo
-            const animateGlobe = () => { if (holoGlobe) holoGlobe.rotation.y += 0.01; requestAnimationFrame(animateGlobe); };
-            animateGlobe();
-
-            // Interação PC Central
+            // PC LOBBY: Apenas Customização
             const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
-            pcHitbox.position.set(0, 1, 0);
-            pcHitbox.userData = { isInteractable: true, name: "Sistema Central", type: "PC" };
+            pcHitbox.position.set(0, 1, 0); pcHitbox.userData = { isInteractable: true, name: "Terminal de Customização", type: "PC_CUSTOM" };
             scene.add(pcHitbox); levelObjects.push(pcHitbox); interactables.push(pcHitbox);
 
+            createWall(-16, 3, -15, 16, 8, 1); createWall(16, 3, -15, 16, 8, 1);
+            createWall(-4, 3, -15, 4, 8, 1); createWall(4, 3, -15, 4, 8, 1);
+            createDoor(0, 0, -14.5, "CYBER_OPS", 0);
 
-            // --- PORTA DE SAÍDA (Parede Norte Centro) ---
-            // A parede norte está em Z=-15. Vamos criar a porta lá.
-            // Primeiro, abrimos um buraco na parede norte visualmente (reconstruindo em partes)
-            // Removemos a parede inteira e criamos pedaços
-            // Parede Fundo Esq
-            createWall(-16, 3, -15, 16, 8, 1);
-            // Parede Fundo Dir
-            createWall(16, 3, -15, 16, 8, 1);
-            // Parede Fundo Centro Esq e Dir (deixando buraco de 4 unidades)
-            createWall(-4, 3, -15, 4, 8, 1);
-            createWall(4, 3, -15, 4, 8, 1);
-
-            // Porta VISÍVEL e ELEVADA (se o chão for 0)
-            // Como o corredor é Nível 0, a porta fica em Y=0
-            createDoor(0, 0, -14.5, "ROOM", 0);
-
-
-            // --- MOBÍLIA SALAS ---
-
-            // Sala Esq (Comandante)
             const table = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 8), new THREE.MeshStandardMaterial({ color: 0x333 }));
-            table.position.set(-16, -1.0, 0); // Y = 1.5 (chão) + 0.5 (metade altura)
-            scene.add(table); levelObjects.push(table); addCollisionBox(table);
-            createNPC(-19, -1.5, CONFIG.colors.commander, "Comandante Motta", ["Acesse o Computador Central (Mesa Redonda)."]);
+            table.position.set(-16, -1.0, 0); scene.add(table); levelObjects.push(table); addCollisionBox(table);
+            createCyberBookshelf(-23, -5, Math.PI/2);
+            createNPC(-19, -1.5, CONFIG.colors.commander, "Comandante Motta", ["Acesse o Terminal Central para preparar seu equipamento."]);
 
-            // Sala Dir (Lounge)
             createProp('Sofa', 16, -13, -1.5);
-            createNPC(16, -1.5, CONFIG.colors.npc, "Agente Júlia", ["O sistema está lento hoje."]);
-
+            createCyberBookshelf(23, 5, -Math.PI/2);
+            createNPC(16, -1.5, CONFIG.colors.npc, "Agente Júlia", ["Prepare-se e entre no Portal."]);
         }
 
+        // NOVA SALA: CYBER OPS (SERVIDOR)
         function createRoomLevel() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 15), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.6 }));
-            floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
-            scene.add(floor); levelObjects.push(floor); floors.push(floor);
+            // Piso Escuro Tecnológico
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), new THREE.MeshStandardMaterial({ color: 0x050510, roughness: 0.2 }));
+            floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor); levelObjects.push(floor); floors.push(floor);
+            
+            // Paredes Escuras
+            createWall(0, 4, -10, 30, 8, 1); createWall(0, 4, 10, 30, 8, 1);
+            createWall(15, 4, 0, 1, 8, 20); createWall(-15, 4, 0, 1, 8, 20);
+            
+            // Portal de Volta
+            createDoor(-14.5, 0, 0, "LOBBY", Math.PI / 2);
 
-            createWall(0, 3, -7.5, 20, 6, 1);
-            createWall(0, 3, 7.5, 20, 6, 1);
-            createWall(10, 3, 0, 1, 6, 15);
-            createWall(-10, 3, 0, 1, 6, 15);
+            // Servidores (Cyberpunk)
+            createServerRack(5, -8, 0);
+            createServerRack(10, -8, 0);
+            createServerRack(5, 8, Math.PI);
+            createServerRack(10, 8, Math.PI);
 
-            createDoor(-9.5, 0, 0, "LOBBY", Math.PI / 2);
+            // Terminal de Missão Principal
+            const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x001133, emissive: 0x001133, emissiveIntensity: 0.2 }));
+            desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(desk);
+            
+            // Telas flutuantes
+            const screen1 = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide }));
+            screen1.position.set(10, 2.5, 0); scene.add(screen1); levelObjects.push(screen1);
 
-            const bedBase = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 6), new THREE.MeshStandardMaterial({ color: 0x333333 }));
-            bedBase.position.set(5, 0.5, -3); scene.add(bedBase); levelObjects.push(bedBase); addCollisionBox(bedBase);
-
-            const desk = new THREE.Mesh(new THREE.BoxGeometry(4, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x222222 }));
-            desk.position.set(5, 0.75, 3); scene.add(desk); levelObjects.push(desk); addCollisionBox(desk);
-
-            const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshBasicMaterial({ visible: false }));
-            pcHitbox.position.set(5, 1.5, 2);
-            pcHitbox.userData = { isInteractable: true, name: "Computador Pessoal", type: "PC" };
+            const pcHitbox = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
+            pcHitbox.position.set(10, 1.5, 0); pcHitbox.userData = { isInteractable: true, name: "Terminal de Missão", type: "PC_MISSION" };
             scene.add(pcHitbox); levelObjects.push(pcHitbox); interactables.push(pcHitbox);
         }
 
-        // --- OBJETOS ---
         function createProp(type, x, z, y = 1.5) {
-            // Ajuste de Y baseado na sala (se X > 8 ou X < -8, Y base é 1.5)
-            let yBase = 0;
-            if (Math.abs(x) > 8) yBase = 1.5;
-
-            if (y != yBase) yBase = y;
-
+            let yBase = 0; if (Math.abs(x) > 8) yBase = 1.5; if (y != yBase) yBase = y;
             if (type === 'Sofa') {
                 const mesh = new THREE.Mesh(new THREE.BoxGeometry(6, 1, 2), new THREE.MeshStandardMaterial({ color: 0x550000 }));
                 mesh.position.set(x, yBase + 0.5, z);
+                const neon = new THREE.Mesh(new THREE.BoxGeometry(6.1, 0.1, 0.1), new THREE.MeshBasicMaterial({ color: 0xff00ff }));
+                neon.position.y = 0.5; neon.position.z = 1;
+                mesh.add(neon);
                 scene.add(mesh); levelObjects.push(mesh); addCollisionBox(mesh);
             }
         }
 
         function createDoor(x, y, z, targetScene, rotationY = 0) {
-            const group = new THREE.Group();
-            group.position.set(x, y, z);
-            group.rotation.y = rotationY;
-
-            // Moldura Neon
+            const group = new THREE.Group(); group.position.set(x, y, z); group.rotation.y = rotationY;
             const frame = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x00eaff, emissive: 0x00eaff, emissiveIntensity: 0.5 }));
             frame.position.y = 3; group.add(frame);
-
-            // Porta Física
-            const doorGeo = new THREE.PlaneGeometry(3.5, 5.5);
-            const doorMat = new THREE.MeshStandardMaterial({ map: doorTextureBase, emissive: 0x222222 });
-            const door = new THREE.Mesh(doorGeo, doorMat);
-            door.position.set(0, 3, 0.4); group.add(door);
-
+            const doorGeo = new THREE.PlaneGeometry(3.5, 5.5); const doorMat = new THREE.MeshStandardMaterial({ map: doorTextureBase, emissive: 0x222222 });
+            const door = new THREE.Mesh(doorGeo, doorMat); door.position.set(0, 3, 0.4); group.add(door);
             const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 2), new THREE.MeshBasicMaterial({ visible: false }));
-            hitBox.position.set(0, 3, 0);
-            hitBox.userData = { isInteractable: true, name: "Portal", type: "DOOR", target: targetScene };
-            group.add(hitBox);
+            hitBox.position.set(0, 3, 0); hitBox.userData = { isInteractable: true, name: "Portal", type: "DOOR", target: targetScene }; group.add(hitBox);
             scene.add(group); levelObjects.push(group); interactables.push(hitBox);
         }
 
         function createWall(x, y, z, w, h, d) {
             const geo = new THREE.BoxGeometry(w, h, d);
-            const localTex = wallTextureBase.clone();
-            localTex.wrapS = THREE.RepeatWrapping; localTex.wrapT = THREE.RepeatWrapping;
-            localTex.repeat.set(w * 0.25, h * 0.25); localTex.needsUpdate = true;
+            const localTex = wallTextureBase.clone(); localTex.wrapS = THREE.RepeatWrapping; localTex.wrapT = THREE.RepeatWrapping; localTex.repeat.set(w * 0.25, h * 0.25); localTex.needsUpdate = true;
             const mat = new THREE.MeshStandardMaterial({ map: localTex, roughness: 0.8 });
-            const wall = new THREE.Mesh(geo, mat);
-            wall.position.set(x, y, z);
-            wall.castShadow = true; wall.receiveShadow = true;
+            const wall = new THREE.Mesh(geo, mat); wall.position.set(x, y, z); wall.castShadow = true; wall.receiveShadow = true;
             scene.add(wall); levelObjects.push(wall); addCollisionBox(wall);
         }
 
-        // --- PERSONAGEM E INPUTS (MANTIDOS IGUAIS MAS AJUSTADOS PARA NOVO CHÃO) ---
+        // --- PLAYER & NPC ---
         function createHumanoid(color, hasBackpack = true) {
-            const character = new THREE.Group();
-            character.scale.set(1.4, 1.4, 1.4);
+            const character = new THREE.Group(); character.scale.set(1.4, 1.4, 1.4);
             const skinMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin });
             const shirtMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4 });
             const pantsMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
             const packMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack });
-            const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), shirtMat);
-            body.position.y = 1.1; character.add(body);
-            const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), skinMat);
-            head.position.y = 1.7; character.add(head);
-            const armGeo = new THREE.BoxGeometry(0.15, 0.6, 0.15);
-            const lArm = new THREE.Mesh(armGeo, shirtMat); lArm.position.set(0.4, 1.1, 0); character.add(lArm);
-            const rArm = new THREE.Mesh(armGeo, shirtMat); rArm.position.set(-0.4, 1.1, 0); character.add(rArm);
-            const legGeo = new THREE.BoxGeometry(0.2, 0.7, 0.2);
-            const lLeg = new THREE.Mesh(legGeo, pantsMat); lLeg.position.set(0.15, 0.35, 0); character.add(lLeg);
-            const rLeg = new THREE.Mesh(legGeo, pantsMat); rLeg.position.set(-0.15, 0.35, 0); character.add(rLeg);
-            if (hasBackpack) {
-                const pack = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.25), packMat);
-                pack.position.set(0, 1.15, -0.3); character.add(pack);
-            }
-            character.userData.parts = { body, head, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg };
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), shirtMat); body.position.y = 1.1; character.add(body);
+            const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), skinMat); head.position.y = 1.7; character.add(head);
+            const helmetGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5); const helmetMat = new THREE.MeshStandardMaterial({ color: 0x00eaff, roughness: 0.2 }); const helmet = new THREE.Mesh(helmetGeo, helmetMat); helmet.position.y = 1.7; helmet.visible = false; character.add(helmet);
+            const armGeo = new THREE.BoxGeometry(0.15, 0.6, 0.15); const lArm = new THREE.Mesh(armGeo, shirtMat); lArm.position.set(0.4, 1.1, 0); character.add(lArm); const rArm = new THREE.Mesh(armGeo, shirtMat); rArm.position.set(-0.4, 1.1, 0); character.add(rArm);
+            const legGeo = new THREE.BoxGeometry(0.2, 0.7, 0.2); const lLeg = new THREE.Mesh(legGeo, pantsMat); lLeg.position.set(0.15, 0.35, 0); character.add(lLeg); const rLeg = new THREE.Mesh(legGeo, pantsMat); rLeg.position.set(-0.15, 0.35, 0); character.add(rLeg);
+            let backpack = null; if (hasBackpack) { backpack = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.25), packMat); backpack.position.set(0, 1.15, -0.3); character.add(backpack); }
+            character.userData.parts = { body, head, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack, helmet };
             return character;
         }
 
         function createNPC(x, y, color, name, dialogs) {
-            const npc = createHumanoid(color, true);
-            npc.position.set(x, y, 0); // Z zero padrão para NPCs laterais neste layout
-            npc.userData = { isInteractable: true, name: name, dialogs: dialogs };
-            scene.add(npc); levelObjects.push(npc); interactables.push(npc);
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshBasicMaterial({ visible: false }));
-            hitBox.position.set(x, y + 1, 0);
-            addCollisionBox(hitBox);
+            const group = new THREE.Group(); group.position.set(x, y, 0);
+            const charGroup = createHumanoid(color, true); charGroup.position.y = 0; group.add(charGroup);
+            const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 0.9, 32), new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide })); ring.rotation.x = -Math.PI/2; ring.position.y = 0.1; group.add(ring);
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.1), new THREE.MeshBasicMaterial({ color: 0xccffff })); visor.position.set(0, 1.8, 0.25); group.add(visor);
+            group.userData = { isInteractable: true, name: name, dialogs: dialogs };
+            scene.add(group); levelObjects.push(group); interactables.push(group);
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.set(x, y + 1, 0); addCollisionBox(hitBox);
         }
 
-        function addCollisionBox(mesh) {
-            obstacles.push(new THREE.Box3().setFromObject(mesh));
+        function addCollisionBox(mesh, posOverride) {
+            const box = new THREE.Box3().setFromObject(mesh);
+            obstacles.push(box);
         }
 
         function createPlayer(agentId) {
-            let color = CONFIG.colors.agent1;
-            if (agentId === 2) color = CONFIG.colors.agent2;
+            let color = CONFIG.colors.agent1; if (agentId === 2) color = CONFIG.colors.agent2;
             player = createHumanoid(color, true);
             scene.add(player);
             playerBody = new THREE.Box3();
         }
 
         function setupInputs() {
-            document.addEventListener('keydown', (e) => {
-                if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = true;
-                if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = true;
-                if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = true;
-                if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = true;
-                if (e.code === 'Space' || e.code === 'Enter') checkInteraction();
-            });
-            document.addEventListener('keyup', (e) => {
-                if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = false;
-                if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = false;
-                if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = false;
-                if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = false;
-            });
-            window.addEventListener('pointerdown', (e) => {
-                if (e.target.closest('.screen') || e.target.closest('#joystick-zone') || e.target.closest('#dialog-box') || e.target.closest('#computer-overlay')) return;
-                isMouseDown = true; dragStartX = e.clientX; isDraggingView = false;
-            });
-            window.addEventListener('pointermove', (e) => {
-                if (isMouseDown) {
-                    if (Math.abs(e.clientX - dragStartX) > 5) isDraggingView = true;
-                    if (isDraggingView) { cameraAngle -= (e.clientX - dragStartX) * 0.005; dragStartX = e.clientX; }
-                }
-            });
-            window.addEventListener('pointerup', (e) => {
-                isMouseDown = false;
-                if (!isDraggingView) {
-                    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
-                    const intersects = raycaster.intersectObjects(interactables, true);
-                    if (intersects.length > 0) {
-                        let target = intersects[0].object;
-                        while (target.parent && !target.userData.isInteractable) { target = target.parent; if (target === scene) break; }
-                        if (target.userData && target.userData.isInteractable && player.position.distanceTo(target.getWorldPosition(new THREE.Vector3())) < 15) {
-                            handleInteraction(target);
-                        }
-                    }
-                }
-                isDraggingView = false;
-            });
+            document.addEventListener('keydown', (e) => { if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = true; if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = true; if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = true; if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = true; if (e.code === 'Space' || e.code === 'Enter') checkInteraction(); });
+            document.addEventListener('keyup', (e) => { if (['KeyW', 'ArrowUp'].includes(e.code)) keys.w = false; if (['KeyS', 'ArrowDown'].includes(e.code)) keys.s = false; if (['KeyA', 'ArrowLeft'].includes(e.code)) keys.a = false; if (['KeyD', 'ArrowRight'].includes(e.code)) keys.d = false; });
+            window.addEventListener('pointerdown', (e) => { if (e.target.closest('.screen') || e.target.closest('#joystick-zone') || e.target.closest('#dialog-box') || e.target.closest('#computer-overlay')) return; isMouseDown = true; dragStartX = e.clientX; isDraggingView = false; });
+            window.addEventListener('pointermove', (e) => { if (isMouseDown) { if (Math.abs(e.clientX - dragStartX) > 5) isDraggingView = true; if (isDraggingView) { cameraAngle -= (e.clientX - dragStartX) * 0.005; dragStartX = e.clientX; } } });
+            window.addEventListener('pointerup', (e) => { isMouseDown = false; if (!isDraggingView) { mouse.x = (e.clientX / window.innerWidth) * 2 - 1; mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; raycaster.setFromCamera(mouse, camera); const intersects = raycaster.intersectObjects(interactables, true); if (intersects.length > 0) { let target = intersects[0].object; while (target.parent && !target.userData.isInteractable) { target = target.parent; if (target === scene) break; } if (target.userData && target.userData.isInteractable && player.position.distanceTo(target.getWorldPosition(new THREE.Vector3())) < 15) handleInteraction(target); } } isDraggingView = false; });
             const joyZone = document.getElementById('joystick-zone');
-            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-                const manager = nipplejs.create({ zone: joyZone, mode: 'static', position: { left: '50%', top: '50%' }, color: 'cyan' });
-                manager.on('move', (evt, data) => {
-                    const angle = data.angle.radian;
-                    const force = Math.min(data.force, 1.0);
-                    joystickVec.set(Math.cos(angle) * force, 0, -Math.sin(angle) * force);
-                });
-                manager.on('end', () => joystickVec.set(0, 0, 0));
-            } else {
-                joyZone.style.display = 'none';
-            }
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) { const manager = nipplejs.create({ zone: joyZone, mode: 'static', position: { left: '50%', top: '50%' }, color: 'cyan' }); manager.on('move', (evt, data) => { const angle = data.angle.radian; const force = Math.min(data.force, 1.0); joystickVec.set(Math.cos(angle) * force, 0, -Math.sin(angle) * force); }); manager.on('end', () => joystickVec.set(0, 0, 0)); } else { joyZone.style.display = 'none'; }
         }
 
         function checkInteraction() {
-            let nearest = null;
-            let minDist = 8;
+            let nearest = null; let minDist = 4;
             interactables.forEach(obj => {
                 const dist = player.position.distanceTo(obj.getWorldPosition(new THREE.Vector3()));
                 if (dist < minDist) nearest = obj;
@@ -1171,53 +1383,63 @@
         function handleInteraction(obj) {
             const data = obj.userData;
             let dialogs = data.dialogs || [];
+            
             if (data.type === "DOOR") {
                 if (data.target === "LOBBY") {
                     loadScene("LOBBY");
-                    if (missionProgress === 4) { missionProgress = 5; updateHUD("Aguardando Novas Ordens", "#ffffff"); startDialog("SISTEMA", ["Bem-vindo de volta, Agente.", "Missão 01 registrada."]); }
+                    if (missionProgress === 4) { missionProgress = 5; updateHUD("Fim de Jogo", "#ffffff"); startDialog("SISTEMA", ["Bem-vindo de volta, Agente.", "Missão 01 registrada com sucesso."]); }
                     return;
                 }
-                if (data.target === "ROOM") {
+                if (data.target === "CYBER_OPS") {
                     if (missionProgress >= 2) {
                         loadScene(data.target);
-                        if (missionProgress < 3) { startDialog("SISTEMA", ["Acessando área segura..."]); missionProgress = 3; updateHUD("Acesse o Terminal Seguro", "#ff00ff"); }
+                        if (missionProgress < 3) { startDialog("SISTEMA", ["Acessando área segura..."]); missionProgress = 3; updateHUD("Acesse o Terminal de Missão", "#ff00ff"); }
                     } else { startDialog("SISTEMA", ["Acesso Bloqueado. Fale com a Agente Júlia."]); }
                     return;
                 }
             }
-            if (data.type === "PC") {
-                if (missionProgress >= 3 || data.name === "Sistema Central") {
-                    if (data.name === "Sistema Central" && missionProgress < 1) {
-                        startDialog("SISTEMA CENTRAL", ["Autenticação requerida.", "Fale com a Agente Júlia para obter credenciais."]);
-                        return;
-                    }
-                    document.getElementById('computer-overlay').style.display = 'flex';
-                    document.getElementById('pc-view-login').classList.remove('hidden');
-                    document.getElementById('pc-view-puzzle').classList.add('hidden');
-                    document.getElementById('pc-view-social').classList.add('hidden');
-                    document.getElementById('pc-pass-input').value = '';
-                    document.getElementById('pass-feedback').innerText = '';
-                } else { startDialog("SISTEMA", ["Terminal bloqueado."]); }
+            
+            if (data.type === "PC_CUSTOM") {
+                document.getElementById('computer-overlay').style.display = 'flex';
+                document.getElementById('pc-view-custom').classList.remove('hidden');
+                document.getElementById('pc-view-login').classList.add('hidden');
+                document.getElementById('pc-view-puzzle').classList.add('hidden');
+                document.getElementById('pc-view-social').classList.add('hidden');
+                
+                // Load custom state
+                document.getElementById('custom-name').value = playerState.name;
+                document.getElementById('custom-backpack-color').value = '#' + playerState.backpackColor.toString(16).padStart(6, '0');
                 return;
             }
+
+            if (data.type === "PC_MISSION") {
+                document.getElementById('computer-overlay').style.display = 'flex';
+                document.getElementById('pc-view-login').classList.remove('hidden');
+                document.getElementById('pc-view-custom').classList.add('hidden');
+                document.getElementById('pc-view-puzzle').classList.add('hidden');
+                document.getElementById('pc-view-social').classList.add('hidden');
+                return;
+            }
+
             const npcName = data.name;
             if (npcName === "Comandante Motta") {
-                if (missionProgress === 0) { updateHUD("Pegue o Tablet com a Agente Júlia", "#00ff88"); missionProgress = 1; }
-                else if (missionProgress === 4) { dialogs = ["Incrível! A rede está segura novamente."]; updateHUD("Missão Completa", "#ffffff"); }
-                else { dialogs = ["Vá falar com a Júlia."]; }
+                if (missionProgress === 0) { updateHUD("Acesse o Terminal de Customização", "#00ff88"); missionProgress = 1; }
+                else if (missionProgress === 5) { dialogs = ["Excelente trabalho!"]; }
+                else { dialogs = ["Vá falar com a Júlia após se equipar."]; }
             } else if (npcName === "Agente Júlia") {
-                if (missionProgress === 0) dialogs = ["Fale com o Comandante primeiro."];
-                else if (missionProgress === 1) { dialogs = ["Aqui está. Vá para o Quarto pela porta."]; updateHUD("Entre na Porta", "#d500f9"); missionProgress = 2; }
-                else { dialogs = ["A porta está aberta."]; }
+                if (missionProgress < 1) dialogs = ["Fale com o Comandante primeiro."];
+                else if (missionProgress >= 1) { 
+                    dialogs = ["Abrindo portal para Cyber Ops."]; 
+                    updateHUD("Entre no Portal", "#d500f9"); 
+                    missionProgress = 2; 
+                }
             }
             startDialog(npcName, dialogs);
         }
 
         function updateHUD(text, color) {
             const hud = document.getElementById('obj-text');
-            hud.innerText = text;
-            hud.style.color = color;
-            hud.style.textShadow = `0 0 10px ${color}`;
+            hud.innerText = text; hud.style.color = color; hud.style.textShadow = `0 0 10px ${color}`;
         }
 
         function startDialog(name, texts) {
@@ -1232,65 +1454,42 @@
 
         window.advanceDialog = function () {
             if (!isDialogOpen) return;
-            if (currentDialogQueue.length > 0) {
-                document.getElementById('dialog-text').innerText = currentDialogQueue.shift();
-            } else {
-                document.getElementById('dialog-box').style.display = 'none';
-                isDialogOpen = false;
-            }
+            if (currentDialogQueue.length > 0) { document.getElementById('dialog-text').innerText = currentDialogQueue.shift(); } else { document.getElementById('dialog-box').style.display = 'none'; isDialogOpen = false; }
         }
 
-        // --- FÍSICA E MOVIMENTO ---
         function update(dt) {
             if (isDialogOpen) return;
             const move = new THREE.Vector3(0, 0, 0);
             if (keys.w) move.z -= 1; if (keys.s) move.z += 1; if (keys.a) move.x -= 1; if (keys.d) move.x += 1;
             if (joystickVec.lengthSq() > 0) move.add(new THREE.Vector3(joystickVec.x, 0, -joystickVec.z));
 
-            // Gravidade / Altura do Chão
-            // Raycast para baixo para encontrar o chão
-            let groundY = 0;
-            let onGround = false;
-
+            let groundY = 0; let onGround = false;
             if (player) {
-                // Posição do Raycast (levemente acima do pé)
-                const rayOrigin = player.position.clone();
-                rayOrigin.y += 5;
+                const rayOrigin = player.position.clone(); rayOrigin.y += 5;
                 groundRaycaster.set(rayOrigin, new THREE.Vector3(0, -1, 0));
-
                 const intersections = groundRaycaster.intersectObjects(floors, true);
-                if (intersections.length > 0) {
-                    groundY = intersections[0].point.y;
-                    onGround = true;
-                } else {
-                    // Se não achou chão, é um buraco/limite do mapa
-                    onGround = false;
-                }
+                if (intersections.length > 0) { groundY = intersections[0].point.y; onGround = true; } else { onGround = false; }
             }
 
             if (move.lengthSq() > 0) {
                 move.normalize(); move.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngle);
                 const speed = CONFIG.speed * dt;
                 const nextPos = player.position.clone().add(move.multiplyScalar(speed));
-
-                // Verificar se o próximo ponto tem chão
                 const checkOrigin = nextPos.clone(); checkOrigin.y += 5;
                 groundRaycaster.set(checkOrigin, new THREE.Vector3(0, -1, 0));
                 const nextGround = groundRaycaster.intersectObjects(floors, true);
-
                 let canMove = true;
-                if (nextGround.length === 0) canMove = false; // Limite do mapa (sem chão)
-
+                if (nextGround.length === 0) canMove = false;
                 playerBody.setFromCenterAndSize(nextPos, new THREE.Vector3(0.7, 2, 0.7));
                 for (let box of obstacles) { if (playerBody.intersectsBox(box)) { canMove = false; break; } }
-
                 if (canMove) {
                     player.position.copy(nextPos);
                     player.rotation.y = Math.atan2(move.x, move.z);
-
                     walkTime += dt * 12;
                     player.userData.parts.body.position.y = 1.1 + Math.sin(walkTime) * 0.05;
                     player.userData.parts.head.position.y = 1.7 + Math.sin(walkTime) * 0.05;
+                    if(player.userData.parts.helmet) player.userData.parts.helmet.position.y = 1.7 + Math.sin(walkTime) * 0.05;
+                    
                     player.userData.parts.leftArm.rotation.x = Math.sin(walkTime) * 0.6;
                     player.userData.parts.rightArm.rotation.x = -Math.sin(walkTime) * 0.6;
                     player.userData.parts.leftLeg.rotation.x = -Math.sin(walkTime) * 0.6;
@@ -1298,20 +1497,14 @@
                 }
             } else {
                 player.userData.parts.body.position.y = 1.1; player.userData.parts.head.position.y = 1.7;
+                if(player.userData.parts.helmet) player.userData.parts.helmet.position.y = 1.7;
                 player.userData.parts.leftArm.rotation.x = 0; player.userData.parts.rightArm.rotation.x = 0;
                 player.userData.parts.leftLeg.rotation.x = 0; player.userData.parts.rightLeg.rotation.x = 0;
             }
-
-            // Aplicar Altura do Chão (Suavizado)
-            if (onGround) {
-                player.position.y += (groundY - player.position.y) * 0.2;
-            }
-
+            if (onGround) { player.position.y += (groundY - player.position.y) * 0.2; }
             const camDist = 25; const camHeight = 25;
-            const offsetX = Math.sin(cameraAngle) * camDist;
-            const offsetZ = Math.cos(cameraAngle) * camDist;
-            const targetCamX = player.position.x + offsetX;
-            const targetCamZ = player.position.z + offsetZ;
+            const offsetX = Math.sin(cameraAngle) * camDist; const offsetZ = Math.cos(cameraAngle) * camDist;
+            const targetCamX = player.position.x + offsetX; const targetCamZ = player.position.z + offsetZ;
             camera.position.x += (targetCamX - camera.position.x) * 0.1;
             camera.position.z += (targetCamZ - camera.position.z) * 0.1;
             camera.position.y = camHeight;
@@ -1320,7 +1513,11 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (clock && player) { update(clock.getDelta()); renderer.render(scene, camera); }
+            if (clock && player) {
+                update(clock.getDelta());
+                if (composer) composer.render(); 
+                else renderer.render(scene, camera);
+            }
         }
 
         window.addEventListener('resize', () => {
@@ -1328,6 +1525,7 @@
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                if (composer) composer.setSize(window.innerWidth, window.innerHeight);
             }
         });
     </script>
