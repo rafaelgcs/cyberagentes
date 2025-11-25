@@ -246,7 +246,7 @@
             text-shadow: 0 0 10px #00eaff;
         }
 
-        /* --- INTERFACE DO COMPUTADOR (NOVO ESTILO) --- */
+        /* --- INTERFACE DO COMPUTADOR --- */
         #computer-overlay {
             position: absolute;
             top: 0; left: 0;
@@ -515,27 +515,19 @@
         const CONFIG = {
             speed: 10, // Personagens mais rápidos
             colors: {
-                // Paleta Neon Dark
-                background: 0x050510, // Azul muito escuro (quase preto)
-                fog: 0x100020,        // Neblina roxa escura
-                
-                // Elementos
-                floorGrid: 0x220044,  // Chão Roxo Escuro
-                floorLine: 0x00eaff,  // Linhas Cyan
-                
-                wallBase: 0x111111,   // Parede Preta
-                wallDetail: 0xff00ff, // Detalhe Rosa Neon
-                
-                furniture: 0x222233,  // Móveis metálicos escuros
-                
-                // Personagens
-                agent1: 0x00eaff,     // Cyan
-                agent2: 0xd500f9,     // Roxo
-                commander: 0xff6f00,  // Laranja Neon
-                npc: 0x00ff88,        // Verde Neon
+                background: 0x050510, 
+                fog: 0x100020,        
+                floorGrid: 0x220044,  
+                floorLine: 0x00eaff,  
+                wallBase: 0x111111,   
+                wallDetail: 0xff00ff, 
+                furniture: 0x222233,  
+                agent1: 0x00eaff,     
+                agent2: 0xd500f9,     
+                commander: 0xff6f00,  
+                npc: 0x00ff88,        
                 skin: 0xffdbac,       
                 backpack: 0x111111,
-                
                 doorFrame: 0x444444
             }
         };
@@ -702,91 +694,81 @@
             initGame();
         };
 
-        // --- TEXTURAS NEON ---
-        function createNeonGridTexture() {
+        // --- TEXTURAS RECIADAS DIGITALMENTE (CANVAS) ---
+        
+        // 1. CHÃO - Recriação do "tilechão.png" (Xadrez Azul)
+        function createFloorTileTexture() {
             const size = 512;
             const canvas = document.createElement('canvas');
             canvas.width = size;
             canvas.height = size;
             const ctx = canvas.getContext('2d');
 
-            // Fundo escuro
-            ctx.fillStyle = '#100020'; 
-            ctx.fillRect(0, 0, size, size);
+            // Cores exatas aproximadas da imagem tilechão.png
+            const blueLight = '#5a7d9a'; // Azul acinzentado claro
+            const blueDark = '#34566d';  // Azul escuro
 
-            // Linhas do Grid
-            ctx.strokeStyle = '#00eaff'; // Cyan Neon
-            ctx.lineWidth = 4;
-            
-            // Desenhar quadrado
-            ctx.strokeRect(0,0,size,size);
-            
-            // Brilho interno (simulado)
-            ctx.fillStyle = 'rgba(0, 234, 255, 0.1)';
-            ctx.fillRect(10, 10, size-20, size-20);
+            // Padrão 2x2 (4 quadrados)
+            const half = size / 2;
+
+            // Top-Left
+            ctx.fillStyle = blueLight;
+            ctx.fillRect(0, 0, half, half);
+            // Top-Right
+            ctx.fillStyle = blueDark;
+            ctx.fillRect(half, 0, half, half);
+            // Bottom-Left
+            ctx.fillStyle = blueDark;
+            ctx.fillRect(0, half, half, half);
+            // Bottom-Right
+            ctx.fillStyle = blueLight;
+            ctx.fillRect(half, half, half, half);
 
             const texture = new THREE.CanvasTexture(canvas);
+            // Repetição densa para parecer piso
             texture.wrapS = THREE.RepeatWrapping;
             texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(10, 10); 
-            texture.magFilter = THREE.LinearFilter; 
+            texture.repeat.set(20, 20); 
+            texture.magFilter = THREE.NearestFilter; // Pixelado
+            texture.minFilter = THREE.NearestFilter;
             return texture;
         }
 
-        function createTechWallTexture() {
+        // 2. PAREDE - Recriação da "Parede da TV.png" (Painel com Luz Neon)
+        function createWallTileTexture() {
             const size = 512;
             const canvas = document.createElement('canvas');
             canvas.width = size;
-            canvas.height = size;
+            canvas.height = size; // Textura quadrada para mapeamento
             const ctx = canvas.getContext('2d');
 
-            // Fundo escuro (cor do tijolo)
-            ctx.fillStyle = '#222'; 
+            // Fundo Azul Muito Escuro (quase preto)
+            ctx.fillStyle = '#08101a'; 
             ctx.fillRect(0, 0, size, size);
 
-            // Configuração dos tijolos
-            const brickWidth = size / 4;
-            const brickHeight = size / 8;
-            const padding = 2; // Espaço do rejunte neon
+            // Detalhes mecânicos escuros nas laterais (parte superior)
+            ctx.fillStyle = '#050a10'; // Ainda mais escuro
+            // Bloco Esq
+            ctx.fillRect(0, 0, size * 0.3, size * 0.2);
+            // Bloco Dir
+            ctx.fillRect(size * 0.7, 0, size * 0.3, size * 0.2);
 
-            // Linhas de Circuito / Rejunte Neon
-            ctx.strokeStyle = '#ff00ff'; // Rejunte Rosa Neon
-            ctx.lineWidth = 4;
+            // Barra Neon Central (Ciano Brilhante)
+            // Glow
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#00eaff';
+            ctx.fillStyle = '#00eaff';
+            // A barra fica no topo, centralizada
+            const barWidth = size * 0.4;
+            const barHeight = size * 0.05;
+            ctx.fillRect((size - barWidth)/2, size * 0.1, barWidth, barHeight);
+            
+            // Reset Shadow
+            ctx.shadowBlur = 0;
 
-            for (let y = 0; y < size; y += brickHeight) {
-                const offset = (y / brickHeight) % 2 === 0 ? 0 : brickWidth / 2;
-                for (let x = -brickWidth / 2; x < size; x += brickWidth) {
-                    // Tijolo metálico escuro
-                    ctx.fillStyle = '#333';
-                    ctx.fillRect(x + offset + padding, y + padding, brickWidth - padding * 2, brickHeight - padding * 2);
-
-                    // Detalhes de circuito sobre o tijolo
-                    ctx.beginPath();
-                    ctx.moveTo(x + offset + brickWidth / 4, y + brickHeight / 2);
-                    ctx.lineTo(x + offset + 3 * brickWidth / 4, y + brickHeight / 2);
-                    ctx.stroke();
-
-                    // Ponto de luz ciano no tijolo
-                    ctx.fillStyle = '#00eaff';
-                    ctx.beginPath();
-                    ctx.arc(x + offset + brickWidth / 2, y + brickHeight / 2, 3, 0, Math.PI*2);
-                    ctx.fill();
-                }
-            }
-
-            // Adicionar brilho geral nas linhas de rejunte
-            ctx.globalCompositeOperation = 'lighter';
-            ctx.strokeStyle = 'rgba(255, 0, 255, 0.3)';
-            ctx.lineWidth = 8;
-            for (let y = 0; y <= size; y += brickHeight) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(size, y); ctx.stroke();
-            }
-            for (let y = 0; y < size; y += brickHeight) {
-                const offset = (y / brickHeight) % 2 === 0 ? 0 : brickWidth / 2;
-                for (let x = -brickWidth / 2 + offset; x <= size; x += brickWidth) {
-                    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + brickHeight); ctx.stroke();
-                }
-            }
+            // Linha fina inferior (rodapé da parede)
+            ctx.fillStyle = '#112233';
+            ctx.fillRect(0, size - 20, size, 20);
 
             const texture = new THREE.CanvasTexture(canvas);
             texture.wrapS = THREE.RepeatWrapping;
@@ -801,22 +783,18 @@
             canvas.height = size * 2;
             const ctx = canvas.getContext('2d');
             
-            // Fundo
             ctx.fillStyle = '#222';
             ctx.fillRect(0, 0, size, size * 2);
             
-            // Divisão Neon
             ctx.fillStyle = '#00eaff';
             ctx.fillRect(size/2 - 2, 0, 4, size * 2);
             
-            // Faixas
             ctx.strokeStyle = '#444';
             ctx.lineWidth = 10;
             for(let i = -size; i < size * 2; i+=40) {
                 ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(size, i + size); ctx.stroke();
             }
             
-            // Painel Topo Rosa
             ctx.fillStyle = '#d500f9';
             ctx.fillRect(20, 20, size - 40, 30);
             
@@ -827,7 +805,7 @@
         function initGame() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(CONFIG.colors.background); 
-            scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02); // Neblina densa
+            scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02); 
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 20, 20); 
@@ -838,11 +816,9 @@
             renderer.shadowMap.enabled = true;
             document.getElementById('game-container').appendChild(renderer.domElement);
 
-            // ILUMINAÇÃO NEON
-            const ambient = new THREE.AmbientLight(0xffffff, 0.2); // Ambiente escuro
+            const ambient = new THREE.AmbientLight(0xffffff, 0.3); 
             scene.add(ambient);
 
-            // Luzes Coloridas Pontuais (Para dar clima)
             const blueLight = new THREE.PointLight(0x00eaff, 1, 30);
             blueLight.position.set(-10, 10, -10);
             scene.add(blueLight);
@@ -851,15 +827,16 @@
             pinkLight.position.set(10, 10, 10);
             scene.add(pinkLight);
 
-            // Luz "Hero" em cima do player (suave)
             const dirLight = new THREE.DirectionalLight(0xffffff, 0.5);
             dirLight.position.set(0, 20, 10);
             dirLight.castShadow = true;
             scene.add(dirLight);
 
             clock = new THREE.Clock();
-            wallTextureBase = createTechWallTexture();
-            floorTextureBase = createNeonGridTexture();
+            
+            // GERAR TEXTURAS RECIADAS
+            wallTextureBase = createWallTileTexture(); // Parede da TV
+            floorTextureBase = createFloorTileTexture(); // Tile Chão
             doorTextureBase = createDoorTexture();
 
             loadScene("LOBBY");
@@ -893,28 +870,32 @@
                 if (sceneName === "LOBBY") {
                     createLobbyLevel();
                     if (player) {
-                        if (missionProgress >= 4) player.position.set(15, 0, 0);
+                        if (missionProgress >= 4) {
+                            player.position.set(15, 0, 0); 
+                            player.rotation.y = Math.PI / 2; 
+                        }
                         else player.position.set(0, 0, 0); 
                     }
                 } else if (sceneName === "ROOM") {
                     createRoomLevel();
-                    if (player) player.position.set(-8, 0, 0); 
+                    if (player) {
+                        player.position.set(-8, 0, 0); 
+                        player.rotation.y = -Math.PI / 2; 
+                    }
                 }
 
                 overlay.style.display = 'none';
             }, 500);
         }
 
-        // --- CENÁRIO 1: LOBBY NEON ---
+        // --- CENÁRIO 1: LOBBY ---
         function createLobbyLevel() {
-            // Chão Grid
+            // Chão com TEXTURA NOVA
             const floorGeo = new THREE.PlaneGeometry(60, 60);
             const floorMat = new THREE.MeshStandardMaterial({ 
                 map: floorTextureBase, 
-                roughness: 0.2,
-                metalness: 0.5,
-                emissive: 0x100020, // Brilho suave roxo no chão
-                emissiveIntensity: 0.2
+                roughness: 0.5,
+                metalness: 0.1
             });
             const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
@@ -922,17 +903,15 @@
             scene.add(floor);
             levelObjects.push(floor);
 
-            // Paredes Tech
+            // Paredes com TEXTURA NOVA
             createWall(-20, 3, -20, 40, 6, 1); 
             createWall(-20, 3, 0, 1, 6, 40); 
             createWall(20, 3, -10, 1, 6, 20); 
             createWall(20, 3, 10, 1, 6, 20);  
             createWall(0, 3, 20, 40, 6, 1);
 
-            // Porta Neon
             createDoor(19.5, 0, 0, "ROOM", -Math.PI / 2);
 
-            // Mesa Comandante (Holográfica)
             const tableGeo = new THREE.CylinderGeometry(4, 4, 1, 6);
             const tableMat = new THREE.MeshStandardMaterial({ 
                 color: 0x222244, 
@@ -945,14 +924,12 @@
             levelObjects.push(table);
             addCollisionBox(table);
 
-            // NPC Comandante
             createNPC(0, -10, CONFIG.colors.commander, "Comandante Motta", [
                 "Olá Agente. A rede está instável.",
                 "Detectamos invasores no Setor 2.",
                 "Fale com a Agente Júlia."
             ]);
 
-            // Estações Laterais
             createWorkstation(-12, -5);
             createWorkstation(-12, 5);
             createWorkstation(12, -5);
@@ -961,9 +938,9 @@
             createNPC(-12, -2, CONFIG.colors.npc, "Agente Júlia", []);
         }
 
-        // --- CENÁRIO 2: QUARTO TECH ---
+        // --- CENÁRIO 2: QUARTO ---
         function createRoomLevel() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(25, 20), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.2 }));
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(25, 20), new THREE.MeshStandardMaterial({ map: floorTextureBase, roughness: 0.5 }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
             levelObjects.push(floor);
@@ -975,26 +952,22 @@
 
             createDoor(-12, 0, 0, "LOBBY", Math.PI / 2);
 
-            // Cama Futurista
             const bedBase = new THREE.Mesh(new THREE.BoxGeometry(5, 1, 7), new THREE.MeshStandardMaterial({ color: 0x333333 }));
             bedBase.position.set(6, 0.5, -4);
             scene.add(bedBase);
             levelObjects.push(bedBase);
             addCollisionBox(bedBase);
-            // Colchão Neon
             const matress = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.5, 6.5), new THREE.MeshStandardMaterial({ color: 0x00eaff, emissive: 0x00eaff, emissiveIntensity: 0.2 }));
             matress.position.set(6, 1.0, -4);
             scene.add(matress);
             levelObjects.push(matress);
 
-            // Setup PC
             const desk = new THREE.Mesh(new THREE.BoxGeometry(5, 1.5, 2.5), new THREE.MeshStandardMaterial({ color: 0x111111 }));
             desk.position.set(6, 0.75, 4); 
             scene.add(desk);
             levelObjects.push(desk);
             addCollisionBox(desk);
 
-            // Tela Brilhante
             const pcScreen = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 0.1), new THREE.MeshStandardMaterial({ color: 0x000000 }));
             pcScreen.position.set(6, 2, 4);
             scene.add(pcScreen);
@@ -1046,17 +1019,23 @@
         function createWall(x, y, z, w, h, d) {
             const geo = new THREE.BoxGeometry(w, h, d);
             const localTex = wallTextureBase.clone();
+            
+            // Ajuste de Mapeamento da Parede da TV
+            // Como a textura é um "painel" específico e não um padrão repetitivo simples (tijolo),
+            // ajustamos a repetição para encaixar melhor nos módulos da parede.
             localTex.wrapS = THREE.RepeatWrapping;
             localTex.wrapT = THREE.RepeatWrapping;
+            
             const len = Math.max(w, d);
-            localTex.repeat.set(len * 0.2, h * 0.2); // Menos repetição
+            // Repetimos a textura a cada 5 unidades de largura, por exemplo
+            localTex.repeat.set(len / 10, 1); 
             localTex.needsUpdate = true;
             
             const mat = new THREE.MeshStandardMaterial({ 
                 map: localTex, 
-                color: 0x888888, // Escurece a textura
-                roughness: 0.4,
-                metalness: 0.6
+                color: 0xffffff, // Cor branca para mostrar a textura original
+                roughness: 0.2,
+                metalness: 0.1
             });
             
             const wall = new THREE.Mesh(geo, mat);
@@ -1086,7 +1065,7 @@
         // --- PERSONAGENS ---
         function createHumanoid(color, hasBackpack = true) {
             const character = new THREE.Group();
-            character.scale.set(1.4, 1.4, 1.4); // Bonecos maiores
+            character.scale.set(1.4, 1.4, 1.4); 
 
             const skinMat = new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin });
             const shirtMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4 });
@@ -1099,7 +1078,6 @@
             const head = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), skinMat);
             head.position.y = 1.7; character.add(head);
 
-            // Óculos Visor (Em vez de olhos)
             const visor = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.1, 0.2), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
             visor.position.set(0, 1.75, 0.15);
             character.add(visor);
@@ -1237,7 +1215,15 @@
             let dialogs = data.dialogs || [];
 
             if (data.type === "DOOR") {
-                if (data.target === "LOBBY") { loadScene("LOBBY"); return; }
+                if (data.target === "LOBBY") { 
+                    loadScene("LOBBY"); 
+                    if (missionProgress === 4) {
+                        missionProgress = 5; 
+                        updateHUD("Aguardando Novas Ordens", "#ffffff");
+                        startDialog("SISTEMA", ["Bem-vindo de volta, Agente.", "Missão 01 registrada no sistema."]);
+                    }
+                    return; 
+                }
                 if (data.target === "ROOM") {
                     if (missionProgress >= 2) { 
                         loadScene(data.target);
