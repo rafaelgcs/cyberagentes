@@ -879,6 +879,129 @@
             min-width: 80px;
             text-align: center;
         }
+
+
+        /* LAST GAME */
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2rem;
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Grid do Jogo */
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 640px;
+            perspective: 1000px;
+            /* Necessário para o efeito 3D */
+        }
+
+        /* Cartas */
+        .card {
+            background-color: transparent;
+            height: 100px;
+            /* Altura fixa ou responsiva */
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            aspect-ratio: 1/1;
+            /* Mantém quadrado */
+        }
+
+        .card.flip {
+            transform: rotateY(180deg);
+        }
+
+        .card.matched .front-face {
+            background-color: var(--match-color);
+            border-color: var(--match-color);
+        }
+
+        /* Frente e Verso */
+        .front-face,
+        .back-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backface-visibility: hidden;
+            /* Esconde o lado de trás ao girar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 3rem;
+            border: 4px solid #00eaff;
+        }
+
+        .front-face {
+            background-color: var(--accent-color);
+            color: white;
+            transform: rotateY(180deg);
+            /* Já começa virada "para trás" na lógica 3D */
+        }
+
+        .back-face {
+            background-color: var(--card-back);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M0 38.59l2.83-2.83 1.41 1.41L1.41 40H0v-1.41zM0 1.4l2.83 2.83 1.41-1.41L1.41 0H0v1.41zM38.59 40l-2.83-2.83 1.41-1.41L40 38.59V40h-1.41zM40 1.41l-2.83 2.83-1.41-1.41L38.59 0H40v1.41zM20 18.6l2.83-2.83 1.41 1.41L21.41 20l2.83 2.83-1.41 1.41L20 21.41l-2.83 2.83-1.41-1.41L18.59 20l-2.83-2.83 1.41-1.41L20 18.59z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Modal de Vitória */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            z-index: 100;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .btn-restart {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            background: var(--match-color);
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-restart:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsividade */
+        @media (max-width: 500px) {
+            .game-board {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .front-face,
+            .back-face {
+                font-size: 2rem;
+            }
+        }
     </style>
 
     <!-- Botão de Toggle de Som -->
@@ -924,9 +1047,15 @@
     <div id="screen-credits" class="screen hidden">
         <h2>QUEM FEZ O JOGO?</h2>
         <div class="credits-content">
-            <p><strong>Criação:</strong> Time Cyber Agentes</p>
+            <p><strong>Criação:</strong> Equipe Cyber Agentes</p>
             <p><strong>Missão:</strong> Ensinar segurança online para todos!</p>
-            <br>
+            <p style="text-align:justify;">
+                <strong>Agradecimentos:</strong>
+                O jogo Cyber Agentes foi desenvolvido com o apoio inestimável da professora orientadora Lynn Alves, que
+                nos forneceu a base de conhecimento necessária. Ressaltamos que ferramentas de Inteligência Artificial
+                foram utilizadas durante o processo criativo para auxiliar em definições técnicas e na geração de
+                imagens para fins de ideação e conceito.
+            </p>
             <p style="font-size: 0.9em; font-style: italic; color: #ff00ff;">"Jogue seguro, jogue feliz!"</p>
         </div>
         <button class="btn btn-secondary" onclick="goToMenu()" style="margin-top: 30px;">VOLTAR</button>
@@ -1355,6 +1484,96 @@
         let arcadeActive = false;
 
         function startArcadeGame() {
+            window.arcadeMemState = {
+                cards: [],
+                flippedIndices: [],
+                matchedCount: 0,
+                lockBoard: false
+            };
+
+            // Função de inicialização
+            window.initArcadeMemory = function (cards) {
+                window.arcadeMemState = {
+                    cards: cards,
+                    flippedIndices: [],
+                    matchedCount: 0,
+                    lockBoard: false
+                };
+            };
+
+            // Função do clique (Principal correção aqui)
+            window.arcadeFlip = function (index) {
+                const state = window.arcadeMemState;
+                const cardEl = document.getElementById(`mem-card-${index}`);
+
+                // Verificações de segurança
+                if (!cardEl) return console.error("Elemento não encontrado!");
+                if (state.lockBoard) return;
+                if (state.flippedIndices.includes(index)) return;
+                if (cardEl.classList.contains('matched')) return;
+
+                // 1. Efeito Visual (Virar)
+                cardEl.innerText = state.cards[index];
+                cardEl.style.backgroundColor = '#fff';
+                cardEl.style.color = '#000';
+                cardEl.style.transform = "scale(1.1)"; // Efeito visual de clique
+
+                state.flippedIndices.push(index);
+
+                // 2. Lógica de Par
+                if (state.flippedIndices.length === 2) {
+                    state.lockBoard = true;
+                    const idx1 = state.flippedIndices[0];
+                    const idx2 = state.flippedIndices[1];
+
+                    const val1 = state.cards[idx1];
+                    const val2 = state.cards[idx2];
+
+                    if (val1 === val2) {
+                        // --- ACERTOU ---
+                        const el1 = document.getElementById(`mem-card-${idx1}`);
+                        const el2 = document.getElementById(`mem-card-${idx2}`);
+
+                        el1.classList.add('matched');
+                        el2.classList.add('matched');
+                        el1.style.borderColor = '#2ecc71'; // Verde
+                        el2.style.borderColor = '#2ecc71';
+
+                        state.matchedCount++;
+                        state.flippedIndices = [];
+                        state.lockBoard = false;
+
+                        // Checar Vitória
+                        if (state.matchedCount === state.cards.length / 2) {
+                            document.getElementById('arcade-feedback').innerText = "SISTEMA SEGURO! 🛡️";
+                            setTimeout(closePC, 1500);
+                        }
+                    } else {
+                        // --- ERROU ---
+                        setTimeout(() => {
+                            const el1 = document.getElementById(`mem-card-${idx1}`);
+                            const el2 = document.getElementById(`mem-card-${idx2}`);
+
+                            // Desvirar visualmente
+                            if (el1) {
+                                el1.innerText = '❓';
+                                el1.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                                el1.style.color = '#fff';
+                                el1.style.transform = "scale(1)";
+                            }
+                            if (el2) {
+                                el2.innerText = '❓';
+                                el2.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                                el2.style.color = '#fff';
+                                el2.style.transform = "scale(1)";
+                            }
+
+                            state.flippedIndices = [];
+                            state.lockBoard = false;
+                        }, 1000);
+                    }
+                }
+            };
             const puzzles = [
                 // 1. Matemática
                 {
@@ -1425,7 +1644,47 @@
                                     <div class="arcade-opt-btn" style="background:yellow;" onclick="checkArcadeAnswer('yellow', '${p.colorCode}')"></div>
                                 </div>`;
                     }
-                }
+                },
+                {
+                    type: 'memory',
+                    title: 'MEMÓRIA CRIPTOGRAFADA',
+                    setup: (p) => {
+                        // 1. Ícones de segurança (4 pares para caber na tela pequena)
+                        const icons = ['🔒', '🛡️', '🔑', '👁️'];
+
+                        // 2. Duplicar e Embaralhar
+                        let deck = [...icons, ...icons].sort(() => 0.5 - Math.random());
+
+                        // 3. Inicializar o estado global (definido acima)
+                        initArcadeMemory(deck);
+
+                        // 4. Retornar HTML string
+                        // Usando grid-template-columns: repeat(4) para ficar 4x2 (8 cartas)
+                        return `
+                            <div style="font-size: 1rem; margin-bottom: 10px;">Encontre os pares para desbloquear!</div>
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 300px; margin: 0 auto;">
+                                ${deck.map((icon, i) => `
+                                    <div id="mem-card-${i}" 
+                                        onclick="arcadeFlip(${i})"
+                                        style="
+                                            height: 50px; 
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 2px solid #00eaff; 
+                                            padding: 3px;
+                                            border-radius: 5px; 
+                                            display: flex; 
+                                            align-items: center; 
+                                            justify-content: center; 
+                                            cursor: pointer; 
+                                            font-size: 1.5rem;
+                                            user-select: none;">
+                                        ❓
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                },
             ];
 
             const puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
