@@ -46,10 +46,10 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #240b36 0%, #8314c3 100%);
+            background: linear-gradient(135deg, #240b36 0%, #8314c3 30%, #8314c3 70%, #05d9ff 100%);
             color: white;
             transition: opacity 0.5s;
-            background-image: url('./assets/img/bg_app.png'); 
+            /* background-image: url('./assets/img/bg_app.png');  */
         }
 
         .hidden {
@@ -144,7 +144,8 @@
             box-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
         }
 
-        .credits-content, .guide-content {
+        .credits-content,
+        .guide-content {
             background: rgba(0, 0, 0, 0.8);
             border: 1px solid #00eaff;
             padding: 30px;
@@ -187,8 +188,15 @@
             box-shadow: 0 0 25px #ffd54f;
         }
 
-        #agent-1 .agent-icon { color: #00eaff; text-shadow: 0 0 15px #00eaff; }
-        #agent-2 .agent-icon { color: #d500f9; text-shadow: 0 0 15px #d500f9; }
+        #agent-1 .agent-icon {
+            color: #00eaff;
+            text-shadow: 0 0 15px #00eaff;
+        }
+
+        #agent-2 .agent-icon {
+            color: #d500f9;
+            text-shadow: 0 0 15px #d500f9;
+        }
 
         .agent-icon {
             font-size: 4rem;
@@ -196,7 +204,9 @@
             display: block;
         }
 
-        #game-ui { display: none; }
+        #game-ui {
+            display: none;
+        }
 
         #mission-hud {
             position: absolute;
@@ -254,14 +264,14 @@
             font-size: 1.1rem;
             line-height: 1.4;
         }
-        
+
         .quiz-options {
             display: flex;
             gap: 10px;
             margin-top: 15px;
             justify-content: flex-end;
         }
-        
+
         .quiz-btn {
             background: #333;
             border: 1px solid #fff;
@@ -272,7 +282,12 @@
             font-family: 'Rajdhani', sans-serif;
             font-size: 1rem;
         }
-        .quiz-btn:hover { background: #00eaff; color: #000; border-color: #00eaff; }
+
+        .quiz-btn:hover {
+            background: #00eaff;
+            color: #000;
+            border-color: #00eaff;
+        }
 
         #joystick-zone {
             position: absolute;
@@ -310,9 +325,10 @@
             line-height: 1.8;
             text-shadow: 0 0 10px #00eaff;
             max-width: 800px;
-            min-height: 100px; /* Evita pulo de layout */
+            min-height: 100px;
+            /* Evita pulo de layout */
         }
-        
+
         /* Cursor piscante estilo terminal */
         .typing-cursor::after {
             content: '|';
@@ -322,9 +338,11 @@
         }
 
         @keyframes blink {
-            50% { opacity: 0; }
+            50% {
+                opacity: 0;
+            }
         }
-        
+
         .tutorial-box {
             background: rgba(0, 20, 40, 0.95);
             border: 2px solid #ffd54f;
@@ -333,7 +351,7 @@
             max-width: 500px;
             text-align: center;
         }
-        
+
         .key-icon {
             display: inline-block;
             padding: 5px 10px;
@@ -466,12 +484,36 @@
             transition: all 0.2s;
         }
 
-        .seq-btn:active { transform: scale(0.95); }
-        .seq-btn.active { opacity: 1; box-shadow: 0 0 30px currentColor; border-color: white; transform: scale(1.1); }
-        .seq-btn.red { background-color: #ff0055; color: #ff0055; }
-        .seq-btn.green { background-color: #00ff88; color: #00ff88; }
-        .seq-btn.blue { background-color: #00eaff; color: #00eaff; }
-        .seq-btn.yellow { background-color: #ffd54f; color: #ffd54f; }
+        .seq-btn:active {
+            transform: scale(0.95);
+        }
+
+        .seq-btn.active {
+            opacity: 1;
+            box-shadow: 0 0 30px currentColor;
+            border-color: white;
+            transform: scale(1.1);
+        }
+
+        .seq-btn.red {
+            background-color: #ff0055;
+            color: #ff0055;
+        }
+
+        .seq-btn.green {
+            background-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .seq-btn.blue {
+            background-color: #00eaff;
+            color: #00eaff;
+        }
+
+        .seq-btn.yellow {
+            background-color: #ffd54f;
+            color: #ffd54f;
+        }
 
         .social-feed {
             width: 100%;
@@ -511,7 +553,10 @@
             box-shadow: 0 4px 10px rgba(255, 0, 85, 0.4);
             transition: transform 0.2s;
         }
-        .fake-news-btn:hover { transform: scale(1.05); }
+
+        .fake-news-btn:hover {
+            transform: scale(1.05);
+        }
 
         .custom-interface {
             width: 100%;
@@ -555,6 +600,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            /* Centraliza itens */
         }
 
         .custom-section label {
@@ -563,6 +610,8 @@
             margin-bottom: 10px;
             font-weight: bold;
             letter-spacing: 1px;
+            text-align: center;
+            width: 100%;
         }
 
         .cyber-input {
@@ -575,7 +624,10 @@
             font-size: 1.1rem;
             outline: none;
             transition: 0.3s;
+            width: 90%;
+            /* Ajuste de largura */
         }
+
         .cyber-input:focus {
             border-color: #fff;
             background: rgba(0, 234, 255, 0.1);
@@ -587,6 +639,7 @@
             align-items: center;
             gap: 15px;
         }
+
         input[type="color"] {
             -webkit-appearance: none;
             border: none;
@@ -598,8 +651,15 @@
             padding: 0;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #fff;
+            border-radius: 50%;
+        }
 
         .toggle-switch {
             position: relative;
@@ -607,28 +667,49 @@
             width: 60px;
             height: 30px;
         }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background-color: #333;
             transition: .4s;
             border: 1px solid #555;
             border-radius: 30px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
-            height: 22px; width: 22px;
-            left: 4px; bottom: 3px;
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
             box-shadow: 0 0 5px #fff;
         }
-        input:checked+.slider { background-color: #00eaff; border-color: #00eaff; box-shadow: 0 0 15px #00eaff; }
-        input:checked+.slider:before { transform: translateX(30px); background-color: #000; }
+
+        input:checked+.slider {
+            background-color: #00eaff;
+            border-color: #00eaff;
+            box-shadow: 0 0 15px #00eaff;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(30px);
+            background-color: #000;
+        }
 
         .action-buttons {
             display: flex;
@@ -646,13 +727,82 @@
             clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
             cursor: pointer;
         }
-        .cyber-btn:hover { background: #fff; box-shadow: 0 0 20px #00eaff; }
+
+        .cyber-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #00eaff;
+        }
 
         /* ARCADE STYLES */
-        .arcade-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 20px; }
-        .arcade-opt-btn { background: #222; border: 2px solid #fff; color: #fff; padding: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 1.1rem; transition: 0.2s; }
-        .arcade-opt-btn:hover { background: #00eaff; color: #000; border-color: #00eaff; transform: scale(1.05); }
-        .arcade-big-text { font-size: 2rem; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 10px currentColor; }
+        .arcade-btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .arcade-opt-btn {
+            background: #222;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+
+        .arcade-opt-btn:hover {
+            background: #00eaff;
+            color: #000;
+            border-color: #00eaff;
+            transform: scale(1.05);
+        }
+
+        .arcade-big-text {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        /* ESTILOS DO SELETOR DE CABELO */
+        .hair-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+        .hair-arrow-btn {
+            background: rgba(0, 234, 255, 0.2);
+            border: 1px solid #00eaff;
+            color: #00eaff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .hair-arrow-btn:hover {
+            background: #00eaff;
+            color: #000;
+        }
+
+        #hair-style-label {
+            font-family: 'Rajdhani', sans-serif;
+            color: #fff;
+            min-width: 80px;
+            text-align: center;
+        }
     </style>
 
     <!-- Botão de Toggle de Som -->
@@ -688,7 +838,7 @@
         <div>
             <img src="./assets/img/logo_cyber_agentes.png" width="350" alt="Cyber Agentes Logo" />
         </div>
-        <h1>AVENTURA SEGURA</h1>
+        <h1>Missão Segurança</h1>
         <div>
             <button class="btn" onclick="goToSelect()">JOGAR</button>
             <button class="btn btn-secondary" onclick="goToGuide()">GUIA</button>
@@ -711,10 +861,13 @@
         <h2>GUIA DO AGENTE</h2>
         <div class="guide-content">
             <h3>HISTÓRIA</h3>
-            <p>No futuro, o mundo digital é nossa segunda casa. A ordem dos <strong>Cyber Agentes</strong> foi criada para proteger essa casa de invasores, fake news e pessoas mal intencionadas.</p>
+            <p>No futuro, o mundo digital é nossa segunda casa. A ordem dos <strong>Cyber Agentes</strong> foi criada
+                para proteger essa casa de invasores, fake news e pessoas mal intencionadas.</p>
             <hr style="border-color: #00eaff; margin: 20px 0;">
             <h3>COMO JOGAR</h3>
-            <p><strong class="key-icon">W</strong> <strong class="key-icon">A</strong> <strong class="key-icon">S</strong> <strong class="key-icon">D</strong> ou <strong>JOYSTICK</strong> para andar.</p>
+            <p><strong class="key-icon">W</strong> <strong class="key-icon">A</strong> <strong
+                    class="key-icon">S</strong> <strong class="key-icon">D</strong> ou <strong>JOYSTICK</strong> para
+                andar.</p>
             <p>Clique nos objetos e pessoas com o mouse ou toque para interagir.</p>
             <p>Complete as missões dadas pelo Comandante Motta para subir de nível!</p>
         </div>
@@ -753,8 +906,11 @@
         <div class="tutorial-box">
             <h3 style="color:#ffd54f; margin-bottom:20px;">PRIMEIROS PASSOS</h3>
             <p>Bem-vindo ao Centro de Operações!</p>
-            <p style="margin: 20px 0;">Use <span class="key-icon">W</span><span class="key-icon">A</span><span class="key-icon">S</span><span class="key-icon">D</span> ou o <strong>Joystick</strong> na tela para se mover.</p>
-            <p>Procure por personagens ou objetos com um sinal de <strong>!</strong> amarelo e CLIQUE neles para interagir.</p>
+            <p style="margin: 20px 0;">Use <span class="key-icon">W</span><span class="key-icon">A</span><span
+                    class="key-icon">S</span><span class="key-icon">D</span> ou o <strong>Joystick</strong> na tela para
+                se mover.</p>
+            <p>Procure por personagens ou objetos com um sinal de <strong>!</strong> amarelo e CLIQUE neles para
+                interagir.</p>
             <button class="btn" onclick="closeTutorial()">VAMOS LÁ!</button>
         </div>
     </div>
@@ -776,10 +932,28 @@
                     <h3>PERFIL DE AGENTE</h3>
 
                     <div class="custom-grid">
-                        <div class="custom-section">
+                        <div class="custom-section" style="grid-column: span 2;">
                             <label>CODINOME SECRETO</label>
                             <input type="text" id="custom-name" placeholder="Ex: Capitão Net" class="cyber-input">
                         </div>
+
+                        <!-- SEÇÃO DE CABELO NOVA -->
+                        <div class="custom-section">
+                            <label>ESTILO DE CABELO</label>
+                            <div class="hair-selector">
+                                <button class="hair-arrow-btn" onclick="cycleHairStyle(-1)">
+                                    << /button>
+                                        <span id="hair-style-label">Careca</span>
+                                        <button class="hair-arrow-btn" onclick="cycleHairStyle(1)">></button>
+                            </div>
+                        </div>
+                        <div class="custom-section">
+                            <label>COR DO CABELO</label>
+                            <div class="color-picker-container">
+                                <input type="color" id="custom-hair-color" value="#553311">
+                            </div>
+                        </div>
+
                         <div class="custom-section">
                             <label>COR DA MOCHILA</label>
                             <div class="color-picker-container">
@@ -793,7 +967,7 @@
                                 <span class="slider"></span>
                             </label>
                         </div>
-                        <div class="custom-section">
+                        <div class="custom-section hidden" id="helmet-color-section"> <!-- Escondido inicialmente -->
                             <label>COR DO CAPACETE</label>
                             <div class="color-picker-container">
                                 <input type="color" id="custom-helmet-color" value="#00eaff">
@@ -834,13 +1008,15 @@
                     <div class="seq-btn blue" id="btn-2" onclick="handleSeqInput(2)"></div>
                     <div class="seq-btn yellow" id="btn-3" onclick="handleSeqInput(3)"></div>
                 </div>
-                <button id="btn-start-seq" class="btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1rem;" onclick="startSequenceGame()">COMEÇAR JOGO</button>
+                <button id="btn-start-seq" class="btn" style="margin-top: 20px; padding: 10px 20px; font-size: 1rem;"
+                    onclick="startSequenceGame()">COMEÇAR JOGO</button>
             </div>
 
             <!-- 4. Rede Social (Missão Final) -->
             <div class="pc-content hidden" id="pc-view-social" style="padding: 0;">
                 <div class="social-feed">
-                    <div style="background: #1877f2; color: white; padding: 15px; margin-bottom: 15px; font-weight: bold; border-radius: 8px;">
+                    <div
+                        style="background: #1877f2; color: white; padding: 15px; margin-bottom: 15px; font-weight: bold; border-radius: 8px;">
                         FaceLook - Feed Seguro
                     </div>
                     <div class="post">
@@ -849,7 +1025,8 @@
                     </div>
                     <div class="post" style="border: 2px solid #ff0055; background-color: #fff0f5;">
                         <div class="post-header" style="color: #d32f2f;">⚠️ CUIDADO: GOLPE!</div>
-                        <p style="font-weight: bold;">"GANHE ROBUX E DIAMANTES GRÁTIS! Basta me passar sua senha!" 😱🚫</p>
+                        <p style="font-weight: bold;">"GANHE ROBUX E DIAMANTES GRÁTIS! Basta me passar sua senha!" 😱🚫
+                        </p>
                         <p style="font-size: 12px; color: #666; margin-top: 5px;">Usuário: Trapaceiro123</p>
                         <button class="fake-news-btn" onclick="reportFakeNews()">🚨 DENUNCIAR GOLPE</button>
                     </div>
@@ -863,7 +1040,8 @@
             <!-- 5. ARCADE VIEW (NOVO) -->
             <div class="pc-content hidden" id="pc-view-arcade">
                 <div id="arcade-game-container" style="text-align: center; width: 100%;">
-                    <h3 id="arcade-title" style="color: #ff00ff; text-transform: uppercase; letter-spacing: 2px;">ARCADE</h3>
+                    <h3 id="arcade-title" style="color: #ff00ff; text-transform: uppercase; letter-spacing: 2px;">ARCADE
+                    </h3>
                     <div id="arcade-display">
                         <!-- Conteúdo do Puzzle é injetado aqui -->
                     </div>
@@ -887,7 +1065,8 @@
             <span id="npc-name">SISTEMA</span>
             <div id="dialog-text">...</div>
             <div id="dialog-options" class="quiz-options hidden"></div>
-            <div style="text-align: right; color: #aaa; font-size: 12px; margin-top: 10px;" id="dialog-click-hint">[ TOQUE PARA CONTINUAR ]</div>
+            <div style="text-align: right; color: #aaa; font-size: 12px; margin-top: 10px;" id="dialog-click-hint">[
+                TOQUE PARA CONTINUAR ]</div>
         </div>
 
         <div id="joystick-zone"></div>
@@ -912,7 +1091,8 @@
                 npc: 0x00ff88,
                 skin: 0xffdbac,
                 backpack: 0x111111,
-                neonLight: 0x00eaff
+                neonLight: 0x00eaff,
+                defaultHair: 0x553311 // Cor de cabelo padrão (Castanho)
             }
         };
 
@@ -921,16 +1101,29 @@
         let player, playerBody;
         let levelObjects = [], obstacles = [], interactables = [], floors = [], markers = [];
         let selectedAgentId = null, missionProgress = 0, currentLevel = "LOBBY";
-        
+
         // Estado de Diálogo
         let isDialogOpen = false, currentDialogQueue = [];
         let isQuizMode = false;
 
-        let playerState = { name: "Agente", hasHelmet: false, backpackColor: 0x111111, helmetColor: 0x00eaff };
+        // --- ESTADO DO JOGADOR ATUALIZADO ---
+        let playerState = {
+            name: "Agente",
+            hasHelmet: false,
+            backpackColor: 0x111111,
+            helmetColor: 0x00eaff,
+            hairStyle: 0, // 0: Careca, 1: Curto, 2: Médio, 3: Longo
+            hairColor: CONFIG.colors.defaultHair
+        };
+
+        // Opções de Estilo de Cabelo para a UI
+        const HAIR_STYLES = ["Careca", "Curto Espetado", "Tigela Médio", "Longo Rabo de Cavalo"];
+        let uiSelectedHairStyleIndex = 0; // Variável temporária para a UI do PC
+
         let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture;
         // NOVAS TEXTURAS GLOBAIS
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
-        
+
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3(), cameraAngle = 0;
         let isMouseDown = false, dragStartX = 0, isDraggingView = false, walkTime = 0;
@@ -938,13 +1131,13 @@
         const raycaster = new THREE.Raycaster();
         const groundRaycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
-        
+
         // --- SISTEMA DE SOM ---
         const bgMusic = document.getElementById('bg-music');
         const soundBtn = document.getElementById('sound-toggle');
         let isMusicPlaying = false;
 
-        window.toggleMusic = function() {
+        window.toggleMusic = function () {
             if (bgMusic.paused) {
                 bgMusic.play().then(() => {
                     isMusicPlaying = true;
@@ -961,10 +1154,10 @@
 
         // Tenta iniciar música na primeira interação
         document.body.addEventListener('click', () => {
-             if(bgMusic.paused && !soundBtn.classList.contains('muted')) {
-                 bgMusic.play().catch(() => {});
-                 soundBtn.innerText = "🔊";
-             }
+            if (bgMusic.paused && !soundBtn.classList.contains('muted')) {
+                bgMusic.play().catch(() => { });
+                soundBtn.innerText = "🔊";
+            }
         }, { once: true });
 
         // --- SISTEMA DE CUTSCENES ---
@@ -982,18 +1175,18 @@
                 "FIM DE JOGO."
             ]
         };
-        
+
         let currentCutsceneLines = [];
         let currentCutsceneIndex = 0;
 
         function playCutscene(id) {
             const lines = CUTSCENES[id];
-            if(!lines) return;
+            if (!lines) return;
             currentCutsceneLines = lines;
             currentCutsceneIndex = 0;
-            
+
             const overlay = document.getElementById('cutscene-overlay');
-            
+
             overlay.classList.remove('hidden');
             showCutsceneLine();
         }
@@ -1003,7 +1196,7 @@
             element.innerHTML = "";
             const audio = document.getElementById('typing-audio');
             // Tenta tocar o audio
-            if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+            if (audio) { audio.currentTime = 0; audio.play().catch(() => { }); }
 
             function type() {
                 if (i < text.length) {
@@ -1011,41 +1204,41 @@
                     i++;
                     setTimeout(type, speed);
                 } else {
-                    if(audio) audio.pause();
+                    if (audio) audio.pause();
                     setTimeout(callback, 2000); // Pausa de 2s antes da próxima linha
                 }
             }
             type();
         }
-        
+
         function showCutsceneLine() {
             const content = document.getElementById('cutscene-content');
             // Adiciona classe do cursor piscante
             content.classList.add('typing-cursor');
-            
-            if(currentCutsceneIndex < currentCutsceneLines.length) {
+
+            if (currentCutsceneIndex < currentCutsceneLines.length) {
                 const line = currentCutsceneLines[currentCutsceneIndex];
                 currentCutsceneIndex++;
                 // Digita a linha a 50ms por caractere
-                typeWriter(line, content, 50, showCutsceneLine); 
+                typeWriter(line, content, 50, showCutsceneLine);
             } else {
                 content.classList.remove('typing-cursor');
                 // Fim da cutscene
                 document.getElementById('cutscene-overlay').classList.add('hidden');
                 // Ação pós-cutscene
-                if(missionProgress === 6) {
-                   goToCredits();
+                if (missionProgress === 6) {
+                    goToCredits();
                 } else {
-                   startGameWorld(); // Inicia o jogo
+                    startGameWorld(); // Inicia o jogo
                 }
             }
         }
-        
+
         // --- SISTEMA DE TUTORIAL ---
         function showTutorial() {
             document.getElementById('tutorial-overlay').classList.remove('hidden');
         }
-        
+
         window.closeTutorial = () => {
             document.getElementById('tutorial-overlay').classList.add('hidden');
             // Só mostra o diálogo inicial DEPOIS de fechar o tutorial
@@ -1054,7 +1247,7 @@
 
         // --- SISTEMA DE ARCADE (NOVO) ---
         let arcadeActive = false;
-        
+
         function startArcadeGame() {
             const puzzles = [
                 // 1. Matemática
@@ -1088,13 +1281,13 @@
                     setup: () => {
                         setTimeout(() => {
                             const btn = document.getElementById('reflex-btn');
-                            if(btn) {
+                            if (btn) {
                                 btn.style.display = 'block';
                                 btn.style.backgroundColor = '#00ff00';
                                 btn.innerText = 'CLIQUE AGORA!';
                                 btn.dataset.start = Date.now();
                             }
-                        }, 1000 + Math.random()*2000);
+                        }, 1000 + Math.random() * 2000);
                         return `<div id="reflex-msg">Espere ficar verde...</div>
                                 <div id="reflex-btn" class="arcade-opt-btn" style="display:none; margin-top:20px; background:red;" onclick="checkReflex()">ESPERE...</div>`;
                     }
@@ -1130,32 +1323,32 @@
             ];
 
             const puzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
-            
+
             document.getElementById('overlay-title').innerText = "👾 FLIPERAMA 3000";
             document.getElementById('arcade-title').innerText = puzzle.title;
             document.getElementById('arcade-display').innerHTML = puzzle.setup(puzzle);
             document.getElementById('arcade-feedback').innerText = "";
-            
+
             document.getElementById('pc-view-arcade').classList.remove('hidden');
-            
+
             // Hide others
-            ['pc-view-custom', 'pc-view-login', 'pc-view-sequence', 'pc-view-social'].forEach(id => 
+            ['pc-view-custom', 'pc-view-login', 'pc-view-sequence', 'pc-view-social'].forEach(id =>
                 document.getElementById(id).classList.add('hidden')
             );
             document.getElementById('computer-overlay').style.display = 'flex';
         }
 
         function generateMathQuestion() {
-            const a = Math.floor(Math.random()*10);
-            const b = Math.floor(Math.random()*10);
+            const a = Math.floor(Math.random() * 10);
+            const b = Math.floor(Math.random() * 10);
             const ans = a + b;
-            const opts = [ans, ans+1, ans-1].sort(()=>Math.random()-0.5);
+            const opts = [ans, ans + 1, ans - 1].sort(() => Math.random() - 0.5);
             return { text: `${a} + ${b} = ?`, options: opts, ans: ans };
         }
 
         window.checkArcadeAnswer = (val, correct) => {
             const fb = document.getElementById('arcade-feedback');
-            if(val == correct) {
+            if (val == correct) {
                 fb.style.color = '#00ff88'; fb.innerText = "CORRETO! +100 PONTOS";
                 setTimeout(closePC, 1500);
             } else {
@@ -1166,7 +1359,7 @@
         window.checkReflex = () => {
             const btn = document.getElementById('reflex-btn');
             const fb = document.getElementById('arcade-feedback');
-            if(btn.style.backgroundColor === 'rgb(0, 255, 0)' || btn.style.backgroundColor === '#00ff00') {
+            if (btn.style.backgroundColor === 'rgb(0, 255, 0)' || btn.style.backgroundColor === '#00ff00') {
                 const time = Date.now() - parseInt(btn.dataset.start);
                 fb.style.color = '#00ff88'; fb.innerText = `ÓTIMO! ${time}ms`;
                 setTimeout(closePC, 1500);
@@ -1193,14 +1386,14 @@
         // --- SISTEMA DE DIÁLOGO E QUIZ ---
         window.advanceDialog = function () {
             if (!isDialogOpen || isQuizMode) return;
-            
-            if (currentDialogQueue.length > 0) { 
+
+            if (currentDialogQueue.length > 0) {
                 const item = currentDialogQueue.shift();
-                if(typeof item === 'object') showQuiz(item);
-                else document.getElementById('dialog-text').innerText = item; 
-            } else { 
-                document.getElementById('dialog-box').style.display = 'none'; 
-                isDialogOpen = false; 
+                if (typeof item === 'object') showQuiz(item);
+                else document.getElementById('dialog-text').innerText = item;
+            } else {
+                document.getElementById('dialog-box').style.display = 'none';
+                isDialogOpen = false;
             }
         }
 
@@ -1227,9 +1420,9 @@
             document.getElementById('dialog-click-hint').classList.remove('hidden');
             isQuizMode = false;
 
-            if(isCorrect) {
+            if (isCorrect) {
                 currentDialogQueue = ["Resposta Certa! Muito bem!", ...currentDialogQueue];
-                if(missionProgress === 3) { missionProgress = 4; updateHUD("Use o Computador da Missão", "#ff00ff"); }
+                if (missionProgress === 3) { missionProgress = 4; updateHUD("Use o Computador da Missão", "#ff00ff"); }
             } else {
                 currentDialogQueue = ["Hmm, não é bem isso. Tente pensar em segurança!", "Vamos tentar de novo depois."];
             }
@@ -1311,24 +1504,62 @@
             }
         };
 
+        // FUNÇÃO PARA CONTROLAR O SELETOR DE CABELO NA UI
+        window.cycleHairStyle = (direction) => {
+            uiSelectedHairStyleIndex += direction;
+            if (uiSelectedHairStyleIndex < 0) uiSelectedHairStyleIndex = HAIR_STYLES.length - 1;
+            if (uiSelectedHairStyleIndex >= HAIR_STYLES.length) uiSelectedHairStyleIndex = 0;
+            document.getElementById('hair-style-label').innerText = HAIR_STYLES[uiSelectedHairStyleIndex];
+        };
+
         window.applyCustomization = () => {
             const newName = document.getElementById('custom-name').value;
             if (newName) playerState.name = newName;
+
+            // Atualiza estado com valores da UI
             playerState.backpackColor = parseInt(document.getElementById('custom-backpack-color').value.replace('#', ''), 16);
             playerState.hasHelmet = document.getElementById('custom-helmet-toggle').checked;
             playerState.helmetColor = parseInt(document.getElementById('custom-helmet-color').value.replace('#', ''), 16);
-            
+            playerState.hairStyle = uiSelectedHairStyleIndex;
+            playerState.hairColor = parseInt(document.getElementById('custom-hair-color').value.replace('#', ''), 16);
+
+            // Atualiza o modelo 3D do jogador
             if (player && player.userData.parts) {
+                // Atualiza Mochila
                 if (player.userData.parts.backpack) player.userData.parts.backpack.material.color.setHex(playerState.backpackColor);
+
+                // Atualiza Capacete e Visibilidade do Cabelo
                 if (player.userData.parts.helmet) {
                     player.userData.parts.helmet.visible = playerState.hasHelmet;
                     player.userData.parts.helmet.material.color.setHex(playerState.helmetColor);
+                    // Se tiver capacete, esconde o cabelo, senão mostra
+                    if (player.userData.parts.hair) player.userData.parts.hair.visible = !playerState.hasHelmet;
+                }
+
+                // ATUALIZAÇÃO DINÂMICA DO CABELO (Remove o antigo e cria um novo)
+                const headGroup = player.userData.parts.head;
+                if (player.userData.parts.hair) {
+                    headGroup.remove(player.userData.parts.hair); // Remove mesh antigo
+                }
+                // Gera novo mesh de cabelo
+                const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
+                if (newHairMesh) {
+                    newHairMesh.visible = !playerState.hasHelmet; // Garante visibilidade correta
+                    headGroup.add(newHairMesh);
+                    player.userData.parts.hair = newHairMesh; // Atualiza referência
                 }
             }
             alert("Identidade Salva!");
             if (missionProgress === 1) { missionProgress = 2; updateHUD("Fale com a Agente Júlia", "#d500f9"); }
             closePC();
         };
+
+        // Lógica para mostrar/esconder o seletor de cor do capacete
+        document.getElementById('custom-helmet-toggle').addEventListener('change', (e) => {
+            const colorSection = document.getElementById('helmet-color-section');
+            if (e.target.checked) colorSection.classList.remove('hidden');
+            else colorSection.classList.add('hidden');
+        });
 
         window.reportFakeNews = () => {
             alert("VOCÊ PEGOU O GOLPISTA! Bom trabalho!");
@@ -1342,11 +1573,11 @@
         window.goToSelect = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-select').classList.remove('hidden'); };
         window.goToGuide = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-guide').classList.remove('hidden'); };
         window.goToCredits = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-credits').classList.remove('hidden'); };
-        window.goToMenu = () => { 
-            document.getElementById('screen-credits').classList.add('hidden'); 
+        window.goToMenu = () => {
+            document.getElementById('screen-credits').classList.add('hidden');
             document.getElementById('screen-guide').classList.add('hidden');
-            document.getElementById('screen-select').classList.add('hidden'); 
-            document.getElementById('screen-menu').classList.remove('hidden'); 
+            document.getElementById('screen-select').classList.add('hidden');
+            document.getElementById('screen-menu').classList.remove('hidden');
         };
         window.selectAgent = (id) => {
             selectedAgentId = id;
@@ -1355,13 +1586,13 @@
             const btn = document.getElementById('btn-start-game');
             btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; btn.style.background = '#ffd54f'; btn.style.color = '#000';
         };
-        
+
         // --- START GAME ---
         window.launchGame = () => {
             document.getElementById('screen-select').classList.add('hidden');
             playCutscene('intro');
         };
-        
+
         // Função para iniciar o mundo 3D após a cutscene
         function startGameWorld() {
             document.getElementById('game-container').style.visibility = 'visible';
@@ -1377,7 +1608,7 @@
             scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.02);
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 35, 40); camera.lookAt(0, 0, 0);
-            
+
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
@@ -1416,31 +1647,31 @@
                 t.wrapS = t.wrapT = THREE.RepeatWrapping;
                 return t;
             };
-            
+
             // --- NOVA TEXTURA DE PAREDE (Tijolos Azuis com Rejunte Escuro) ---
             wallTextureBase = createTex(512, 512, (c) => {
                 // Cor do Rejunte (Azul Marinho Escuro)
                 c.fillStyle = '#000033';
-                c.fillRect(0,0,512,512);
+                c.fillRect(0, 0, 512, 512);
 
                 // Cor dos Tijolos (Azul Médio)
                 c.fillStyle = '#0066cc';
-                
+
                 const brickWidth = 64;
                 const brickHeight = 32;
                 const groutThickness = 4;
 
-                for(let y = 0; y < 512; y += brickHeight + groutThickness) {
+                for (let y = 0; y < 512; y += brickHeight + groutThickness) {
                     // Desloca linhas alternadas para o padrão de tijolo
                     const offset = (Math.floor(y / (brickHeight + groutThickness)) % 2 === 0) ? 0 : brickWidth / 2;
-                    
-                    for(let x = -brickWidth; x < 512; x += brickWidth + groutThickness) {
+
+                    for (let x = -brickWidth; x < 512; x += brickWidth + groutThickness) {
                         c.fillRect(x + offset, y, brickWidth, brickHeight);
                     }
                 }
             });
             wallTextureBase.repeat.set(2, 2);
-            
+
             // --- NOVA TEXTURA PARA SALA DE SERVIDOR (PAREDES TECH) ---
             serverWallTexture = createTex(512, 512, (c) => {
                 // Fundo Cinza Metálico Escuro
@@ -1454,11 +1685,11 @@
                 c.strokeRect(50, 50, 412, 412);
 
                 // Luzes de servidor
-                for(let i = 0; i < 10; i++) {
+                for (let i = 0; i < 10; i++) {
                     c.fillStyle = Math.random() > 0.5 ? '#00ff00' : '#ff0000';
                     c.fillRect(60 + Math.random() * 300, 60 + Math.random() * 300, 10, 5);
                 }
-                
+
                 // Detalhes em neon
                 c.strokeStyle = '#00eaff';
                 c.lineWidth = 2;
@@ -1466,61 +1697,61 @@
                 c.moveTo(0, 256); c.lineTo(512, 256);
                 c.stroke();
             });
-            
+
             // --- PISO AZULEJO AZUL (Vibrante) ---
             floorTextureBase = createTex(512, 512, (c) => {
-                c.fillStyle = '#0056b3'; c.fillRect(0,0,512,512); // Azul base
+                c.fillStyle = '#0056b3'; c.fillRect(0, 0, 512, 512); // Azul base
                 c.fillStyle = '#4a90e2'; // Azul claro
-                c.fillRect(0,0,256,256); c.fillRect(256,256,256,256);
+                c.fillRect(0, 0, 256, 256); c.fillRect(256, 256, 256, 256);
             });
-            floorTextureBase.repeat.set(4, 8); 
+            floorTextureBase.repeat.set(4, 8);
 
             // --- NOVA TEXTURA: PISO DA SALA DE SERVIDOR (Metal/Grid Escuro) ---
             serverFloorTexture = createTex(512, 512, (c) => {
                 c.fillStyle = '#111122'; // Fundo metal escuro
-                c.fillRect(0,0,512,512);
+                c.fillRect(0, 0, 512, 512);
 
                 // Grade metálica
                 c.strokeStyle = '#333344';
                 c.lineWidth = 4;
-                for(let i=0; i<=512; i+=64) {
+                for (let i = 0; i <= 512; i += 64) {
                     c.beginPath(); c.moveTo(i, 0); c.lineTo(i, 512); c.stroke(); // Verticais
                     c.beginPath(); c.moveTo(0, i); c.lineTo(512, i); c.stroke(); // Horizontais
                 }
 
                 // Pontos de luz nas interseções
                 c.fillStyle = '#00eaff';
-                for(let y=0; y<=512; y+=64) {
-                    for(let x=0; x<=512; x+=64) {
-                        c.beginPath(); c.arc(x, y, 3, 0, Math.PI*2); c.fill();
+                for (let y = 0; y <= 512; y += 64) {
+                    for (let x = 0; x <= 512; x += 64) {
+                        c.beginPath(); c.arc(x, y, 3, 0, Math.PI * 2); c.fill();
                     }
                 }
             });
             serverFloorTexture.repeat.set(4, 4);
-            
+
             doorTextureBase = createTex(256, 512, (c) => {
-                c.fillStyle = '#222'; c.fillRect(0,0,256,512);
-                c.fillStyle = '#00eaff'; c.fillRect(126,0,4,512);
+                c.fillStyle = '#222'; c.fillRect(0, 0, 256, 512);
+                c.fillStyle = '#00eaff'; c.fillRect(126, 0, 4, 512);
                 c.strokeStyle = '#444'; c.lineWidth = 10;
-                for(let i=0; i<600; i+=40) { c.beginPath(); c.moveTo(0,i); c.lineTo(256, i+256); c.stroke(); }
+                for (let i = 0; i < 600; i += 40) { c.beginPath(); c.moveTo(0, i); c.lineTo(256, i + 256); c.stroke(); }
             });
 
             // --- FUNÇÃO PARA CRIAR TELAS DE TEXTO ---
             function createInfoScreenTexture(text) {
                 return createTex(512, 256, (c) => {
-                    c.fillStyle = '#000'; c.fillRect(0,0,512,256);
-                    c.strokeStyle = '#00eaff'; c.lineWidth = 5; c.strokeRect(0,0,512,256);
-                    
+                    c.fillStyle = '#000'; c.fillRect(0, 0, 512, 256);
+                    c.strokeStyle = '#00eaff'; c.lineWidth = 5; c.strokeRect(0, 0, 512, 256);
+
                     // Cabeçalho
                     c.fillStyle = '#00eaff'; c.font = 'bold 30px Arial'; c.textAlign = 'center';
                     c.fillText("DICA DE SEGURANÇA:", 256, 50);
-                    
+
                     // Texto com quebra de linha
                     c.fillStyle = '#fff'; c.font = '26px Arial';
                     const words = text.split(' ');
                     let line = '';
                     let y = 100;
-                    for(let n = 0; n < words.length; n++) {
+                    for (let n = 0; n < words.length; n++) {
                         const testLine = line + words[n] + ' ';
                         const metrics = c.measureText(testLine);
                         if (metrics.width > 480 && n > 0) {
@@ -1537,11 +1768,11 @@
 
             // --- TEXTURA PARA HOLOGRAMA ---
             hologramTexture = createTex(256, 256, (c) => {
-                c.clearRect(0,0,256,256);
-                const gradient = c.createRadialGradient(128,128,20, 128,128,120);
+                c.clearRect(0, 0, 256, 256);
+                const gradient = c.createRadialGradient(128, 128, 20, 128, 128, 120);
                 gradient.addColorStop(0, 'rgba(0, 234, 255, 0.8)');
                 gradient.addColorStop(1, 'rgba(0, 234, 255, 0)');
-                c.fillStyle = gradient; c.fillRect(0,0,256,256);
+                c.fillStyle = gradient; c.fillRect(0, 0, 256, 256);
                 c.strokeStyle = '#00eaff'; c.lineWidth = 5;
                 c.beginPath(); c.moveTo(128, 50);
                 c.quadraticCurveTo(200, 50, 200, 128); c.quadraticCurveTo(200, 200, 128, 220);
@@ -1552,7 +1783,7 @@
             // --- NOVA TEXTURA: MAPA TÁTICO HOLOGRÁFICO ---
             strategicMapTexture = createTex(512, 256, (c) => {
                 c.fillStyle = 'rgba(0, 10, 30, 0.8)'; // Fundo semi-transparente
-                c.fillRect(0,0,512,256);
+                c.fillRect(0, 0, 512, 256);
 
                 c.strokeStyle = '#00eaff'; c.lineWidth = 2;
                 c.beginPath();
@@ -1563,9 +1794,9 @@
 
                 // Alvos/Marcadores
                 c.fillStyle = '#ff0055';
-                c.beginPath(); c.arc(200, 40, 5, 0, Math.PI*2); c.fill(); // Ameaça
+                c.beginPath(); c.arc(200, 40, 5, 0, Math.PI * 2); c.fill(); // Ameaça
                 c.fillStyle = '#00ff88';
-                c.beginPath(); c.arc(250, 220, 5, 0, Math.PI*2); c.fill(); // Base Segura
+                c.beginPath(); c.arc(250, 220, 5, 0, Math.PI * 2); c.fill(); // Base Segura
 
                 // Texto
                 c.fillStyle = '#00eaff'; c.font = '16px monospace';
@@ -1576,22 +1807,22 @@
             });
 
             carpetTexture = createTex(512, 512, (c) => {
-                c.fillStyle = '#4a148c'; c.fillRect(0,0,512,512);
-                for(let i=0; i<1000; i++) { c.fillStyle = Math.random()>0.5?'#6a1b9a':'#38006b'; c.fillRect(Math.random()*512, Math.random()*512, 4, 4); }
+                c.fillStyle = '#4a148c'; c.fillRect(0, 0, 512, 512);
+                for (let i = 0; i < 1000; i++) { c.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b'; c.fillRect(Math.random() * 512, Math.random() * 512, 4, 4); }
             });
 
             const pCtx = document.createElement('canvas').getContext('2d');
             pCtx.canvas.width = 512; pCtx.canvas.height = 512;
             portalTexture = new THREE.CanvasTexture(pCtx.canvas);
             const drawPortal = () => {
-                pCtx.fillStyle = '#000'; pCtx.fillRect(0,0,512,512);
+                pCtx.fillStyle = '#000'; pCtx.fillRect(0, 0, 512, 512);
                 const t = Date.now() * 0.002;
-                for(let i=0; i<20; i++) {
-                    const r = 20 + i*10;
+                for (let i = 0; i < 20; i++) {
+                    const r = 20 + i * 10;
                     pCtx.beginPath();
-                    pCtx.strokeStyle = `hsl(${(t*50 + i*20)%360}, 100%, 50%)`;
+                    pCtx.strokeStyle = `hsl(${(t * 50 + i * 20) % 360}, 100%, 50%)`;
                     pCtx.lineWidth = 5;
-                    pCtx.arc(256, 256, r, t + i*0.2, t + Math.PI + i*0.2);
+                    pCtx.arc(256, 256, r, t + i * 0.2, t + Math.PI + i * 0.2);
                     pCtx.stroke();
                 }
                 portalTexture.needsUpdate = true;
@@ -1602,7 +1833,7 @@
             // Pre-gerar texturas de telas para uso posterior
             screenTexture = createInfoScreenTexture("NUNCA COMPARTILHE SUA SENHA COM ESTRANHOS!");
             // Criamos uma função global para gerar telas sob demanda
-            window.createScreenTexture = createInfoScreenTexture; 
+            window.createScreenTexture = createInfoScreenTexture;
         }
 
         function clearLevel() {
@@ -1626,23 +1857,23 @@
             createFloor(0, 0, 16, 30, floorTextureBase);
             createFloor(-16, -1.5, 16, 30, carpetTexture);
             createFloor(16, -1.5, 16, 30, carpetTexture);
-            
-            const r1 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({visible:false})); 
-            r1.position.set(-8, -0.75, 0); r1.rotation.z = 0.4; 
+
+            const r1 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({ visible: false }));
+            r1.position.set(-8, -0.75, 0); r1.rotation.z = 0.4;
             scene.add(r1); levelObjects.push(r1); floors.push(r1);
 
-            const r2 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({visible:false})); 
-            r2.position.set(8, -0.75, 0); r2.rotation.z = -0.4; 
+            const r2 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({ visible: false }));
+            r2.position.set(8, -0.75, 0); r2.rotation.z = -0.4;
             scene.add(r2); levelObjects.push(r2); floors.push(r2);
 
-            const rvL = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({color: 0x444})); 
+            const rvL = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({ color: 0x444 }));
             rvL.position.set(-8, -0.75, 0); rvL.rotation.z = 0.5; scene.add(rvL); levelObjects.push(rvL);
 
-            const rvR = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({color: 0x444})); 
+            const rvR = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({ color: 0x444 }));
             rvR.position.set(8, -0.75, 0); rvR.rotation.z = -0.5; scene.add(rvR); levelObjects.push(rvR);
 
             // Paredes normais
-            createWall(0, 3, -15, 48, 8, 2); 
+            createWall(0, 3, -15, 48, 8, 2);
             createWall(0, 3, 15, 48, 8, 1); // PAREDE RESTAURADA AQUI!
             createWall(-24, 3, 0, 1, 8, 30);
             createWall(-8, 1, 9, 0.5, 5, 12); createWall(-8, 1, -9, 0.5, 5, 12);
@@ -1650,7 +1881,7 @@
 
             // --- PAREDE COM JANELA NA SALA DA AGENTE JÚLIA (Lado Direito, x=24) ---
             // Dividimos a parede original (x=24, y=3, z=0, w=1, h=8, d=30) em partes para criar o buraco da janela.
-            
+
             // Parte de Trás (Z-)
             createWall(24, 3, -9, 1, 8, 12);
             // Parte da Frente (Z+)
@@ -1665,24 +1896,25 @@
 
             const desk = new THREE.Mesh(new THREE.CylinderGeometry(3, 2, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x111 }));
             desk.position.set(0, 0.6, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(0, 0.6, 0, 3, 1.2, 3);
-            
+
             // Globo Central (Holograma)
             const globeGeo = new THREE.SphereGeometry(1.5, 32, 32);
             const globeMat = new THREE.MeshBasicMaterial({ map: hologramTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
             const globe = new THREE.Mesh(globeGeo, globeMat);
-            globe.position.set(0, 2.5, 0); 
+            globe.position.set(0, 2.5, 0);
             scene.add(globe); levelObjects.push(globe);
-            const animGlobe = () => { if(globe) { globe.rotation.y += 0.01; requestAnimationFrame(animGlobe); }};
+            const animGlobe = () => { if (globe) { globe.rotation.y += 0.01; requestAnimationFrame(animGlobe); } };
             animGlobe();
-            
-            const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4,4,4), new THREE.MeshBasicMaterial({visible:false}));
-            pcHit.position.set(0,1,0); pcHit.userData = { isInteractable:true, type:"PC_CUSTOM", name:"Personalização" };
+
+            const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
+            pcHit.position.set(0, 1, 0); pcHit.userData = { isInteractable: true, type: "PC_CUSTOM", name: "Personalização" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            createDoor(0, 0, -13.8, "CYBER_OPS", 0); 
+            createDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
-            createNPC(-19, -1.5, 0, CONFIG.colors.commander, "Comandante Motta", null);
-            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null);
+            // NPCs com cabelo aleatório
+            createNPC(-19, -1.5, 0, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa); // Cabelo grisalho curto
+            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400); // Cabelo longo ruivo
 
             // --- NOVO ELEMENTO: MESA TÁTICA HOLOGRÁFICA DO COMANDANTE MOTTA ---
             // Cria a base da mesa perto dele
@@ -1698,100 +1930,100 @@
                 depthWrite: false // Ajuda na renderização de transparência
             });
             const holoMap = new THREE.Mesh(holoGeo, holoMat);
-            holoMap.rotation.x = -Math.PI/2; // Deitado
+            holoMap.rotation.x = -Math.PI / 2; // Deitado
             holoMap.position.set(-16, 0.1, 5); // Um pouco acima da mesa
             scene.add(holoMap);
             levelObjects.push(holoMap);
             // Animação simples de pulso no holograma
             const animMap = () => {
-                if(holoMap && holoMap.material.map) {
-                   holoMap.material.opacity = 0.7 + Math.sin(Date.now() * 0.002) * 0.1;
-                   requestAnimationFrame(animMap);
+                if (holoMap && holoMap.material.map) {
+                    holoMap.material.opacity = 0.7 + Math.sin(Date.now() * 0.002) * 0.1;
+                    requestAnimationFrame(animMap);
                 }
             };
             animMap();
-            
+
             // Tapete da Agente Júlia
             const juliaRug = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 0.1, 32), new THREE.MeshStandardMaterial({ color: 0x6a0dad, roughness: 1 }));
-            juliaRug.position.set(16, -1.45, 0); 
+            juliaRug.position.set(16, -1.45, 0);
             scene.add(juliaRug); levelObjects.push(juliaRug);
 
-            createChair(-20, -1.5, -5, Math.PI/2);
-            createTable(-22, -1.5, -5, Math.PI/2);
-            
-            createNPC(-5, 0, 8, 0xffff00, "Agente Blindado", ["Minha senha é tão forte que nem eu lembro!"]);
+            createChair(-20, -1.5, -5, Math.PI / 2);
+            createTable(-22, -1.5, -5, Math.PI / 2);
+
+            createNPC(-5, 0, 8, 0xffff00, "Agente Blindado", ["Minha senha é tão forte que nem eu lembro!"], 2, 0xffff00); // Cabelo médio amarelo
             createTipTotem(-10, 0, 5, "Dica #1: Não fale com estranhos!");
             createTipTotem(10, 0, 5, "Dica #2: Não clique em links suspeitos!");
 
             // FLIPERAMA (MUDOU DE LUGAR)
-            createArcadeMachine(18, -1.5, 10, -Math.PI/2);
+            createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
 
             // NOVOS TELÕES COM INFORMAÇÕES ÚTEIS
             createScreen(-12, 5, -14.5, Math.PI, window.createScreenTexture("DICA: Use senhas fortes com letras e números!"));
             createScreen(12, 5, -14.5, Math.PI, window.createScreenTexture("ALERTA: Não baixe arquivos desconhecidos!"));
-            createScreen(-23.5, 5, 0, Math.PI/2, window.createScreenTexture("INFO: Respeito é fundamental nos jogos online."));
+            createScreen(-23.5, 5, 0, Math.PI / 2, window.createScreenTexture("INFO: Respeito é fundamental nos jogos online."));
 
-            if(player) player.position.set(0,0,5);
+            if (player) player.position.set(0, 0, 5);
         }
 
         function createRoomLevel() {
             // USANDO A NOVA TEXTURA DE PISO ESCURO AQUI
             createFloor(0, 0, 30, 20, serverFloorTexture);
-            
+
             // PAREDES COM NOVA TEXTURA (TECH) PARA A SALA DE SERVIDOR
             // Usando serverWallTexture ao invés de wallTextureBase
-            createWall(0, 4, -10, 30, 8, 2, serverWallTexture); 
+            createWall(0, 4, -10, 30, 8, 2, serverWallTexture);
             createWall(0, 4, 10, 30, 8, 1, serverWallTexture);
-            createWall(15, 4, 0, 1, 8, 20, serverWallTexture); 
+            createWall(15, 4, 0, 1, 8, 20, serverWallTexture);
             createWall(-15, 4, 0, 1, 8, 20, serverWallTexture);
-            
-            createDoor(-13.8, 0, 0, "LOBBY", Math.PI/2); 
+
+            createDoor(-13.8, 0, 0, "LOBBY", Math.PI / 2);
 
             createServerRack(5, -8, 0); createServerRack(10, -8, 0);
             createServerRack(5, 8, Math.PI); createServerRack(10, 8, Math.PI);
 
             const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x001133 }));
             desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(10, 0.75, 0, 6, 1.5, 3);
-            
+
             const screen = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide }));
             screen.position.set(10, 2.5, 0); scene.add(screen); levelObjects.push(screen);
-            
-            const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4,4,4), new THREE.MeshBasicMaterial({visible:false}));
-            pcHit.position.set(10,1.5,0); pcHit.userData = { isInteractable:true, type:"PC_MISSION", name:"Terminal de Missão" };
+
+            const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
+            pcHit.position.set(10, 1.5, 0); pcHit.userData = { isInteractable: true, type: "PC_MISSION", name: "Terminal de Missão" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null);
-            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null);
+            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000); // Cabelo longo preto
+            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0); // Careca
 
             const tableX = -5, tableZ = 5;
             createTable(tableX, 0, tableZ, 0);
             createChair(tableX, 0, tableZ + 1.5, Math.PI);
             createChair(tableX, 0, tableZ - 1.5, 0);
-            createChair(tableX + 2, 0, tableZ, -Math.PI/2);
-            createChair(tableX - 2, 0, tableZ, Math.PI/2);
+            createChair(tableX + 2, 0, tableZ, -Math.PI / 2);
+            createChair(tableX - 2, 0, tableZ, Math.PI / 2);
 
-            if(player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI/2; }
+            if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
 
         // --- NOVA FUNÇÃO: CRIAR JANELA ---
         function createWindow(x, y, z, h, d) {
             const g = new THREE.Group();
             // Moldura (Um pouco mais grossa que a parede)
-            const frameMat = new THREE.MeshStandardMaterial({color: 0x333});
+            const frameMat = new THREE.MeshStandardMaterial({ color: 0x333 });
             const fThickness = 1.2; // Espessura da parede é 1, moldura é 1.2
             const fWidth = 0.2; // Largura da borda da moldura
 
-            const fTop = new THREE.Mesh(new THREE.BoxGeometry(fThickness, fWidth, d), frameMat); fTop.position.y = h/2;
-            const fBot = new THREE.Mesh(new THREE.BoxGeometry(fThickness, fWidth, d), frameMat); fBot.position.y = -h/2;
-            const fLeft = new THREE.Mesh(new THREE.BoxGeometry(fThickness, h, fWidth), frameMat); fLeft.position.z = -d/2;
-            const fRight = new THREE.Mesh(new THREE.BoxGeometry(fThickness, h, fWidth), frameMat); fRight.position.z = d/2;
+            const fTop = new THREE.Mesh(new THREE.BoxGeometry(fThickness, fWidth, d), frameMat); fTop.position.y = h / 2;
+            const fBot = new THREE.Mesh(new THREE.BoxGeometry(fThickness, fWidth, d), frameMat); fBot.position.y = -h / 2;
+            const fLeft = new THREE.Mesh(new THREE.BoxGeometry(fThickness, h, fWidth), frameMat); fLeft.position.z = -d / 2;
+            const fRight = new THREE.Mesh(new THREE.BoxGeometry(fThickness, h, fWidth), frameMat); fRight.position.z = d / 2;
             g.add(fTop, fBot, fLeft, fRight);
 
             // Vidro (Translúcido e azulado)
-            const glass = new THREE.Mesh(new THREE.PlaneGeometry(d-fWidth, h-fWidth), new THREE.MeshPhysicalMaterial({
+            const glass = new THREE.Mesh(new THREE.PlaneGeometry(d - fWidth, h - fWidth), new THREE.MeshPhysicalMaterial({
                 color: 0x88ccff, transparent: true, opacity: 0.3, roughness: 0, metalness: 0.9, side: THREE.DoubleSide
             }));
-            glass.rotation.y = Math.PI/2;
+            glass.rotation.y = Math.PI / 2;
             g.add(glass);
 
             g.position.set(x, y, z);
@@ -1803,9 +2035,9 @@
 
         function createScreen(x, y, z, rot, texture) {
             const g = new THREE.Group();
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(6.2, 3.2, 0.2), new THREE.MeshStandardMaterial({color:0x111}));
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(6.2, 3.2, 0.2), new THREE.MeshStandardMaterial({ color: 0x111 }));
             g.add(frame);
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({map: texture || screenTexture, side: THREE.DoubleSide}));
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(6, 3), new THREE.MeshBasicMaterial({ map: texture || screenTexture, side: THREE.DoubleSide }));
             screen.position.z = 0.11;
             g.add(screen);
             g.position.set(x, y, z); g.rotation.y = rot;
@@ -1815,32 +2047,32 @@
         function createArcadeMachine(x, y, z, rot) {
             const group = new THREE.Group();
             // Base
-            const base = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshStandardMaterial({color: 0x6a1b9a}));
+            const base = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshStandardMaterial({ color: 0x6a1b9a }));
             base.position.y = 2;
             group.add(base);
-            
+
             // Tela
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.2), new THREE.MeshBasicMaterial({color: 0x00ff00, emissive: 0x00ff00}));
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.2), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00 }));
             screen.position.set(0, 2.8, 1.01);
             group.add(screen);
-            
+
             // Controle
-            const panel = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 1), new THREE.MeshStandardMaterial({color: 0x333}));
+            const panel = new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 1), new THREE.MeshStandardMaterial({ color: 0x333 }));
             panel.position.set(0, 1.8, 1);
             panel.rotation.x = 0.5;
             group.add(panel);
-            
+
             // Joystick stick
-            const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.5), new THREE.MeshStandardMaterial({color: 0xff0000}));
+            const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.5), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
             stick.position.set(-0.5, 2.2, 1.2);
             stick.rotation.x = 0.5;
             group.add(stick);
 
             group.position.set(x, y, z);
             group.rotation.y = rot;
-            
+
             // Hitbox para interação
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4, 2.5), new THREE.MeshBasicMaterial({visible: false}));
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4, 2.5), new THREE.MeshBasicMaterial({ visible: false }));
             hitBox.position.y = 2;
             hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" };
             group.add(hitBox);
@@ -1853,24 +2085,24 @@
 
         function createQuestMarker(target) {
             const g = new THREE.Group();
-            const cone = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 8), new THREE.MeshBasicMaterial({color: 0xffff00, emissive: 0xffff00}));
+            const cone = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 8), new THREE.MeshBasicMaterial({ color: 0xffff00, emissive: 0xffff00 }));
             cone.rotation.z = Math.PI; cone.position.y = 0;
-            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshBasicMaterial({color: 0xffff00, emissive: 0xffff00}));
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshBasicMaterial({ color: 0xffff00, emissive: 0xffff00 }));
             ball.position.y = -0.6;
             g.add(cone); g.add(ball);
-            
+
             const pos = new THREE.Vector3();
             target.getWorldPosition(pos);
             g.position.set(pos.x, pos.y + 3.5, pos.z);
-            
+
             scene.add(g); markers.push(g);
-            
-            const anim = () => { 
-                if(g && g.parent) { 
-                    g.rotation.y += 0.05; 
-                    g.position.y = pos.y + 3.5 + Math.sin(Date.now()*0.005)*0.2; 
-                    requestAnimationFrame(anim); 
-                } 
+
+            const anim = () => {
+                if (g && g.parent) {
+                    g.rotation.y += 0.05;
+                    g.position.y = pos.y + 3.5 + Math.sin(Date.now() * 0.005) * 0.2;
+                    requestAnimationFrame(anim);
+                }
             };
             anim();
         }
@@ -1878,7 +2110,7 @@
         function updateMarkers() {
             markers.forEach(m => scene.remove(m)); markers = [];
             let targetName = "";
-            
+
             if (currentLevel === "LOBBY") {
                 if (missionProgress === 0) targetName = "Comandante Motta";
                 else if (missionProgress === 1) targetName = "Personalização";
@@ -1890,15 +2122,15 @@
                 else if (missionProgress === 5) targetName = "Robô Fair Play";
             }
 
-            if(targetName) {
+            if (targetName) {
                 const target = interactables.find(i => i.userData.name === targetName);
-                if(target) createQuestMarker(target);
+                if (target) createQuestMarker(target);
             }
         }
 
         function createFloor(x, y, w, h, tex) {
             const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.5 }));
-            m.rotation.x = -Math.PI/2; m.position.set(x, y, 0); m.receiveShadow = true;
+            m.rotation.x = -Math.PI / 2; m.position.set(x, y, 0); m.receiveShadow = true;
             scene.add(m); levelObjects.push(m); floors.push(m);
         }
 
@@ -1914,27 +2146,27 @@
 
         function createServerRack(x, z, rot) {
             const g = new THREE.Group();
-            const rack = new THREE.Mesh(new THREE.BoxGeometry(3,6,2), new THREE.MeshStandardMaterial({color:0x111}));
+            const rack = new THREE.Mesh(new THREE.BoxGeometry(3, 6, 2), new THREE.MeshStandardMaterial({ color: 0x111 }));
             rack.position.y = 3; g.add(rack);
-            for(let i=0; i<5; i++) {
-                const l = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.2), new THREE.MeshBasicMaterial({color:0x00ff00}));
-                l.position.set(0, 1+i, 1.01); g.add(l);
+            for (let i = 0; i < 5; i++) {
+                const l = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.2), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+                l.position.set(0, 1 + i, 1.01); g.add(l);
             }
-            g.position.set(x,0,z); g.rotation.y = rot;
+            g.position.set(x, 0, z); g.rotation.y = rot;
             scene.add(g); levelObjects.push(g); addCollisionBox(x, 0, z, 3, 6, 2);
         }
 
         function createChair(x, y, z, rot) {
             const g = new THREE.Group();
-            const seat = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), new THREE.MeshStandardMaterial({color:0x333}));
+            const seat = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), new THREE.MeshStandardMaterial({ color: 0x333 }));
             seat.position.y = 1; g.add(seat);
-            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1), new THREE.MeshStandardMaterial({color:0x888}));
+            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1), new THREE.MeshStandardMaterial({ color: 0x888 }));
             leg.position.y = 0.5; g.add(leg);
-            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1), new THREE.MeshStandardMaterial({color:0x888}));
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1), new THREE.MeshStandardMaterial({ color: 0x888 }));
             base.position.y = 0.05; g.add(base);
-            const back = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.2), new THREE.MeshStandardMaterial({color:0x333}));
+            const back = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x333 }));
             back.position.set(0, 1.8, -0.5); g.add(back);
-            const neon = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1, 0.22), new THREE.MeshBasicMaterial({color:0x00eaff}));
+            const neon = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1, 0.22), new THREE.MeshBasicMaterial({ color: 0x00eaff }));
             neon.position.set(0, 1.8, -0.5); g.add(neon);
 
             g.position.set(x, y, z); g.rotation.y = rot;
@@ -1943,53 +2175,132 @@
 
         function createTable(x, y, z, rot) {
             const g = new THREE.Group();
-            const top = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 2.5), new THREE.MeshStandardMaterial({color:0x222}));
+            const top = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 2.5), new THREE.MeshStandardMaterial({ color: 0x222 }));
             top.position.y = 1.5; g.add(top);
-            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({color:0x555}));
+            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x555 }));
             leg1.position.set(-1.8, 0.75, 0); g.add(leg1);
-            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({color:0x555}));
+            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x555 }));
             leg2.position.set(1.8, 0.75, 0); g.add(leg2);
-            
+
             g.position.set(x, y, z); g.rotation.y = rot;
             scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 4, 1.5, 2.5);
         }
 
         function createTipTotem(x, y, z, text) {
             const g = new THREE.Group();
-            const post = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3), new THREE.MeshStandardMaterial({color:0x555}));
+            const post = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 3), new THREE.MeshStandardMaterial({ color: 0x555 }));
             post.position.y = 1.5; g.add(post);
-            const box = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0x00eaff, wireframe:true}));
+            const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x00eaff, wireframe: true }));
             box.position.y = 3; g.add(box);
-            const animateBox = () => { if(box) { box.rotation.y += 0.02; box.rotation.x += 0.01; requestAnimationFrame(animateBox); }};
+            const animateBox = () => { if (box) { box.rotation.y += 0.02; box.rotation.x += 0.01; requestAnimationFrame(animateBox); } };
             animateBox();
-            g.position.set(x, y, z); g.userData = { isInteractable:true, name:"Dica de Segurança", dialogs:[text] };
+            g.position.set(x, y, z); g.userData = { isInteractable: true, name: "Dica de Segurança", dialogs: [text] };
             scene.add(g); levelObjects.push(g); interactables.push(g);
         }
 
-        function createNPC(x, y, z, color, name, dialogs) {
+        // Função createNPC atualizada para aceitar estilo e cor de cabelo
+        function createNPC(x, y, z, color, name, dialogs, hairStyle = 0, hairColor = CONFIG.colors.defaultHair) {
             const g = new THREE.Group(); g.position.set(x, y, z);
-            const char = createHumanoid(color); char.position.y = 0; g.add(char);
-            const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 0.9, 32), new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide })); 
-            ring.rotation.x = -Math.PI/2; ring.position.y = 0.1; g.add(ring);
-            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff })); 
+            // Passa os novos parâmetros para createHumanoid
+            const char = createHumanoid(color, hairStyle, hairColor);
+            char.position.y = 0; g.add(char);
+            const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 0.9, 32), new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide }));
+            ring.rotation.x = -Math.PI / 2; ring.position.y = 0.1; g.add(ring);
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff }));
             visor.position.set(0, 2.2, 0); g.add(visor);
             g.userData = { isInteractable: true, name: name, dialogs: dialogs };
             scene.add(g); levelObjects.push(g); interactables.push(g);
             addCollisionBox(x, y, z, 2, 4, 2); // NPC Hitbox
         }
 
-        function createHumanoid(color) {
+        // --- NOVA FUNÇÃO PARA CRIAR GEOMETRIA DE CABELO ---
+        function createHair(styleId, colorHex) {
+            if (styleId === 0) return null; // Careca
+
+            const hairMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.8 });
+            let hairMesh;
+
+            // Tamanho base da cabeça: 0.4 (l) x 0.45 (a) x 0.4 (p)
+            // O centro da cabeça é (0, 0, 0) dentro do grupo da cabeça.
+
+            if (styleId === 1) { // Curto Espetado
+                hairMesh = new THREE.Group();
+                const base = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.1, 0.42), hairMat);
+                base.position.y = 0.23;
+                hairMesh.add(base);
+                // Espinhos
+                const spikeGeo = new THREE.ConeGeometry(0.05, 0.15, 4);
+                for (let i = 0; i < 5; i++) {
+                    const spike = new THREE.Mesh(spikeGeo, hairMat);
+                    spike.position.set((Math.random() - 0.5) * 0.3, 0.28, (Math.random() - 0.5) * 0.3);
+                    spike.rotation.set((Math.random() - 0.5), (Math.random() - 0.5), (Math.random() - 0.5));
+                    hairMesh.add(spike);
+                }
+            }
+            else if (styleId === 2) { // Tigela Médio
+                hairMesh = new THREE.Group();
+                // Topo
+                const top = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.15, 0.44), hairMat);
+                top.position.y = 0.23;
+                hairMesh.add(top);
+                // Lados e Trás
+                const sides = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.3, 0.44), hairMat);
+                sides.position.set(0, 0.1, 0.02);
+                // Corta a frente para o rosto (uma técnica simples de "máscara" não funciona bem aqui, então vamos usar blocos separados)
+                hairMesh.remove(sides); // Remove o bloco sólido
+
+                // Lado Esquerdo
+                const sideL = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.44), hairMat);
+                sideL.position.set(0.2, 0.1, 0); hairMesh.add(sideL);
+                // Lado Direito
+                const sideR = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.3, 0.44), hairMat);
+                sideR.position.set(-0.2, 0.1, 0); hairMesh.add(sideR);
+                // Trás
+                const back = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.3, 0.05), hairMat);
+                back.position.set(0, 0.1, -0.2); hairMesh.add(back);
+            }
+            else if (styleId === 3) { // Longo com Rabo de Cavalo
+                hairMesh = new THREE.Group();
+                // Base (similar ao médio)
+                const top = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.1, 0.44), hairMat);
+                top.position.y = 0.23; hairMesh.add(top);
+                const back = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.4, 0.1), hairMat);
+                back.position.set(0, 0.05, -0.2); hairMesh.add(back);
+
+                // Rabo de Cavalo
+                const pony = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.4, 0.15), hairMat);
+                pony.position.set(0, -0.1, -0.3);
+                pony.rotation.x = -0.3;
+                hairMesh.add(pony);
+            }
+
+            return hairMesh;
+        }
+
+
+        // Função createHumanoid atualizada para aceitar estilo e cor de cabelo
+        function createHumanoid(color, hairStyle = 0, hairColor = CONFIG.colors.defaultHair) {
             const c = new THREE.Group(); c.scale.set(1.4, 1.4, 1.4);
             const mats = { skin: new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin }), shirt: new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 }), pants: new THREE.MeshStandardMaterial({ color: 0x111 }), pack: new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack }) };
             const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), mats.shirt); body.position.y = 1.1; c.add(body);
+
             const headG = new THREE.Group(); headG.position.y = 1.7;
             headG.add(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), mats.skin));
-            const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.05); const eyeMat = new THREE.MeshBasicMaterial({color:0});
+
+            // --- ADICIONA CABELO ---
+            const hairMesh = createHair(hairStyle, hairColor);
+            if (hairMesh) {
+                headG.add(hairMesh);
+            }
+
+            const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.05); const eyeMat = new THREE.MeshBasicMaterial({ color: 0 });
             const lEye = new THREE.Mesh(eyeGeo, eyeMat); lEye.position.set(0.1, 0.05, 0.2); headG.add(lEye);
             const rEye = new THREE.Mesh(eyeGeo, eyeMat); rEye.position.set(-0.1, 0.05, 0.2); headG.add(rEye);
             const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.03, 0.05), eyeMat); mouth.position.set(0, -0.1, 0.2); headG.add(mouth);
-            const helmet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({color:0x00eaff})); 
+
+            const helmet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: 0x00eaff }));
             helmet.visible = false; headG.add(helmet); c.add(headG);
+
             const limbG = new THREE.BoxGeometry(0.15, 0.6, 0.15);
             const lArm = new THREE.Mesh(limbG, mats.shirt); lArm.position.set(0.4, 1.1, 0); c.add(lArm);
             const rArm = new THREE.Mesh(limbG, mats.shirt); rArm.position.set(-0.4, 1.1, 0); c.add(rArm);
@@ -1997,46 +2308,49 @@
             const lLeg = new THREE.Mesh(legG, mats.pants); lLeg.position.set(0.15, 0.35, 0); c.add(lLeg);
             const rLeg = new THREE.Mesh(legG, mats.pants); rLeg.position.set(-0.15, 0.35, 0); c.add(rLeg);
             const pack = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.25), mats.pack); pack.position.set(0, 1.15, -0.3); c.add(pack);
-            c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack, helmet };
+
+            // Armazena referências, incluindo o cabelo
+            c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack, helmet, hair: hairMesh };
             return c;
         }
 
         function createDoor(x, y, z, target, rot) {
             const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot;
-            
+
             // Frame Neon
-            const f = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x111, emissive: 0x00eaff, emissiveIntensity: 0.5 })); 
+            const f = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x111, emissive: 0x00eaff, emissiveIntensity: 0.5 }));
             f.position.y = 3; g.add(f);
-            
+
             // Glass Door - Visual Neon Translúcido
             const d = new THREE.Mesh(
-                new THREE.PlaneGeometry(3.5, 5.5), 
-                new THREE.MeshPhysicalMaterial({ 
+                new THREE.PlaneGeometry(3.5, 5.5),
+                new THREE.MeshPhysicalMaterial({
                     map: portalTexture,
-                    color: 0x00eaff, 
+                    color: 0x00eaff,
                     emissive: 0x00eaff,
                     emissiveIntensity: 0.5,
-                    transparent: true, 
-                    opacity: 0.7, 
+                    transparent: true,
+                    opacity: 0.7,
                     side: THREE.DoubleSide,
                     blending: THREE.AdditiveBlending
                 })
-            ); 
+            );
             d.position.set(0, 3, 0);
             g.add(d);
-            
+
             // Luz do Portal
             const pLight = new THREE.PointLight(0x00eaff, 2, 8);
             pLight.position.set(0, 3, 1);
             g.add(pLight);
-            
+
             const h = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 2), new THREE.MeshBasicMaterial({ visible: false }));
             h.position.set(0, 3, 0); h.userData = { isInteractable: true, type: "DOOR", target: target }; g.add(h);
             scene.add(g); levelObjects.push(g); interactables.push(h);
         }
 
+        // Função createPlayer atualizada para usar o estado do jogador
         function createPlayer(id) {
-            player = createHumanoid(id === 2 ? CONFIG.colors.agent2 : CONFIG.colors.agent1);
+            player = createHumanoid(id === 2 ? CONFIG.colors.agent2 : CONFIG.colors.agent1, playerState.hairStyle, playerState.hairColor);
             scene.add(player); playerBody = new THREE.Box3();
         }
 
@@ -2052,13 +2366,25 @@
                 } else if (data.target === "CYBER_OPS") {
                     if (missionProgress >= 2) {
                         loadScene(data.target);
-                        if(missionProgress < 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
+                        if (missionProgress < 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
                     } else startDialog("SISTEMA", ["Portal trancado. Fale com a Agente Júlia."]);
                 }
                 return;
             }
 
             if (data.type === "PC_CUSTOM") {
+                // Sincroniza a UI com o estado atual antes de abrir
+                document.getElementById('custom-name').value = playerState.name === "Agente" ? "" : playerState.name;
+                document.getElementById('custom-backpack-color').value = '#' + playerState.backpackColor.toString(16).padStart(6, '0');
+                document.getElementById('custom-helmet-toggle').checked = playerState.hasHelmet;
+                document.getElementById('helmet-color-section').classList.toggle('hidden', !playerState.hasHelmet);
+                document.getElementById('custom-helmet-color').value = '#' + playerState.helmetColor.toString(16).padStart(6, '0');
+
+                // Sincroniza UI de Cabelo
+                uiSelectedHairStyleIndex = playerState.hairStyle;
+                document.getElementById('hair-style-label').innerText = HAIR_STYLES[uiSelectedHairStyleIndex];
+                document.getElementById('custom-hair-color').value = '#' + playerState.hairColor.toString(16).padStart(6, '0');
+
                 document.getElementById('computer-overlay').style.display = 'flex';
                 document.getElementById('pc-view-custom').classList.remove('hidden');
                 document.getElementById('pc-view-login').classList.add('hidden');
@@ -2069,7 +2395,7 @@
             }
 
             if (data.type === "PC_MISSION") {
-                if(missionProgress < 4) {
+                if (missionProgress < 4) {
                     startDialog("SISTEMA", ["Acesso negado. Fale com a Capitã Dados primeiro!"]);
                 } else {
                     document.getElementById('computer-overlay').style.display = 'flex';
@@ -2088,28 +2414,28 @@
             }
 
             if (data.name === "Comandante Motta") {
-                if(missionProgress === 0) {
+                if (missionProgress === 0) {
                     dialogs = ["Bem-vindo! Vá ao Globo Central para criar seu uniforme."];
                     missionProgress = 1; updateHUD("Personalize seu Agente", "#00ff88");
                 } else if (missionProgress === 6) {
                     dialogs = ["Orgulho da equipe! Continue protegendo seus amigos online."];
                 }
             } else if (data.name === "Agente Júlia") {
-                if(missionProgress === 2) {
+                if (missionProgress === 2) {
                     dialogs = ["Ótimo uniforme! O portal está aberto. Entre e procure a Capitã Dados."];
                     updateHUD("Entre no Portal", "#d500f9"); // FIX HUD UPDATE
                 }
             } else if (data.name === "Capitã Dados") {
-                if(missionProgress === 3) {
+                if (missionProgress === 3) {
                     dialogs = [
                         "Parado aí! Antes de usar o computador, preciso saber se você é seguro.",
-                        { question: "Alguém num jogo pediu seu endereço. O que você faz?", options: [ { text: "Passo o endereço", correct: false }, { text: "Não passo e aviso meus pais", correct: true } ] }
+                        { question: "Alguém num jogo pediu seu endereço. O que você faz?", options: [{ text: "Passo o endereço", correct: false }, { text: "Não passo e aviso meus pais", correct: true }] }
                     ];
                 } else {
                     dialogs = ["Você já passou no teste! Pode usar o computador."];
                 }
             } else if (data.name === "Robô Fair Play") {
-                if(missionProgress === 5) {
+                if (missionProgress === 5) {
                     dialogs = ["Vi que você denunciou o golpe. Muito bem!", "Lembre-se: Jogo bom é jogo com respeito. Se alguém for chato, bloqueie!", "Agora pode voltar para o Lobby."];
                     updateHUD("Volte para o Lobby", "#fff");
                 } else {
@@ -2121,7 +2447,7 @@
         }
 
         function startDialog(name, texts) {
-            if(isDialogOpen) return;
+            if (isDialogOpen) return;
             isDialogOpen = true;
             document.getElementById('dialog-box').style.display = 'block';
             document.getElementById('npc-name').innerText = name;
@@ -2129,31 +2455,31 @@
             advanceDialog();
         }
 
-        function updateHUD(txt, col) { 
-            const h = document.getElementById('obj-text'); h.innerText = txt; h.style.color = col; h.style.textShadow = `0 0 10px ${col}`; 
+        function updateHUD(txt, col) {
+            const h = document.getElementById('obj-text'); h.innerText = txt; h.style.color = col; h.style.textShadow = `0 0 10px ${col}`;
             updateMarkers();
         }
 
         function setupInputs() {
-            const onK = (k, v) => { if(['w','s','a','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k.toLowerCase())) keys[k.toLowerCase().replace('arrow','').replace('key','')] = v; };
-            document.addEventListener('keydown', e => { if(e.code==='Space'||e.code==='Enter') { const target = getNearestInteractable(); if(target) handleInteraction(target); } else onK(e.key, true); });
+            const onK = (k, v) => { if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k.toLowerCase())) keys[k.toLowerCase().replace('arrow', '').replace('key', '')] = v; };
+            document.addEventListener('keydown', e => { if (e.code === 'Space' || e.code === 'Enter') { const target = getNearestInteractable(); if (target) handleInteraction(target); } else onK(e.key, true); });
             document.addEventListener('keyup', e => onK(e.key, false));
-            
-            window.addEventListener('pointerdown', e => { if(!e.target.closest('.screen') && !e.target.closest('#joystick-zone')) { isMouseDown = true; dragStartX = e.clientX; isDraggingView = false; }});
-            window.addEventListener('pointermove', e => { 
-                if (e.buttons === 0) isMouseDown = false; 
-                if(isMouseDown && Math.abs(e.clientX-dragStartX)>5) { isDraggingView = true; cameraAngle -= (e.clientX-dragStartX)*0.005; dragStartX = e.clientX; }
+
+            window.addEventListener('pointerdown', e => { if (!e.target.closest('.screen') && !e.target.closest('#joystick-zone')) { isMouseDown = true; dragStartX = e.clientX; isDraggingView = false; } });
+            window.addEventListener('pointermove', e => {
+                if (e.buttons === 0) isMouseDown = false;
+                if (isMouseDown && Math.abs(e.clientX - dragStartX) > 5) { isDraggingView = true; cameraAngle -= (e.clientX - dragStartX) * 0.005; dragStartX = e.clientX; }
             });
-            window.addEventListener('pointerup', e => { 
-                if(e.target.closest('.pc-window') || e.target.closest('.screen') || e.target.closest('#dialog-box') || e.target.closest('#joystick-zone')) return;
-                isMouseDown = false; 
-                if(!isDraggingView) { const target = getNearestInteractable(); if(target) handleInteraction(target); }
-                isDraggingView = false; 
+            window.addEventListener('pointerup', e => {
+                if (e.target.closest('.pc-window') || e.target.closest('.screen') || e.target.closest('#dialog-box') || e.target.closest('#joystick-zone') || e.target.closest('.hair-selector')) return;
+                isMouseDown = false;
+                if (!isDraggingView) { const target = getNearestInteractable(); if (target) handleInteraction(target); }
+                isDraggingView = false;
             });
             window.addEventListener('pointerleave', () => { isMouseDown = false; isDraggingView = false; });
-            
+
             const joy = document.getElementById('joystick-zone');
-            if('ontouchstart' in window) {
+            if ('ontouchstart' in window) {
                 const m = nipplejs.create({ zone: joy, mode: 'static', position: { left: '50%', top: '50%' }, color: 'cyan' });
                 // FIX CONTROLES MOBILE
                 m.on('move', (e, d) => {
@@ -2162,68 +2488,69 @@
                         joystickVec.set(d.vector.x * d.force, 0, -d.vector.y * d.force);
                     }
                 });
-                m.on('end', () => joystickVec.set(0,0,0));
+                m.on('end', () => joystickVec.set(0, 0, 0));
             } else joy.style.display = 'none';
         }
 
         function getNearestInteractable() {
             let n = null, md = 5;
-            interactables.forEach(o => { const d = player.position.distanceTo(o.getWorldPosition(new THREE.Vector3())); if(d<md) { n = o; md = d; } });
+            interactables.forEach(o => { const d = player.position.distanceTo(o.getWorldPosition(new THREE.Vector3())); if (d < md) { n = o; md = d; } });
             return n;
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            if(player && clock) {
+            if (player && clock) {
                 const dt = clock.getDelta();
-                if(!isDialogOpen) {
-                    const m = new THREE.Vector3(0,0,0);
-                    if(keys.w) m.z -= 1; if(keys.s) m.z += 1; if(keys.a) m.x -= 1; if(keys.d) m.x += 1;
+                if (!isDialogOpen) {
+                    const m = new THREE.Vector3(0, 0, 0);
+                    if (keys.w) m.z -= 1; if (keys.s) m.z += 1; if (keys.a) m.x -= 1; if (keys.d) m.x += 1;
                     // FIX CONTROLES TECLADO+JOYSTICK
-                    if(joystickVec.lengthSq()>0) m.add(joystickVec);
-                    
+                    if (joystickVec.lengthSq() > 0) m.add(joystickVec);
+
                     let groundY = 0;
                     const rayOrigin = player.position.clone(); rayOrigin.y += 5;
                     groundRaycaster.set(rayOrigin, new THREE.Vector3(0, -1, 0));
-                    const hits = groundRaycaster.intersectObjects(floors, false); 
-                    if(hits.length > 0) groundY = hits[0].point.y;
+                    const hits = groundRaycaster.intersectObjects(floors, false);
+                    if (hits.length > 0) groundY = hits[0].point.y;
 
-                    if(m.lengthSq()>0) {
-                        m.normalize().applyAxisAngle(new THREE.Vector3(0,1,0), cameraAngle);
-                        const np = player.position.clone().add(m.multiplyScalar(CONFIG.speed*dt));
+                    if (m.lengthSq() > 0) {
+                        m.normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngle);
+                        const np = player.position.clone().add(m.multiplyScalar(CONFIG.speed * dt));
                         const pBox = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(np.x, groundY + 1, np.z), new THREE.Vector3(0.7, 2, 0.7));
                         let col = false;
-                        obstacles.forEach(o => { if(pBox.intersectsBox(o)) col = true; });
-                        if(!col) {
-                            player.position.copy(np); 
+                        obstacles.forEach(o => { if (pBox.intersectsBox(o)) col = true; });
+                        if (!col) {
+                            player.position.copy(np);
                             player.rotation.y = Math.atan2(m.x, m.z);
                             walkTime += dt * 12;
-                            player.userData.parts.body.position.y = 1.1 + Math.sin(walkTime)*0.05;
-                            player.userData.parts.leftLeg.rotation.x = -Math.sin(walkTime)*0.6;
-                            player.userData.parts.rightLeg.rotation.x = Math.sin(walkTime)*0.6;
+                            player.userData.parts.body.position.y = 1.1 + Math.sin(walkTime) * 0.05;
+                            player.userData.parts.leftLeg.rotation.x = -Math.sin(walkTime) * 0.6;
+                            player.userData.parts.rightLeg.rotation.x = Math.sin(walkTime) * 0.6;
                         }
                     } else {
-                         player.userData.parts.body.position.y = 1.1;
-                         player.userData.parts.leftLeg.rotation.x = 0; player.userData.parts.rightLeg.rotation.x = 0;
+                        player.userData.parts.body.position.y = 1.1;
+                        player.userData.parts.leftLeg.rotation.x = 0; player.userData.parts.rightLeg.rotation.x = 0;
                     }
                     player.position.y += (groundY - player.position.y) * 0.2;
                 }
-                
-                const co = new THREE.Vector3(Math.sin(cameraAngle)*25, 25, Math.cos(cameraAngle)*25);
+
+                const co = new THREE.Vector3(Math.sin(cameraAngle) * 25, 25, Math.cos(cameraAngle) * 25);
                 const tp = player.position.clone().add(co);
                 camera.position.lerp(tp, 0.1); camera.lookAt(player.position);
                 composer.render();
             }
         }
 
-        window.addEventListener('resize', () => { 
+        window.addEventListener('resize', () => {
             if (camera && renderer && composer) {
-                camera.aspect = window.innerWidth / window.innerHeight; 
-                camera.updateProjectionMatrix(); 
-                renderer.setSize(window.innerWidth, window.innerHeight); 
-                composer.setSize(window.innerWidth, window.innerHeight); 
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                composer.setSize(window.innerWidth, window.innerHeight);
             }
         });
     </script>
 </body>
+
 </html>
