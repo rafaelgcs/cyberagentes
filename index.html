@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cyber Agentes - Missão Segurança</title>
 
-    <!-- Fontes -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap');
 
@@ -50,7 +49,7 @@
             background: linear-gradient(135deg, #240b36 0%, #8314c3 100%);
             color: white;
             transition: opacity 0.5s;
-            background-image: url('./assets/img/bg_app.png'); /* Fallback se não tiver imagem */
+            background-image: url('./assets/img/bg_app.png'); 
         }
 
         .hidden {
@@ -182,7 +181,6 @@
             padding-bottom: 5px;
         }
 
-        /* --- SISTEMA DE DIÁLOGO E QUIZ --- */
         #dialog-box {
             position: absolute;
             bottom: 30px;
@@ -215,7 +213,6 @@
             line-height: 1.4;
         }
         
-        /* Botões de Quiz dentro do Diálogo */
         .quiz-options {
             display: flex;
             gap: 10px;
@@ -261,7 +258,6 @@
             text-shadow: 0 0 10px #00eaff;
         }
 
-        /* --- COMPUTADOR --- */
         #computer-overlay {
             position: absolute;
             top: 0;
@@ -329,7 +325,6 @@
             overflow-y: auto;
         }
 
-        /* Tela de Login */
         .login-form input {
             padding: 15px;
             width: 300px;
@@ -350,7 +345,6 @@
             text-shadow: 0 0 5px rgba(255, 85, 85, 0.5);
         }
 
-        /* Puzzle de Sequência */
         .sequence-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -375,7 +369,6 @@
         .seq-btn.blue { background-color: #00eaff; color: #00eaff; }
         .seq-btn.yellow { background-color: #ffd54f; color: #ffd54f; }
 
-        /* Rede Social Falsa */
         .social-feed {
             width: 100%;
             height: 100%;
@@ -416,7 +409,6 @@
         }
         .fake-news-btn:hover { transform: scale(1.05); }
 
-        /* --- UI: CUSTOMIZAÇÃO --- */
         .custom-interface {
             width: 100%;
             max-width: 600px;
@@ -505,7 +497,6 @@
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         input[type="color"]::-webkit-color-swatch { border: 2px solid #fff; border-radius: 50%; }
 
-        /* Toggle */
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -767,7 +758,7 @@
         // Globais
         let scene, camera, renderer, clock, composer;
         let player, playerBody;
-        let levelObjects = [], obstacles = [], interactables = [], floors = [];
+        let levelObjects = [], obstacles = [], interactables = [], floors = [], markers = [];
         let selectedAgentId = null, missionProgress = 0, currentLevel = "LOBBY";
         
         // Estado de Diálogo
@@ -784,19 +775,22 @@
         const groundRaycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
+        // --- FUNÇÃO COLISÃO CORRIGIDA ---
+        function addCollisionBox(x, y, z, w, h, d) {
+            const box = new THREE.Box3();
+            // Define a caixa baseada no centro e tamanho, garantindo posição correta
+            box.setFromCenterAndSize(new THREE.Vector3(x, y + h/2, z), new THREE.Vector3(w, h, d));
+            obstacles.push(box);
+        }
+
         // --- SISTEMA DE DIÁLOGO E QUIZ ---
         window.advanceDialog = function () {
-            if (!isDialogOpen || isQuizMode) return; // Trava se for quiz
+            if (!isDialogOpen || isQuizMode) return;
             
             if (currentDialogQueue.length > 0) { 
                 const item = currentDialogQueue.shift();
-                
-                // Se o item for um objeto, é um quiz
-                if(typeof item === 'object') {
-                    showQuiz(item);
-                } else {
-                    document.getElementById('dialog-text').innerText = item; 
-                }
+                if(typeof item === 'object') showQuiz(item);
+                else document.getElementById('dialog-text').innerText = item; 
             } else { 
                 document.getElementById('dialog-box').style.display = 'none'; 
                 isDialogOpen = false; 
@@ -815,10 +809,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'quiz-btn';
                 btn.innerText = opt.text;
-                btn.onclick = (e) => {
-                    e.stopPropagation(); // Previne fechar o diálogo
-                    handleQuizAnswer(opt.correct);
-                };
+                btn.onclick = (e) => { e.stopPropagation(); handleQuizAnswer(opt.correct); };
                 optsDiv.appendChild(btn);
             });
         }
@@ -831,14 +822,9 @@
 
             if(isCorrect) {
                 currentDialogQueue = ["Resposta Certa! Muito bem!", ...currentDialogQueue];
-                // Lógica específica de missão
-                if(missionProgress === 3) {
-                    missionProgress = 4;
-                    updateHUD("Use o Computador da Missão", "#ff00ff");
-                }
+                if(missionProgress === 3) { missionProgress = 4; updateHUD("Use o Computador da Missão", "#ff00ff"); }
             } else {
                 currentDialogQueue = ["Hmm, não é bem isso. Tente pensar em segurança!", "Vamos tentar de novo depois."];
-                // Reinicia conversa se falhar (opcional, aqui apenas encerra)
             }
             advanceDialog();
         }
@@ -925,7 +911,6 @@
             playerState.hasHelmet = document.getElementById('custom-helmet-toggle').checked;
             playerState.helmetColor = parseInt(document.getElementById('custom-helmet-color').value.replace('#', ''), 16);
             
-            // Atualiza Avatar
             if (player && player.userData.parts) {
                 if (player.userData.parts.backpack) player.userData.parts.backpack.material.color.setHex(playerState.backpackColor);
                 if (player.userData.parts.helmet) {
@@ -1028,7 +1013,8 @@
 
         function clearLevel() {
             levelObjects.forEach(obj => scene.remove(obj));
-            levelObjects = []; obstacles = []; interactables = []; floors = [];
+            markers.forEach(m => scene.remove(m));
+            levelObjects = []; obstacles = []; interactables = []; floors = []; markers = [];
         }
 
         function loadScene(sceneName) {
@@ -1043,15 +1029,11 @@
 
         // --- CRIAÇÃO DE CENÁRIOS ---
         function createLobbyLevel() {
-            // PISO CENTRAL (ALTO)
             createFloor(0, 0, 16, 30, floorTextureBase);
-            
-            // PISOS LATERAIS (BAIXOS)
             createFloor(-16, -1.5, 16, 30, carpetTexture);
             createFloor(16, -1.5, 16, 30, carpetTexture);
             
-            // RAMPAS
-            // Física (Invisível)
+            // Rampas Físicas
             const r1 = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 6), new THREE.MeshBasicMaterial({visible:false})); 
             r1.position.set(-8, -0.75, 0); r1.rotation.z = 0.4; 
             scene.add(r1); levelObjects.push(r1); floors.push(r1);
@@ -1060,7 +1042,7 @@
             r2.position.set(8, -0.75, 0); r2.rotation.z = -0.4; 
             scene.add(r2); levelObjects.push(r2); floors.push(r2);
 
-            // Visual
+            // Rampas Visuais
             const rvL = new THREE.Mesh(new THREE.BoxGeometry(2, 0.2, 6), new THREE.MeshStandardMaterial({color: 0x444})); 
             rvL.position.set(-8, -0.75, 0); rvL.rotation.z = 0.5; 
             scene.add(rvL); levelObjects.push(rvL);
@@ -1069,37 +1051,33 @@
             rvR.position.set(8, -0.75, 0); rvR.rotation.z = -0.5; 
             scene.add(rvR); levelObjects.push(rvR);
 
-            // PAREDES
+            // Paredes
             createWall(0, 3, -15, 48, 8, 1); createWall(0, 3, 15, 48, 8, 1);
             createWall(-24, 3, 0, 1, 8, 30); createWall(24, 3, 0, 1, 8, 30);
-            
             createWall(-8, 1, 9, 0.5, 5, 12); createWall(-8, 1, -9, 0.5, 5, 12);
             createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
-            // OBJETOS CENTRAIS
+            // Objetos
             const desk = new THREE.Mesh(new THREE.CylinderGeometry(3, 2, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x111 }));
-            desk.position.set(0, 0.6, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(desk);
+            desk.position.set(0, 0.6, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(0, 0.6, 0, 3, 1.2, 3);
+            
             const globe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 16, 16), new THREE.MeshBasicMaterial({ color: 0x00eaff, wireframe: true }));
             globe.position.set(0, 2.5, 0); scene.add(globe); levelObjects.push(globe);
             
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4,4,4), new THREE.MeshBasicMaterial({visible:false}));
-            pcHit.position.set(0,1,0); pcHit.userData = { isInteractable:true, type:"PC_CUSTOM" };
+            pcHit.position.set(0,1,0); pcHit.userData = { isInteractable:true, type:"PC_CUSTOM", name:"Personalização" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
             createDoor(0, 0, -14.5, "CYBER_OPS", 0);
 
-            // NPCs & DECORAÇÃO (Com Alturas Ajustadas)
             createNPC(-19, -1.5, CONFIG.colors.commander, "Comandante Motta", null);
             createNPC(16, -1.5, CONFIG.colors.npc, "Agente Júlia", null);
             
-            // Decoração no nível baixo
+            // Móveis com colisão corrigida
             createChair(-20, -1.5, -5, Math.PI/2);
             createTable(-22, -1.5, -5, Math.PI/2);
             
-            // NPC Extra (no alto)
-            createNPC(-5, 0, 0xffff00, "Agente Blindado", ["Minha senha é tão forte que nem eu lembro! Brincadeira, anote em lugar seguro.", "Dica: Nunca use '123456' como senha!"]);
-            
-            // Dicas Flutuantes
+            createNPC(-5, 0, 0xffff00, "Agente Blindado", ["Minha senha é tão forte que nem eu lembro!"]);
             createTipTotem(-10, 0, 5, "Dica #1: Não fale com estranhos!");
             createTipTotem(10, 0, 5, "Dica #2: Não clique em links suspeitos!");
 
@@ -1107,39 +1085,84 @@
         }
 
         function createRoomLevel() {
-            createFloor(0, 0, 30, 20, floorTextureBase); // Piso Cyber
+            createFloor(0, 0, 30, 20, floorTextureBase);
             createWall(0, 4, -10, 30, 8, 1); createWall(0, 4, 10, 30, 8, 1);
             createWall(15, 4, 0, 1, 8, 20); createWall(-15, 4, 0, 1, 8, 20);
             
             createDoor(-14.5, 0, 0, "LOBBY", Math.PI/2);
 
-            // Servidores
             createServerRack(5, -8, 0); createServerRack(10, -8, 0);
             createServerRack(5, 8, Math.PI); createServerRack(10, 8, Math.PI);
 
-            // Mesa Principal e PC
             const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x001133 }));
-            desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(desk);
+            desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(10, 0.75, 0, 6, 1.5, 3);
+            
             const screen = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide }));
             screen.position.set(10, 2.5, 0); scene.add(screen); levelObjects.push(screen);
             
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4,4,4), new THREE.MeshBasicMaterial({visible:false}));
-            pcHit.position.set(10,1.5,0); pcHit.userData = { isInteractable:true, type:"PC_MISSION" };
+            pcHit.position.set(10,1.5,0); pcHit.userData = { isInteractable:true, type:"PC_MISSION", name:"Terminal de Missão" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            // NPCs
             createNPC(6, 0, 0xff0055, "Capitã Dados", null);
             createNPC(0, -5, 0x0000ff, "Robô Fair Play", null);
 
-            // Área de Reunião Organizada
             const tableX = -5, tableZ = 5;
             createTable(tableX, 0, tableZ, 0);
-            createChair(tableX, 0, tableZ + 1.5, Math.PI); // Costas pra parede
-            createChair(tableX, 0, tableZ - 1.5, 0);       // De frente
+            createChair(tableX, 0, tableZ + 1.5, Math.PI);
+            createChair(tableX, 0, tableZ - 1.5, 0);
             createChair(tableX + 2, 0, tableZ, -Math.PI/2);
             createChair(tableX - 2, 0, tableZ, Math.PI/2);
 
             if(player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI/2; }
+        }
+
+        // --- MARCADORES DE MISSÃO ---
+        function createQuestMarker(target) {
+            const g = new THREE.Group();
+            const cone = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.8, 8), new THREE.MeshBasicMaterial({color: 0xffff00, emissive: 0xffff00}));
+            cone.rotation.z = Math.PI; cone.position.y = 0;
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshBasicMaterial({color: 0xffff00, emissive: 0xffff00}));
+            ball.position.y = -0.6;
+            g.add(cone); g.add(ball);
+            
+            // Posiciona acima do alvo
+            const pos = new THREE.Vector3();
+            target.getWorldPosition(pos);
+            g.position.set(pos.x, pos.y + 3.5, pos.z);
+            
+            scene.add(g); markers.push(g);
+            
+            // Animação
+            const anim = () => { 
+                if(g && g.parent) { 
+                    g.rotation.y += 0.05; 
+                    g.position.y = pos.y + 3.5 + Math.sin(Date.now()*0.005)*0.2; 
+                    requestAnimationFrame(anim); 
+                } 
+            };
+            anim();
+        }
+
+        function updateMarkers() {
+            markers.forEach(m => scene.remove(m)); markers = [];
+            let targetName = "";
+            
+            if (currentLevel === "LOBBY") {
+                if (missionProgress === 0) targetName = "Comandante Motta";
+                else if (missionProgress === 1) targetName = "Personalização";
+                else if (missionProgress === 2) targetName = "Agente Júlia";
+                else if (missionProgress === 5) targetName = "Comandante Motta"; // Reportar final
+            } else if (currentLevel === "CYBER_OPS") {
+                if (missionProgress === 3) targetName = "Capitã Dados";
+                else if (missionProgress === 4) targetName = "Terminal de Missão";
+                else if (missionProgress === 5) targetName = "Robô Fair Play";
+            }
+
+            if(targetName) {
+                const target = interactables.find(i => i.userData.name === targetName);
+                if(target) createQuestMarker(target);
+            }
         }
 
         // --- OBJETOS 3D ---
@@ -1152,7 +1175,7 @@
         function createWall(x, y, z, w, h, d) {
             const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), new THREE.MeshStandardMaterial({ map: wallTextureBase }));
             m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
-            scene.add(m); levelObjects.push(m); addCollisionBox(m);
+            scene.add(m); levelObjects.push(m); addCollisionBox(x, y, z, w, h, d);
         }
 
         function createServerRack(x, z, rot) {
@@ -1164,25 +1187,22 @@
                 l.position.set(0, 1+i, 1.01); g.add(l);
             }
             g.position.set(x,0,z); g.rotation.y = rot;
-            scene.add(g); levelObjects.push(g); addCollisionBox(rack, g.position);
+            scene.add(g); levelObjects.push(g); addCollisionBox(x, 0, z, 3, 6, 2);
         }
 
-        // MÓVEIS (Agora com parâmetro Y)
         function createChair(x, y, z, rot) {
             const g = new THREE.Group();
             const seat = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), new THREE.MeshStandardMaterial({color:0x333}));
             seat.position.y = 1; g.add(seat);
             const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1), new THREE.MeshStandardMaterial({color:0x888}));
             leg.position.y = 0.5; g.add(leg);
-            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1), new THREE.MeshStandardMaterial({color:0x888}));
-            base.position.y = 0.05; g.add(base);
             const back = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.2), new THREE.MeshStandardMaterial({color:0x333}));
             back.position.set(0, 1.8, -0.5); g.add(back);
             const neon = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1, 0.22), new THREE.MeshBasicMaterial({color:0x00eaff}));
             neon.position.set(0, 1.8, -0.5); g.add(neon);
 
             g.position.set(x, y, z); g.rotation.y = rot;
-            scene.add(g); levelObjects.push(g); addCollisionBox(seat, g.position);
+            scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 1.5, 2, 1.5);
         }
 
         function createTable(x, y, z, rot) {
@@ -1195,7 +1215,7 @@
             leg2.position.set(1.8, 0.75, 0); g.add(leg2);
             
             g.position.set(x, y, z); g.rotation.y = rot;
-            scene.add(g); levelObjects.push(g); addCollisionBox(top, g.position);
+            scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 4, 1.5, 2.5);
         }
 
         function createTipTotem(x, y, z, text) {
@@ -1204,55 +1224,36 @@
             post.position.y = 1.5; g.add(post);
             const box = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshBasicMaterial({color:0x00eaff, wireframe:true}));
             box.position.y = 3; g.add(box);
-            
             const animateBox = () => { if(box) { box.rotation.y += 0.02; box.rotation.x += 0.01; requestAnimationFrame(animateBox); }};
             animateBox();
-
-            g.position.set(x, y, z);
-            g.userData = { isInteractable:true, name:"Dica de Segurança", dialogs:[text] };
+            g.position.set(x, y, z); g.userData = { isInteractable:true, name:"Dica de Segurança", dialogs:[text] };
             scene.add(g); levelObjects.push(g); interactables.push(g);
         }
 
         function createNPC(x, y, color, name, dialogs) {
             const g = new THREE.Group(); g.position.set(x, y, 0);
             const char = createHumanoid(color); char.position.y = 0; g.add(char);
-            
             const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 0.9, 32), new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide })); 
             ring.rotation.x = -Math.PI/2; ring.position.y = 0.1; g.add(ring);
-            
             const visor = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.1), new THREE.MeshBasicMaterial({ color: 0xffffff })); 
             visor.position.set(0, 2.2, 0); g.add(visor);
-
             g.userData = { isInteractable: true, name: name, dialogs: dialogs };
             scene.add(g); levelObjects.push(g); interactables.push(g);
-            
-            const hit = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshBasicMaterial({ visible: false })); 
-            hit.position.set(x, y+1, 0); addCollisionBox(hit);
+            addCollisionBox(x, y, 0, 2, 4, 2); // NPC Hitbox
         }
 
         function createHumanoid(color) {
             const c = new THREE.Group(); c.scale.set(1.4, 1.4, 1.4);
-            const mats = {
-                skin: new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin }),
-                shirt: new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 }),
-                pants: new THREE.MeshStandardMaterial({ color: 0x111 }),
-                pack: new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack })
-            };
-
+            const mats = { skin: new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin }), shirt: new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 }), pants: new THREE.MeshStandardMaterial({ color: 0x111 }), pack: new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack }) };
             const body = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.7, 0.35), mats.shirt); body.position.y = 1.1; c.add(body);
-            
             const headG = new THREE.Group(); headG.position.y = 1.7;
             headG.add(new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.45, 0.4), mats.skin));
-            
             const eyeGeo = new THREE.BoxGeometry(0.08, 0.08, 0.05); const eyeMat = new THREE.MeshBasicMaterial({color:0});
             const lEye = new THREE.Mesh(eyeGeo, eyeMat); lEye.position.set(0.1, 0.05, 0.2); headG.add(lEye);
             const rEye = new THREE.Mesh(eyeGeo, eyeMat); rEye.position.set(-0.1, 0.05, 0.2); headG.add(rEye);
             const mouth = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.03, 0.05), eyeMat); mouth.position.set(0, -0.1, 0.2); headG.add(mouth);
-            
             const helmet = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({color:0x00eaff})); 
-            helmet.visible = false; headG.add(helmet);
-            c.add(headG);
-
+            helmet.visible = false; headG.add(helmet); c.add(headG);
             const limbG = new THREE.BoxGeometry(0.15, 0.6, 0.15);
             const lArm = new THREE.Mesh(limbG, mats.shirt); lArm.position.set(0.4, 1.1, 0); c.add(lArm);
             const rArm = new THREE.Mesh(limbG, mats.shirt); rArm.position.set(-0.4, 1.1, 0); c.add(rArm);
@@ -1260,15 +1261,16 @@
             const lLeg = new THREE.Mesh(legG, mats.pants); lLeg.position.set(0.15, 0.35, 0); c.add(lLeg);
             const rLeg = new THREE.Mesh(legG, mats.pants); rLeg.position.set(-0.15, 0.35, 0); c.add(rLeg);
             const pack = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.25), mats.pack); pack.position.set(0, 1.15, -0.3); c.add(pack);
-
             c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack, helmet };
             return c;
         }
 
         function createDoor(x, y, z, target, rot) {
             const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot;
-            const f = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x00eaff })); f.position.y = 3; g.add(f);
-            const d = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 5.5), new THREE.MeshStandardMaterial({ map: doorTextureBase })); d.position.set(0, 3, 0.4); g.add(d);
+            const f = new THREE.Mesh(new THREE.BoxGeometry(4.2, 6.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x111, emissive: 0x00eaff, emissiveIntensity: 0.5 })); 
+            f.position.y = 3; g.add(f);
+            const d = new THREE.Mesh(new THREE.PlaneGeometry(3.5, 5.5), new THREE.MeshPhysicalMaterial({ color: 0x00eaff, metalness: 0.1, roughness: 0.1, transparent: true, opacity: 0.5, side: THREE.DoubleSide, emissive: 0x00eaff, emissiveIntensity: 0.2 })); 
+            d.position.set(0, 3, 0); g.add(d);
             const h = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 2), new THREE.MeshBasicMaterial({ visible: false }));
             h.position.set(0, 3, 0); h.userData = { isInteractable: true, type: "DOOR", target: target }; g.add(h);
             scene.add(g); levelObjects.push(g); interactables.push(h);
@@ -1279,16 +1281,8 @@
             scene.add(player); playerBody = new THREE.Box3();
         }
 
-        function addCollisionBox(mesh, posOverride) {
-            // Se o objeto for um grupo, usamos a posição dele. Se for mesh, pegamos do bounding box.
-            // Para simplificar e corrigir bugs de colisão com grupos deslocados:
-            const box = new THREE.Box3().setFromObject(mesh);
-            obstacles.push(box);
-        }
-
-        // --- LÓGICA DE JOGO ---
         function handleInteraction(obj) {
-            if (!obj) return; // Verificação de segurança para evitar erro null
+            if (!obj) return;
             const data = obj.userData;
             let dialogs = data.dialogs || [];
 
@@ -1327,10 +1321,9 @@
                 return;
             }
 
-            // Lógica de NPCs
             if (data.name === "Comandante Motta") {
                 if(missionProgress === 0) {
-                    dialogs = ["Bem-vindo! Vá ao Globo Central (mesa preta) para criar seu uniforme."];
+                    dialogs = ["Bem-vindo! Vá ao Globo Central para criar seu uniforme."];
                     missionProgress = 1; updateHUD("Personalize seu Agente", "#00ff88");
                 } else if (missionProgress === 6) {
                     dialogs = ["Orgulho da equipe! Continue protegendo seus amigos online."];
@@ -1343,13 +1336,7 @@
                 if(missionProgress === 3) {
                     dialogs = [
                         "Parado aí! Antes de usar o computador, preciso saber se você é seguro.",
-                        { 
-                            question: "Alguém num jogo pediu seu endereço. O que você faz?", 
-                            options: [
-                                { text: "Passo o endereço", correct: false },
-                                { text: "Não passo e aviso meus pais", correct: true }
-                            ]
-                        }
+                        { question: "Alguém num jogo pediu seu endereço. O que você faz?", options: [ { text: "Passo o endereço", correct: false }, { text: "Não passo e aviso meus pais", correct: true } ] }
                     ];
                 } else {
                     dialogs = ["Você já passou no teste! Pode usar o computador."];
@@ -1362,8 +1349,8 @@
                     dialogs = ["Estou monitorando o respeito nas partidas. Sem xingamentos, ok?"];
                 }
             }
-
             startDialog(data.name, dialogs);
+            updateMarkers(); // Atualiza marcadores após interação
         }
 
         function startDialog(name, texts) {
@@ -1377,28 +1364,26 @@
 
         function updateHUD(txt, col) { 
             const h = document.getElementById('obj-text'); h.innerText = txt; h.style.color = col; h.style.textShadow = `0 0 10px ${col}`; 
+            updateMarkers();
         }
 
         function setupInputs() {
             const onK = (k, v) => { if(['w','s','a','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k.toLowerCase())) keys[k.toLowerCase().replace('arrow','').replace('key','')] = v; };
-            document.addEventListener('keydown', e => { 
-                if(e.code==='Space'||e.code==='Enter') {
-                    const target = getNearestInteractable();
-                    if(target) handleInteraction(target);
-                } else onK(e.key, true); 
-            });
+            document.addEventListener('keydown', e => { if(e.code==='Space'||e.code==='Enter') { const target = getNearestInteractable(); if(target) handleInteraction(target); } else onK(e.key, true); });
             document.addEventListener('keyup', e => onK(e.key, false));
             
             window.addEventListener('pointerdown', e => { if(!e.target.closest('.screen') && !e.target.closest('#joystick-zone')) { isMouseDown = true; dragStartX = e.clientX; isDraggingView = false; }});
-            window.addEventListener('pointermove', e => { if(isMouseDown && Math.abs(e.clientX-dragStartX)>5) { isDraggingView = true; cameraAngle -= (e.clientX-dragStartX)*0.005; dragStartX = e.clientX; }});
+            window.addEventListener('pointermove', e => { 
+                if (e.buttons === 0) isMouseDown = false; // Safety check
+                if(isMouseDown && Math.abs(e.clientX-dragStartX)>5) { isDraggingView = true; cameraAngle -= (e.clientX-dragStartX)*0.005; dragStartX = e.clientX; }
+            });
             window.addEventListener('pointerup', e => { 
+                if(e.target.closest('.pc-window') || e.target.closest('.screen') || e.target.closest('#dialog-box') || e.target.closest('#joystick-zone')) return;
                 isMouseDown = false; 
-                if(!isDraggingView) {
-                    const target = getNearestInteractable();
-                    if(target) handleInteraction(target);
-                }
+                if(!isDraggingView) { const target = getNearestInteractable(); if(target) handleInteraction(target); }
                 isDraggingView = false; 
             });
+            window.addEventListener('pointerleave', () => { isMouseDown = false; isDraggingView = false; });
             
             const joy = document.getElementById('joystick-zone');
             if('ontouchstart' in window) {
@@ -1418,21 +1403,27 @@
             requestAnimationFrame(animate);
             if(player && clock) {
                 const dt = clock.getDelta();
-                // Movimento
                 if(!isDialogOpen) {
                     const m = new THREE.Vector3(0,0,0);
                     if(keys.w) m.z -= 1; if(keys.s) m.z += 1; if(keys.a) m.x -= 1; if(keys.d) m.x += 1;
                     if(joystickVec.lengthSq()>0) m.add(new THREE.Vector3(joystickVec.x, 0, -joystickVec.z));
                     
+                    let groundY = 0;
+                    // Correção de Flutuação: Ignorar o próprio jogador no raycast
+                    const rayOrigin = player.position.clone(); rayOrigin.y += 5;
+                    groundRaycaster.set(rayOrigin, new THREE.Vector3(0, -1, 0));
+                    const hits = groundRaycaster.intersectObjects(floors, false); // false = apenas os meshes do chão
+                    if(hits.length > 0) groundY = hits[0].point.y;
+
                     if(m.lengthSq()>0) {
                         m.normalize().applyAxisAngle(new THREE.Vector3(0,1,0), cameraAngle);
                         const np = player.position.clone().add(m.multiplyScalar(CONFIG.speed*dt));
-                        // Colisão Simples
-                        const pBox = new THREE.Box3().setFromCenterAndSize(np, new THREE.Vector3(0.7, 2, 0.7));
+                        const pBox = new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(np.x, groundY + 1, np.z), new THREE.Vector3(0.7, 2, 0.7));
                         let col = false;
                         obstacles.forEach(o => { if(pBox.intersectsBox(o)) col = true; });
                         if(!col) {
-                            player.position.copy(np); player.rotation.y = Math.atan2(m.x, m.z);
+                            player.position.copy(np); 
+                            player.rotation.y = Math.atan2(m.x, m.z);
                             walkTime += dt * 12;
                             player.userData.parts.body.position.y = 1.1 + Math.sin(walkTime)*0.05;
                             player.userData.parts.leftLeg.rotation.x = -Math.sin(walkTime)*0.6;
@@ -1442,13 +1433,14 @@
                          player.userData.parts.body.position.y = 1.1;
                          player.userData.parts.leftLeg.rotation.x = 0; player.userData.parts.rightLeg.rotation.x = 0;
                     }
+                    
+                    // Suavização da altura
+                    player.position.y += (groundY - player.position.y) * 0.2;
                 }
                 
-                // Câmera
                 const co = new THREE.Vector3(Math.sin(cameraAngle)*25, 25, Math.cos(cameraAngle)*25);
                 const tp = player.position.clone().add(co);
                 camera.position.lerp(tp, 0.1); camera.lookAt(player.position);
-
                 composer.render();
             }
         }
