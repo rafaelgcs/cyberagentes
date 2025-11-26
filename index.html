@@ -111,6 +111,39 @@
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
         }
 
+        /* Botão de Som Flutuante */
+        #sound-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00eaff;
+            color: #00eaff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        #sound-toggle:hover {
+            transform: scale(1.1);
+            background: #00eaff;
+            color: #000;
+        }
+
+        #sound-toggle.muted {
+            border-color: #ff5555;
+            color: #ff5555;
+            box-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
+        }
+
         .credits-content, .guide-content {
             background: rgba(0, 0, 0, 0.8);
             border: 1px solid #00eaff;
@@ -622,10 +655,18 @@
         .arcade-big-text { font-size: 2rem; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 10px currentColor; }
     </style>
 
-    <!-- PLACEHOLDER PARA O SEU ÁUDIO -->
-    <!-- Substitua o src abaixo pelo caminho do seu arquivo de áudio -->
+    <!-- Botão de Toggle de Som -->
+    <div id="sound-toggle" onclick="toggleMusic()">🔊</div>
+
+    <!-- PLACEHOLDER PARA O SEU ÁUDIO DE DITITAÇÃO -->
+    <!-- IMPORTANTE: Substitua o src pelo caminho real do seu arquivo de áudio -->
     <audio id="typing-audio" loop hidden>
         <source src="./assets/sounds/typing.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ÁUDIO DE FUNDO (LOOP) -->
+    <audio id="bg-music" loop>
+        <source src="./assets/sounds/musica.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Scripts -->
@@ -704,6 +745,7 @@
     <!-- CUTSCENE OVERLAY -->
     <div id="cutscene-overlay" class="hidden overlay-full">
         <div id="cutscene-content" class="cutscene-text"></div>
+        <!-- Botão opcional se o usuário quiser pular ou se travar, mas o fluxo é automático por typeWriter -->
     </div>
 
     <!-- TUTORIAL OVERLAY -->
@@ -896,6 +938,34 @@
         const raycaster = new THREE.Raycaster();
         const groundRaycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+        
+        // --- SISTEMA DE SOM ---
+        const bgMusic = document.getElementById('bg-music');
+        const soundBtn = document.getElementById('sound-toggle');
+        let isMusicPlaying = false;
+
+        window.toggleMusic = function() {
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    isMusicPlaying = true;
+                    soundBtn.innerText = "🔊";
+                    soundBtn.classList.remove('muted');
+                }).catch(e => console.log("Audio play failed:", e));
+            } else {
+                bgMusic.pause();
+                isMusicPlaying = false;
+                soundBtn.innerText = "🔇";
+                soundBtn.classList.add('muted');
+            }
+        }
+
+        // Tenta iniciar música na primeira interação
+        document.body.addEventListener('click', () => {
+             if(bgMusic.paused && !soundBtn.classList.contains('muted')) {
+                 bgMusic.play().catch(() => {});
+                 soundBtn.innerText = "🔊";
+             }
+        }, { once: true });
 
         // --- SISTEMA DE CUTSCENES ---
         const CUTSCENES = {
@@ -923,7 +993,6 @@
             currentCutsceneIndex = 0;
             
             const overlay = document.getElementById('cutscene-overlay');
-            const content = document.getElementById('cutscene-content');
             
             overlay.classList.remove('hidden');
             showCutsceneLine();
@@ -933,7 +1002,7 @@
             let i = 0;
             element.innerHTML = "";
             const audio = document.getElementById('typing-audio');
-            // Tenta tocar o audio, catch para evitar erros de autoplay se não tiver interação
+            // Tenta tocar o audio
             if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
             function type() {
@@ -972,8 +1041,6 @@
             }
         }
         
-        window.nextCutscene = showCutsceneLine; // Fallback if needed
-
         // --- SISTEMA DE TUTORIAL ---
         function showTutorial() {
             document.getElementById('tutorial-overlay').classList.remove('hidden');
@@ -1291,18 +1358,17 @@
         
         // --- START GAME ---
         window.launchGame = () => {
-            // Se ainda não viu a cutscene inicial, mostra ela primeiro
             document.getElementById('screen-select').classList.add('hidden');
             playCutscene('intro');
         };
         
-        // Chama essa função APÓS a cutscene
+        // Função para iniciar o mundo 3D após a cutscene
         function startGameWorld() {
             document.getElementById('game-container').style.visibility = 'visible';
             document.getElementById('game-ui').style.display = 'block';
             document.getElementById('dialog-box').onclick = advanceDialog;
             initGame();
-            showTutorial(); // Mostra tutorial
+            showTutorial();
         }
 
         // --- THREE.JS ENGINE ---
