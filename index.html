@@ -2031,9 +2031,9 @@
 
             // --- NOVO ELEMENTO: MESA TÁTICA HOLOGRÁFICA DO COMANDANTE MOTTA ---
             // Cria a base da mesa perto dele
-            createTable(-16, -1.5, 5, 0);
+            createTable(-16, -1.5, 5, 0, 8, 4, true);
             // Cria o plano do holograma em cima
-            const holoGeo = new THREE.PlaneGeometry(3.8, 2.3);
+            const holoGeo = new THREE.PlaneGeometry(7.8, 3.8);
             const holoMat = new THREE.MeshBasicMaterial({
                 map: strategicMapTexture,
                 transparent: true,
@@ -2062,7 +2062,7 @@
             scene.add(juliaRug); levelObjects.push(juliaRug);
 
             createChair(-20, -1.5, -5, Math.PI / 2);
-            createTable(-22, -1.5, -5, Math.PI / 2);
+            createTable(-22, -1.5, -5, Math.PI / 2, 4, 2.5, false);
 
             createNPC(-5, 0, 8, 0xffff00, "Agente Blindado", ["Minha senha é tão forte que nem eu lembro!"]);
             createTipTotem(-10, 0, 5, "Dica #1: Não fale com estranhos!");
@@ -2109,7 +2109,7 @@
             createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0); // Careca
 
             const tableX = -5, tableZ = 5;
-            createTable(tableX, 0, tableZ, 0);
+            createTable(tableX, 0, tableZ, 0, 4, 2.5, false);
             createChair(tableX, 0, tableZ + 1.5, Math.PI);
             createChair(tableX, 0, tableZ - 1.5, 0);
             createChair(tableX + 2, 0, tableZ, -Math.PI / 2);
@@ -2286,17 +2286,24 @@
             scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 1.5, 2, 1.5);
         }
 
-        function createTable(x, y, z, rot) {
+        function createTable(x, y, z, rot, width, depth, addChairs = false) {
             const g = new THREE.Group();
-            const top = new THREE.Mesh(new THREE.BoxGeometry(4, 0.2, 2.5), new THREE.MeshStandardMaterial({ color: 0x222 }));
+            const top = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: 0x222 }));
             top.position.y = 1.5; g.add(top);
-            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x555 }));
-            leg1.position.set(-1.8, 0.75, 0); g.add(leg1);
-            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, 2), new THREE.MeshStandardMaterial({ color: 0x555 }));
-            leg2.position.set(1.8, 0.75, 0); g.add(leg2);
+            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 }));
+            leg1.position.set(-(width / 2 - 0.2), 0.75, 0); g.add(leg1);
+            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 }));
+            leg2.position.set(width / 2 - 0.2, 0.75, 0); g.add(leg2);
 
             g.position.set(x, y, z); g.rotation.y = rot;
-            scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 4, 1.5, 2.5);
+            scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, width, 1.5, depth);
+
+            if (addChairs) {
+                createChair(x, y, z + depth / 2 + 0.8, Math.PI);
+                createChair(x, y, z - depth / 2 - 0.8, 0);
+                createChair(x + width / 2 + 0.8, y, z, -Math.PI / 2);
+                createChair(x - width / 2 - 0.8, y, z, Math.PI / 2);
+            }
         }
 
         function createTipTotem(x, y, z, text) {
