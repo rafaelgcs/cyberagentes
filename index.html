@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Cyber Agentes - Missão Segurança</title>
-
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Press+Start+2P&family=Roboto:wght@300;400;700&display=swap');
 
@@ -1234,6 +1234,13 @@
         // --- SISTEMA DE SOM ---
         const bgMusic = document.getElementById('bg-music');
         const soundBtn = document.getElementById('sound-toggle');
+        const touchButtonSoundUrl = './assets/sounds/touch.wav';
+        const touchButtonSoundUrls = [
+            './assets/sounds/wave_1.mp3',
+            './assets/sounds/wave_2.mp3',
+            './assets/sounds/wave_3.mp3',
+            './assets/sounds/wave_4.mp3'
+        ];
         let isMusicPlaying = false;
 
         window.toggleMusic = function () {
@@ -1563,19 +1570,24 @@
                     setTimeout(() => {
                         isPlayingSequence = true; playerSequence = [];
                         document.getElementById('seq-status').innerText = "Sua vez! Repita.";
-                    }, 500);
+                    }, 300);
                 }
-            }, 800);
+            }, 500);
         }
 
         function lightUpBtn(id) {
             const btn = document.getElementById(`btn-${id}`);
             btn.classList.add('active');
+            const audio = new Audio(touchButtonSoundUrls[id]);
+            audio.play();
             setTimeout(() => btn.classList.remove('active'), 400);
         }
 
         window.handleSeqInput = (id) => {
             if (!isPlayingSequence) return;
+            const audio = new Audio(touchButtonSoundUrls[id]);
+            audio.play();
+
             lightUpBtn(id); playerSequence.push(id);
             if (playerSequence[playerSequence.length - 1] !== gameSequence[playerSequence.length - 1]) {
                 document.getElementById('seq-status').innerText = "Ops! Errou. Tente de novo!";
@@ -1584,7 +1596,7 @@
                 return;
             }
             if (playerSequence.length === gameSequence.length) {
-                if (gameSequence.length >= 3) {
+                if (gameSequence.length >= 5) {
                     document.getElementById('seq-status').innerText = "PARABÉNS! ACESSO LIBERADO!";
                     document.getElementById('seq-status').style.color = "#00ff88";
                     setTimeout(() => {
