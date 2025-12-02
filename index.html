@@ -1222,6 +1222,7 @@
 
         let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture, posterTexture;
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
+        let posterRulesTexture, posterDownloadsTexture, posterChatTexture; // Novas texturas para posters
 
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3(), cameraAngle = 0;
@@ -1836,15 +1837,31 @@
                 for (let i = 0; i < 1000; i++) { c.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b'; c.fillRect(Math.random() * 512, Math.random() * 512, 4, 4); }
             });
 
-            // NOVA TEXTURA: Poster de Segurança
+            // NOVA FUNÇÃO PARA POSTERS
+            window.createPosterTexture = (title, text, bgColor) => {
+                return createTex(512, 512, (c) => {
+                    c.fillStyle = bgColor || '#111'; c.fillRect(0, 0, 512, 512);
+                    c.strokeStyle = '#ffffff'; c.lineWidth = 10; c.strokeRect(20,20,472,472);
+                    c.fillStyle = '#ffffff';
+                    c.font = 'bold 60px Arial'; c.textAlign = 'center'; c.fillText(title, 256, 100);
+                    c.font = '30px Arial';
+                    const lines = text.split('\n');
+                    for(let i = 0; i < lines.length; i++) {
+                        c.fillText(lines[i], 256, 180 + (i * 40));
+                    }
+                });
+            };
+
+            // Criação das novas texturas de poster
+            posterRulesTexture = window.createPosterTexture("REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
+            posterDownloadsTexture = window.createPosterTexture("PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
+            posterChatTexture = window.createPosterTexture("CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
+
+            // Textura de poster antiga (mantida por compatibilidade, mas não usada)
             posterTexture = createTex(256, 256, (c) => {
                 c.fillStyle = '#111'; c.fillRect(0, 0, 256, 256);
                 c.strokeStyle = '#ffff00'; c.lineWidth = 10; c.strokeRect(10,10,236,236);
-                c.fillStyle = '#ffff00';
-                c.font = 'bold 150px Arial';
-                c.textAlign = 'center';
-                c.textBaseline = 'middle';
-                c.fillText('!', 128, 128);
+                c.fillStyle = '#ffff00'; c.font = 'bold 150px Arial'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('!', 128, 128);
             });
 
             window.createScreenTexture = (text) => {
@@ -1883,24 +1900,23 @@
             createFloor(-16, -1.5, 16, 30, carpetTexture);
             createFloor(16, -1.5, 16, 30, carpetTexture);
 
-            // Paredes Externas (Altura 8, Espessura 2)
-            createWall(0, 3, -15, 48, 8, 2);
-            createWall(0, 3, 15, 48, 8, 2); // Parede frontal agora com espessura 2
-            createWall(-24, 3, 0, 2, 8, 30); // Parede esquerda agora com espessura 2
-            createWall(24, 3, -9, 2, 8, 12); createWall(24, 3, 9, 2, 8, 12); // Paredes direitas
-            createWall(24, 0, 0, 2, 2, 6); createWall(24, 5.5, 0, 2, 3, 6);
+            // Paredes Externas (Altura 8, Espessura alterada para 1)
+            createWall(0, 3, -15, 48, 8, 1); // Fundo
+            createWall(0, 3, 15, 48, 8, 1); // Frente
+            createWall(-24, 3, 0, 1, 8, 30); // Esquerda
+            createWall(24, 3, -9, 1, 8, 12); createWall(24, 3, 9, 1, 8, 12); // Direita (partes da janela)
+            createWall(24, 0, 0, 1, 2, 6); createWall(24, 5.5, 0, 1, 3, 6);
             createWindow(24, 2.5, 0, 3, 6);
 
             // Paredes Internas (Altura 5, Espessura 0.5)
-            // Fix: Usar Math.max(w,d) no createWall para evitar esticamento da textura
             createWall(-8, 1, 9, 0.5, 5, 12); createWall(-8, 1, -9, 0.5, 5, 12);
             createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
-            // Escadas (Substituindo Rampas)
+            // Escadas (Alargadas para 8)
             // Esquerda
-            createStairs(-10, -1.5, 0, 4, 1.5, 8, 5, "left"); // De X=-8 (chão alto) descendo para X=-12
+            createStairs(-12, -1.5, 0, 8, 1.5, 8, 5, "left"); 
             // Direita
-            createStairs(10, -1.5, 0, 4, 1.5, 8, 5, "right");
+            createStairs(12, -1.5, 0, 8, 1.5, 8, 5, "right");
 
             // --- DECORAÇÃO EXTRA (ENRICHED LOBBY) ---
             
@@ -1912,19 +1928,14 @@
             // 3 Computadores e Cadeiras (Rotacionados 180 graus)
             for(let i=0; i<3; i++) {
                 const z = 5 + (i * 3);
-                // Computadores virados para a parede esquerda (-PI/2) -> Agora +PI/2 para virar para as cadeiras?
-                // Cadeiras estavam em -18.5. Mesa em -20.
-                // Se a mesa está em X=-20 e cadeiras em X=-18.5, as cadeiras estão à direita da mesa.
-                // As cadeiras devem olhar para a ESQUERDA (-PI/2).
-                // Os computadores devem olhar para a DIREITA (+PI/2).
                 createPropComputer(-20, 0, z, Math.PI/2); 
                 createChair(-18.5, -1.5, z, -Math.PI/2);
             }
 
-            // 2. QUADROS DE AVISO / POSTERS
-            createPoster(-15, 4, -13.9, "warning");
-            createPoster(-5, 4, -13.9, "shield");
-            createPoster(15, 4, -13.9, "lock");
+            // 2. QUADROS DE AVISO / POSTERS (Novos e reposicionados)
+            createPoster(-10, 4, -14.9, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
+            createPoster(0, 4, -14.9, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
+            createPoster(10, 4, -14.9, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
 
             // 3. PLANTAS SCI-FI
             createSciFiPlant(-22, -1.5, -13);
@@ -1932,15 +1943,17 @@
             createSciFiPlant(22, -1.5, 13);
             createSciFiPlant(-22, -1.5, 13);
 
+            // 4. BANCOS CENTRAIS (Novos)
+            createBench(0, 0, 5, 0);
+            createBench(0, 0, -5, Math.PI);
+
             // --- FIM DA DECORAÇÃO EXTRA ---
 
             const globe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshBasicMaterial({ map: hologramTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             globe.position.set(0, 2.5, 0); scene.add(globe); levelObjects.push(globe);
             const animGlobe = () => { if (globe) { globe.rotation.y += 0.01; requestAnimationFrame(animGlobe); } }; animGlobe();
 
-            // Terminal de Personalização (Central - mantido, o usuário pediu para remover o "computador solto" mas este é funcional)
-            // Se o usuário se referiu ao "Terminal de Informações" extra que adicionei antes, vou remover esse extra.
-            // Vou manter apenas o cubo de personalização invisível e talvez um totem visual melhor.
+            // Terminal de Personalização (Central)
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
             pcHit.position.set(0, 1, 0); pcHit.userData = { isInteractable: true, type: "PC_CUSTOM", name: "Personalização" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
@@ -1951,27 +1964,25 @@
 
             createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
-            // Mesa do Capitão (Movida para Z=-12, X=-10 para ser uma "lateral maior")
-            // A parede de trás é X de -24 a 24.
-            // Vamos colocar a mesa em X=-10, Z=-12.
-            createTable(-10, -0.75, -12, 0, 6, 3, false); // Mesa sem cadeiras automáticas
-            // Cadeira do Capitão (Ao lado da mesa)
-            // Se a mesa está em X=-10, Z=-12. O Capitão pode estar sentado atrás dela (Z=-14) ou ao lado (X=-14).
-            // Pedido: "sentado em uma cadeira ao lado da mesa".
-            createChair(-13.5, -0.75, -12, -Math.PI/2); // Cadeira à esquerda da mesa, virada para a direita
+            // Mesa do Capitão (Reposicionada para o fundo central)
+            createTable(0, -0.75, -12, Math.PI/2, 6, 3, false); // Rotacionada 90 graus
+
+            // Cadeira do Capitão (Reposicionada atrás da mesa)
+            createChair(0, -0.75, -13.5, 0); // Virada para a frente
 
             // NPCS
             // Capitão sentado na cadeira
-            createNPC(-13.5, -0.75, -12, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, -Math.PI/2); 
+            createNPC(0, -0.75, -13.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
             
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI/2);
             createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); // Virado para a sala
             createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2);
-            // NPC Central (Novo)
-            createNPC(0, 0, 5, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI);
+            // NPC Central
+            createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI/4);
 
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-            holoMap.rotation.x = -Math.PI / 2; holoMap.position.set(-10, 0.8, -12); scene.add(holoMap); levelObjects.push(holoMap);
+            holoMap.rotation.x = -Math.PI / 2; holoMap.rotation.z = Math.PI / 2; // Rotacionado para acompanhar a mesa
+            holoMap.position.set(0, 0.8, -12); scene.add(holoMap); levelObjects.push(holoMap);
 
             createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
             createScreen(-12, 5, -14.5, Math.PI, window.createScreenTexture("DICA: Use senhas fortes!"));
@@ -2059,13 +2070,17 @@
             scene.add(g); levelObjects.push(g);
         }
 
-        function createPoster(x, y, z, type) {
-            let color = 0xffffff;
-            if(type === 'warning') color = 0xffff00;
-            if(type === 'shield') color = 0x00ff00;
-            if(type === 'lock') color = 0x00eaff;
+        // Função de Poster Atualizada
+        function createPoster(x, y, z, title, text, color) {
             const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({color:0x111}));
-            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({color: color, map: posterTexture}));
+            
+            // Seleciona a textura correta baseada no título
+            let texture = posterTexture; // fallback
+            if (title === "REGRAS DO JOGO") texture = posterRulesTexture;
+            else if (title === "PERIGO: DOWNLOADS") texture = posterDownloadsTexture;
+            else if (title === "CHAT SEGURO") texture = posterChatTexture;
+
+            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({map: texture}));
             paper.position.z = 0.06;
             const g = new THREE.Group(); g.add(frame); g.add(paper); g.position.set(x, y, z);
             scene.add(g); levelObjects.push(g);
@@ -2081,6 +2096,15 @@
                 const leaf = new THREE.Mesh(geo, mat); leaf.position.y = 1; leaf.rotation.z = 0.5; leaf.rotation.y = (i / 5) * Math.PI * 2; g.add(leaf);
             }
             g.position.set(x, y, z); scene.add(g); levelObjects.push(g);
+        }
+
+        // NOVA FUNÇÃO: Criar Banco
+        function createBench(x, y, z, rot) {
+            const g = new THREE.Group();
+            const seat = new THREE.Mesh(new THREE.BoxGeometry(3, 0.2, 1), new THREE.MeshStandardMaterial({ color: 0x333 })); seat.position.y = 0.6; g.add(seat);
+            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.8), new THREE.MeshStandardMaterial({ color: 0x222 })); leg1.position.set(-1.3, 0.3, 0); g.add(leg1);
+            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.8), new THREE.MeshStandardMaterial({ color: 0x222 })); leg2.position.set(1.3, 0.3, 0); g.add(leg2);
+            g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, 3, 0.6, 1);
         }
 
         // --- OBJETOS 3D EXISTENTES ---
