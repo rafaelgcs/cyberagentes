@@ -2085,42 +2085,62 @@
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
 
-        // --- NOVO NÍVEL: LABIRINTO ---
+        // --- NOVO NÍVEL: LABIRINTO (COMPLEXO DE SALAS) ---
         function createMazeLevel() {
-            createFloor(0, 0, 40, 40, serverFloorTexture);
+            // Chão maior
+            createFloor(0, 0, 60, 80, serverFloorTexture);
 
-            // Paredes externas
-            createWall(0, 4, -20, 40, 8, 1, serverWallTexture);
-            createWall(0, 4, 20, 40, 8, 1, serverWallTexture);
-            createWall(-20, 4, 0, 1, 8, 40, serverWallTexture);
-            createWall(20, 4, 0, 1, 8, 40, serverWallTexture);
+            // PAREDES EXTERNAS GERAIS
+            createWall(0, 4, 40, 60, 8, 1, serverWallTexture); // Fundo
+            createWall(0, 4, -40, 60, 8, 1, serverWallTexture); // Frente
+            createWall(-30, 4, 0, 1, 8, 80, serverWallTexture); // Esquerda
+            createWall(30, 4, 0, 1, 8, 80, serverWallTexture); // Direita
 
-            // Labirinto Simples (Manual)
-            // Corredor central
-            createWall(-10, 4, 0, 1, 8, 30, serverWallTexture);
-            createWall(10, 4, 0, 1, 8, 30, serverWallTexture);
+            // --- SALA 1: ENTRADA (Z=20 a Z=40) ---
+            // Paredes divisórias
+            createWall(-10, 4, 20, 20, 8, 1, serverWallTexture); // Parede frente esquerda
+            createWall(10, 4, 20, 20, 8, 1, serverWallTexture); // Parede frente direita
+            // (gap no meio para corredor)
 
-            // Obstáculos
-            createWall(0, 4, 5, 10, 8, 1, serverWallTexture);
-            createWall(0, 4, -10, 10, 8, 1, serverWallTexture);
+            // --- CORREDOR 1 (Z=0 a Z=20) ---
+            createWall(-5, 4, 10, 1, 8, 20, serverWallTexture);
+            createWall(5, 4, 10, 1, 8, 20, serverWallTexture);
 
-            // Porta Puzzle 1
-            createPuzzleDoor(0, 2, 5, 'math', 1);
+            // PORTA PUZZLE 1 (Bloqueando o corredor em Z=10)
+            createPuzzleDoor(0, 2, 10, 'math', 1);
 
-            // Porta Puzzle 2
-            createPuzzleDoor(0, 2, -10, 'quiz', 2);
+            // --- SALA 2: SERVIDORES (Z=-20 a Z=0) ---
+            // Paredes laterais da sala central
+            createWall(-20, 4, -10, 1, 8, 20, serverWallTexture);
+            createWall(20, 4, -10, 1, 8, 20, serverWallTexture);
 
-            // Drones Sentinelas
-            createDrone(-5, 10, [{ x: -5, z: 10 }, { x: -5, z: -10 }]);
-            createDrone(5, -10, [{ x: 5, z: -10 }, { x: 5, z: 10 }]);
+            // Obstáculos internos (Servidores) para se esconder
+            createServerRack(-10, -10, 0);
+            createServerRack(10, -10, 0);
+            createServerRack(-10, -5, 0);
+            createServerRack(10, -5, 0);
+
+            // Drones patrulhando a Sala 2
+            createDrone(-15, -10, [{ x: -15, z: -5 }, { x: -15, z: -15 }, { x: 0, z: -15 }, { x: 0, z: -5 }]);
+            createDrone(15, -10, [{ x: 15, z: -15 }, { x: 15, z: -5 }, { x: 0, z: -5 }, { x: 0, z: -15 }]);
+
+            // PORTA PUZZLE 2 (Saída da Sala 2 em Z=-20)
+            createWall(-10, 4, -20, 20, 8, 1, serverWallTexture);
+            createWall(10, 4, -20, 20, 8, 1, serverWallTexture);
+            createPuzzleDoor(0, 2, -20, 'quiz', 2);
+
+            // --- SALA 3: NÚCLEO FINAL (Z=-40 a Z=-20) ---
+            // Drones finais
+            createDrone(0, -30, [{ x: -20, z: -30 }, { x: 20, z: -30 }]); // Patrulha horizontal rápida
 
             // Objetivo Final
             const finish = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00 }));
-            finish.position.set(0, 1, -18);
+            finish.position.set(0, 1, -35);
             finish.userData = { isInteractable: true, name: "Final do Labirinto", dialogs: ["Parabéns! Você completou o desafio final!"] };
             scene.add(finish); levelObjects.push(finish); interactables.push(finish);
 
-            if (player) { player.position.set(0, 0, 18); player.rotation.y = Math.PI; }
+            // Player start
+            if (player) { player.position.set(0, 0, 35); player.rotation.y = Math.PI; }
         }
 
         function createDrone(x, z, path) {
@@ -2133,7 +2153,7 @@
             g.position.set(x, 2, z);
             g.userData.path = path;
             g.userData.pathIndex = 0;
-            g.userData.speed = 3;
+            g.userData.speed = 4; // Drones mais rápidos
 
             scene.add(g); drones.push(g); levelObjects.push(g);
         }
@@ -2748,10 +2768,8 @@
                     // Colisão Player-Drone
                     if (player.position.distanceTo(d.position) < 1.5) {
                         // Reset position logic
-                        player.position.set(0, 0, 18);
+                        player.position.set(0, 0, 32);
                         player.rotation.y = Math.PI;
-                        // Optional: Show message
-                        // alert("VOCÊ FOI PEGO!"); // Avoiding alert as per instructions, using simple reset for now
                     }
                 });
 
@@ -2803,22 +2821,55 @@
                     player.position.y += (groundY - player.position.y) * 0.2;
                 }
 
-                const co = new THREE.Vector3(Math.sin(cameraAngle) * 25, 25, Math.cos(cameraAngle) * 25);
-                const tp = player.position.clone().add(co);
-                camera.position.lerp(tp, 0.1); camera.lookAt(player.position);
+                // CAMERA LOGIC
+                let targetCamPos;
+                let targetLookAt;
+
+                if (currentLevel === "MAZE_LEVEL") {
+                    // First person / close third person logic
+                    const offset = new THREE.Vector3(0, 3, -8); // Closer, lower, behind
+                    offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), cameraAngle + Math.PI); // +PI because cameraAngle might be inverted relative to player face
+                    // Actually player rotation is handled by movement direction.
+                    // But for camera, let's base it on cameraAngle variable which controls view.
+
+                    // Re-calculating offset based on cameraAngle to orbit properly
+                    const dist = 6;
+                    const height = 5;
+                    const cx = player.position.x + Math.sin(cameraAngle) * dist;
+                    const cz = player.position.z + Math.cos(cameraAngle) * dist;
+                    const cy = player.position.y + height;
+
+                    targetCamPos = new THREE.Vector3(cx, cy, cz);
+                    targetLookAt = player.position.clone().add(new THREE.Vector3(0, 1, 0)); // Look slightly above feet
+                } else {
+                    // Standard Isometric View
+                    const co = new THREE.Vector3(Math.sin(cameraAngle) * 25, 25, Math.cos(cameraAngle) * 25);
+                    targetCamPos = player.position.clone().add(co);
+                    targetLookAt = player.position.clone();
+                }
+
+                camera.position.lerp(targetCamPos, 0.1);
+                camera.lookAt(targetLookAt);
+
 
                 // --- VISÃO RAIO-X (TRANSPARÊNCIA) ---
-                wallRaycaster.set(camera.position, player.position.clone().sub(camera.position).normalize());
-                const distanceToPlayer = camera.position.distanceTo(player.position);
-                const intersects = wallRaycaster.intersectObjects(wallMeshes);
-                // Reseta todas para opaco
-                wallMeshes.forEach(w => w.material.opacity = 1.0);
-                // Deixa transparente o que bloqueia a visão
-                intersects.forEach(hit => {
-                    if (hit.distance < distanceToPlayer - 1) { // -1 para não pegar o próprio player
-                        hit.object.material.opacity = 0.3;
-                    }
-                });
+                if (currentLevel !== "MAZE_LEVEL") {
+                    wallRaycaster.set(camera.position, player.position.clone().sub(camera.position).normalize());
+                    const distanceToPlayer = camera.position.distanceTo(player.position);
+                    const intersects = wallRaycaster.intersectObjects(wallMeshes);
+                    // Reseta todas para opaco
+                    wallMeshes.forEach(w => w.material.opacity = 1.0);
+                    // Deixa transparente o que bloqueia a visão
+                    intersects.forEach(hit => {
+                        if (hit.distance < distanceToPlayer - 1) { // -1 para não pegar o próprio player
+                            hit.object.material.opacity = 0.3;
+                        }
+                    });
+                } else {
+                    // In maze level, we might want walls opaque to hide enemies?
+                    // Or keep transparency for better UX? Let's keep opaque for maze challenge.
+                    wallMeshes.forEach(w => w.material.opacity = 1.0);
+                }
 
                 composer.render();
             }
