@@ -1222,7 +1222,7 @@
 
         let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture, posterTexture;
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
-        let posterRulesTexture, posterDownloadsTexture, posterChatTexture, arcadeMarqueeTexture; // Novas texturas
+        let posterRulesTexture, posterDownloadsTexture, posterChatTexture, arcadeMarqueeTexture, arcadeSideTexture; 
 
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3(), cameraAngle = 0;
@@ -1836,6 +1836,21 @@
                 c.fillStyle = '#4a148c'; c.fillRect(0, 0, 512, 512);
                 for (let i = 0; i < 1000; i++) { c.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b'; c.fillRect(Math.random() * 512, Math.random() * 512, 4, 4); }
             });
+            
+            arcadeMarqueeTexture = createTex(256, 64, (c) => {
+                const g = c.createLinearGradient(0,0,256,0); g.addColorStop(0,'#ff00ff'); g.addColorStop(1,'#00eaff');
+                c.fillStyle = g; c.fillRect(0,0,256,64);
+                c.fillStyle = '#fff'; c.font = 'bold 30px "Press Start 2P"'; c.textAlign = 'center'; c.textBaseline = 'middle';
+                c.fillText("ARCADE ZONE", 128, 32);
+            });
+            
+            arcadeSideTexture = createTex(256, 512, (c) => {
+                 c.fillStyle = '#220033'; c.fillRect(0,0,256,512);
+                 c.strokeStyle = '#00eaff'; c.lineWidth=5;
+                 c.beginPath(); c.moveTo(20,20); c.lineTo(236, 50); c.lineTo(100, 400); c.stroke();
+                 c.fillStyle = '#ff00ff'; c.beginPath(); c.arc(128, 256, 50, 0, Math.PI*2); c.fill();
+            });
+
 
             // NOVA FUNÇÃO PARA POSTERS
             window.createPosterTexture = (title, text, bgColor) => {
@@ -1857,14 +1872,6 @@
             posterDownloadsTexture = window.createPosterTexture("PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
             posterChatTexture = window.createPosterTexture("CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
             
-            arcadeMarqueeTexture = createTex(256, 64, (c) => {
-                const g = c.createLinearGradient(0,0,256,0); g.addColorStop(0,'#ff00ff'); g.addColorStop(1,'#00eaff');
-                c.fillStyle = g; c.fillRect(0,0,256,64);
-                c.fillStyle = '#fff'; c.font = 'bold 30px "Press Start 2P"'; c.textAlign = 'center'; c.textBaseline = 'middle';
-                c.fillText("ARCADE ZONE", 128, 32);
-            });
-
-
             // Textura de poster antiga (mantida por compatibilidade, mas não usada)
             posterTexture = createTex(256, 256, (c) => {
                 c.fillStyle = '#111'; c.fillRect(0, 0, 256, 256);
@@ -1980,15 +1987,19 @@
             createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); 
             createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2);
             createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI/4);
+            
+            // Novo NPC "Agente Pixel" próximo ao arcade
+            createNPC(15, -1.5, 8, 0x00ffff, "Agente Pixel", ["Ei! Quer bater meu recorde no Arcade?", "Lembre-se: Jogos são para diversão, não para bullying."], 1, 0xff00ff, -Math.PI/2);
 
-            // MAPA HOLOGRÁFICO (CORRIGIDO: Removida a rotação Z)
+            // MAPA HOLOGRÁFICO (CORRIGIDO: PLANO)
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             holoMap.rotation.x = -Math.PI / 2; 
-            // holoMap.rotation.z = Math.PI / 2; // <-- REMOVIDO
-            holoMap.position.set(-18, 0.8, -10); scene.add(holoMap); levelObjects.push(holoMap);
+            holoMap.rotation.z = Math.PI / 2; // Rotacionado para a mesa que está na lateral
+            holoMap.position.set(-18, 1.05, -10); // Altura 1.05
+            scene.add(holoMap); levelObjects.push(holoMap);
 
-            // ARCADE MACHINE (Agora com modelo melhorado)
-            createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
+            // ARCADE MACHINE "FUN"
+            createFunArcade(18, -1.5, 10, -Math.PI / 2);
             
             // TELA DE DICA (CORRIGIDA: Rotação 0 para ficar de frente)
             createScreen(-12, 5, -14.5, 0, window.createScreenTexture("DICA: Use senhas fortes!"));
@@ -2105,7 +2116,7 @@
 
         // --- OBJETOS 3D EXISTENTES ---
         
-        // PORTAL ATUALIZADO COM MAIS ANÉIS
+        // PORTAL REVERTIDO (SIMPLES E CLÁSSICO)
         function createPortalDoor(x, y, z, target, rot) {
             const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot;
             const frame = new THREE.Mesh(new THREE.TorusGeometry(3.5, 0.2, 16, 50), new THREE.MeshStandardMaterial({ color: 0x222, emissive: 0x00eaff, emissiveIntensity: 0.2 })); frame.position.y = 3; g.add(frame);
@@ -2120,7 +2131,7 @@
             particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: 0.1, color: 0x00eaff, transparent:true, opacity:0.8 })); particles.position.y = 3; g.add(particles);
             
-            // Animação atualizada para todos os anéis
+            // Animação original
             g.userData.animate = () => { 
                 energyRing1.rotation.z -= 0.02; 
                 energyRing2.rotation.z += 0.03; energyRing2.rotation.x += 0.01; 
@@ -2176,48 +2187,71 @@
             g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g);
         }
 
-        // FUNÇÃO FLIPERAMA REFEITA (VISUAL MELHORADO)
-        function createArcadeMachine(x, y, z, rot) {
+        // FUNÇÃO FLIPERAMA 2.0 (MAIS DIVERTIDO E COLORIDO)
+        function createFunArcade(x, y, z, rot) {
             const g = new THREE.Group();
             
-            // Gabinete Principal (Inclinado)
-            const cabinetMat = new THREE.MeshStandardMaterial({ color: 0x4a148c, roughness: 0.6 });
-            const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 4, 2), cabinetMat);
+            // Gabinete Principal (Roxo Neon)
+            const cabinetMat = new THREE.MeshStandardMaterial({ color: 0x9900ff, roughness: 0.3, metalness: 0.5 });
+            const sideMat = new THREE.MeshBasicMaterial({ map: arcadeSideTexture });
+
+            const body = new THREE.Mesh(new THREE.BoxGeometry(2.4, 4, 2.2), cabinetMat);
             body.position.y = 2;
-            // Início da inclinação da tela
-            const screenSlope = new THREE.Mesh(new THREE.BoxGeometry(2.1, 2, 0.1), cabinetMat);
-            screenSlope.position.set(0, 2.8, 0.9); screenSlope.rotation.x = -0.3;
+
+            // Painéis Laterais com Arte (Simulado)
+            const sideL = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4), sideMat);
+            sideL.position.set(-1.21, 2, 0); sideL.rotation.y = -Math.PI/2;
+            const sideR = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4), sideMat);
+            sideR.position.set(1.21, 2, 0); sideR.rotation.y = Math.PI/2;
+
+            // Tela Inclinada
+            const screenCase = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.8, 0.5), new THREE.MeshStandardMaterial({color:0x222}));
+            screenCase.position.set(0, 3.0, 0.6);
+            screenCase.rotation.x = -0.4;
             
+            // Tela Brilhante com Animação de Pixel (Simples cor mudando)
+            const screenMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.5), screenMat);
+            screen.position.set(0, 0, 0.26);
+            screenCase.add(screen);
+
+            // Animação da Tela
+            g.userData.animate = () => {
+                const time = Date.now() * 0.005;
+                const hue = (Math.sin(time) + 1) / 2;
+                screenMat.color.setHSL(hue, 1.0, 0.5);
+            };
+
             // Marquise Luminosa (Topo)
-            const marquee = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 2.2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.5, map: arcadeMarqueeTexture }));
+            const marquee = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.8, 2.4), new THREE.MeshBasicMaterial({ map: arcadeMarqueeTexture }));
             marquee.position.y = 4.4;
 
-            // Tela
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.4), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity:0.8 }));
-            screen.position.set(0, 2.8, 0.85); screen.rotation.x = -0.3;
+            // Mesa de Controle
+            const controlPanel = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.3, 1.2), new THREE.MeshStandardMaterial({ color: 0x00eaff }));
+            controlPanel.position.set(0, 2.0, 1.1);
+            controlPanel.rotation.x = 0.2;
 
-            // Painel de Controle (Mesa)
-            const controlPanel = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 1), cabinetMat);
-            controlPanel.position.set(0, 1.8, 1.1);
-            
-            // Joysticks e Botões
-            const joyMat = new THREE.MeshStandardMaterial({color: 0xff0000});
-            const btnMat = new THREE.MeshStandardMaterial({color: 0x00eaff, emissive: 0x00eaff});
-            
-            const joyBase1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1), cabinetMat); joyBase1.position.set(-0.6, 1.9, 1);
-            const joyStick1 = new THREE.Mesh(new THREE.SphereGeometry(0.15), joyMat); joyStick1.position.set(-0.6, 2.1, 1);
-            
-            const joyBase2 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1), cabinetMat); joyBase2.position.set(0.6, 1.9, 1);
-            const joyStick2 = new THREE.Mesh(new THREE.SphereGeometry(0.15), joyMat); joyStick2.position.set(0.6, 2.1, 1);
+            // Joysticks
+            const joyStick1 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({color:0xff0000}));
+            joyStick1.position.set(-0.6, 2.3, 1.0);
+            const joyStick2 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({color:0xffff00}));
+            joyStick2.position.set(0.6, 2.3, 1.0);
 
-            const btn1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.1), btnMat); btn1.position.set(-0.2, 1.9, 1.2);
-            const btn2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.1), btnMat); btn2.position.set(0.2, 1.9, 1.2);
+            // Luz Ambiente do Arcade
+            const arcadeLight = new THREE.PointLight(0x00eaff, 2, 5);
+            arcadeLight.position.set(0, 3, 2);
 
-            g.add(body, screenSlope, marquee, screen, controlPanel, joyBase1, joyStick1, joyBase2, joyStick2, btn1, btn2);
+            g.add(body, sideL, sideR, screenCase, marquee, controlPanel, joyStick1, joyStick2, arcadeLight);
             
             g.position.set(x, y, z); g.rotation.y = rot;
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 5, 2.5), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.y = 2.5; hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" }; g.add(hitBox);
-            scene.add(g); levelObjects.push(g); interactables.push(hitBox); addCollisionBox(x, y, z, 2.2, 4, 2.2);
+            
+            // Hitbox
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.8, 5, 2.8), new THREE.MeshBasicMaterial({ visible: false })); 
+            hitBox.position.y = 2.5; 
+            hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" }; 
+            g.add(hitBox);
+            
+            scene.add(g); levelObjects.push(g); interactables.push(hitBox); addCollisionBox(x, y, z, 2.4, 4, 2.4);
         }
 
         function createServerRack(x, z, rot) {
