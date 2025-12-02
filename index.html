@@ -1222,7 +1222,7 @@
 
         let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture, posterTexture;
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
-        let posterRulesTexture, posterDownloadsTexture, posterChatTexture; // Novas texturas para posters
+        let posterRulesTexture, posterDownloadsTexture, posterChatTexture, arcadeMarqueeTexture; // Novas texturas
 
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3(), cameraAngle = 0;
@@ -1856,6 +1856,14 @@
             posterRulesTexture = window.createPosterTexture("REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
             posterDownloadsTexture = window.createPosterTexture("PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
             posterChatTexture = window.createPosterTexture("CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
+            
+            arcadeMarqueeTexture = createTex(256, 64, (c) => {
+                const g = c.createLinearGradient(0,0,256,0); g.addColorStop(0,'#ff00ff'); g.addColorStop(1,'#00eaff');
+                c.fillStyle = g; c.fillRect(0,0,256,64);
+                c.fillStyle = '#fff'; c.font = 'bold 30px "Press Start 2P"'; c.textAlign = 'center'; c.textBaseline = 'middle';
+                c.fillText("ARCADE ZONE", 128, 32);
+            });
+
 
             // Textura de poster antiga (mantida por compatibilidade, mas não usada)
             posterTexture = createTex(256, 256, (c) => {
@@ -1913,40 +1921,28 @@
             createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
             // Escadas (Alargadas para 8 e ajustadas)
-            // Esquerda - Conecta de x=-8 a x=-12 (approx), largura z=8
-            // Passar Z-width como `depth` param e X-length como `width` param.
-            // createStairs(x, yStart, z, treadLength, heightDiff, stairWidth, steps, direction)
-            createStairs(-10, -1.5, 0, 0.8, 1.5, 8, 5, "left"); 
-            // Direita
-            createStairs(10, -1.5, 0, 0.8, 1.5, 8, 5, "right");
+            // FIX: Ajuste de yStart para -1.52 para evitar Z-fighting no topo
+            createStairs(-10, -1.52, 0, 0.8, 1.5, 8, 5, "left"); 
+            createStairs(10, -1.52, 0, 0.8, 1.5, 8, 5, "right");
 
             // --- DECORAÇÃO EXTRA (ENRICHED LOBBY) ---
             
-            // 1. "LAN HOUSE" SEGURA (Computadores de Acesso Público) na esquerda
+            // 1. "LAN HOUSE" SEGURA
             const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x556677}));
             lanTable.position.set(-20, -0.75, 8);
             scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, -0.75, 8, 2, 1.5, 10);
             
-            // 3 Computadores e Cadeiras (Rotacionados 180 graus)
             for(let i=0; i<3; i++) {
                 const z = 5 + (i * 3);
                 createPropComputer(-20, 0, z, Math.PI/2); 
                 createChair(-18.5, -1.5, z, -Math.PI/2);
             }
 
-            // 2. QUADROS DE AVISO / POSTERS (Novos e reposicionados)
-            // Z ajustado para aparecer na frente da parede
-            // Parede fundo: Z = -15. Posters em Z = -14.9.
-            // Se a parede tem espessura 1, a face interna está em -14.5.
-            // Posters devem estar em -14.4
-            createPoster(-10, 4, -14.4, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
-            createPoster(0, 4, -14.4, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
-            // O quadro "Chat Seguro" estava ao contrário (espelhado). Se for o da direita, ele precisa de rotação correta se não estiver na parede do fundo.
-            // Mas aqui estão todos na parede do fundo. A textura canvas pode estar invertida se olhada de frente.
-            // Vamos usar scale.x = -1 no createPoster se necessário, mas normalmente canvas texture é correta.
-            // O problema "ao contrário" pode ser se o plano estiver rodado 180 graus.
-            // Aqui, sem rotação.
-            createPoster(10, 4, -14.4, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
+            // 2. QUADROS DE AVISO / POSTERS (CORRIGIDOS)
+            // Movidos para a parede da frente (Z=14.4) e rotacionados 180 graus (Math.PI)
+            createPoster(-10, 4, 14.4, Math.PI, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
+            createPoster(0, 4, 14.4, Math.PI, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
+            createPoster(10, 4, 14.4, Math.PI, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
 
             // 3. PLANTAS SCI-FI
             createSciFiPlant(-22, -1.5, -13);
@@ -1954,7 +1950,7 @@
             createSciFiPlant(22, -1.5, 13);
             createSciFiPlant(-22, -1.5, 13);
 
-            // 4. BANCOS CENTRAIS (Novos)
+            // 4. BANCOS CENTRAIS
             createBench(0, 0, 5, 0);
             createBench(0, 0, -5, Math.PI);
 
@@ -1964,27 +1960,21 @@
             globe.position.set(0, 2.5, 0); scene.add(globe); levelObjects.push(globe);
             const animGlobe = () => { if (globe) { globe.rotation.y += 0.01; requestAnimationFrame(animGlobe); } }; animGlobe();
 
-            // Terminal de Personalização (Central)
+            // Terminal de Personalização
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
             pcHit.position.set(0, 1, 0); pcHit.userData = { isInteractable: true, type: "PC_CUSTOM", name: "Personalização" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
             
-            // Adicionando um Totem Visual para a Personalização
             const totem = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 8), new THREE.MeshStandardMaterial({color: 0x333}));
             totem.position.set(0, 0.5, 0); scene.add(totem); levelObjects.push(totem);
 
             createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
-            // CAPITÃO NA SALA DA LAN HOUSE (ESQUERDA)
-            // Planta do fundo esquerda está em x=-22, z=-13.
-            // Lan house tables estão em x=-20, z=8..14.
-            // Capitão deve ficar ao lado da planta, oposto às mesas.
-            // Então x=-20, z=-10 area.
+            // CAPITÃO NA SALA DA LAN HOUSE (CORRIGIDO)
             createTable(-18, -0.75, -10, 0, 6, 3, false); 
-            createChair(-18, -0.75, -11.5, 0); // Atrás da mesa
-
-            // NPCS
-            createNPC(-18, -0.75, -11.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
+            // Afastado o capitão e a cadeira para Z = -12.5
+            createChair(-18, -0.75, -12.5, 0); 
+            createNPC(-18, -0.75, -12.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
             
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI/2);
             createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); 
@@ -1995,8 +1985,11 @@
             holoMap.rotation.x = -Math.PI / 2; holoMap.rotation.z = Math.PI / 2; 
             holoMap.position.set(-18, 0.8, -10); scene.add(holoMap); levelObjects.push(holoMap);
 
+            // ARCADE MACHINE (Agora com modelo melhorado)
             createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
-            createScreen(-12, 5, -14.5, Math.PI, window.createScreenTexture("DICA: Use senhas fortes!"));
+            
+            // TELA DE DICA (CORRIGIDA: Rotação 0 para ficar de frente)
+            createScreen(-12, 5, -14.5, 0, window.createScreenTexture("DICA: Use senhas fortes!"));
             
             if (player) player.position.set(0, 0, 10);
         }
@@ -2066,8 +2059,8 @@
             scene.add(g); levelObjects.push(g);
         }
 
-        // Função de Poster Atualizada
-        function createPoster(x, y, z, title, text, color) {
+        // Função de Poster Atualizada (CORRIGIDA: Removido flip para consertar orientação)
+        function createPoster(x, y, z, rot, title, text, color) {
             const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({color:0x111}));
             
             let texture = posterTexture;
@@ -2075,14 +2068,15 @@
             else if (title === "PERIGO: DOWNLOADS") texture = posterDownloadsTexture;
             else if (title === "CHAT SEGURO") texture = posterChatTexture;
 
-            // Espelhando a textura horizontalmente para corrigir o texto "ao contrário"
-            texture.center.set(0.5, 0.5);
-            texture.repeat.set(-1, 1); 
-            texture.flipY = false; // Flip Y might be needed depending on canvas coord system
+            // FIX: Removido o espelhamento que estava deixando de cabeça para baixo
+            // texture.repeat.set(-1, 1); 
+            // texture.center.set(0.5, 0.5);
 
             const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide}));
             paper.position.z = 0.06;
-            const g = new THREE.Group(); g.add(frame); g.add(paper); g.position.set(x, y, z);
+            const g = new THREE.Group(); g.add(frame); g.add(paper); 
+            g.position.set(x, y, z);
+            g.rotation.y = rot; // Adicionada rotação
             scene.add(g); levelObjects.push(g);
         }
 
@@ -2168,13 +2162,48 @@
             g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g);
         }
 
+        // FUNÇÃO FLIPERAMA REFEITA (VISUAL MELHORADO)
         function createArcadeMachine(x, y, z, rot) {
-            const group = new THREE.Group();
-            const base = new THREE.Mesh(new THREE.BoxGeometry(2, 4, 2), new THREE.MeshStandardMaterial({ color: 0x6a1b9a })); base.position.y = 2; group.add(base);
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 1.2), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00 })); screen.position.set(0, 2.8, 1.01); group.add(screen);
-            group.position.set(x, y, z); group.rotation.y = rot;
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 4, 2.5), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.y = 2; hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" }; group.add(hitBox);
-            scene.add(group); levelObjects.push(group); interactables.push(hitBox); addCollisionBox(x, y, z, 2, 4, 2);
+            const g = new THREE.Group();
+            
+            // Gabinete Principal (Inclinado)
+            const cabinetMat = new THREE.MeshStandardMaterial({ color: 0x4a148c, roughness: 0.6 });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 4, 2), cabinetMat);
+            body.position.y = 2;
+            // Início da inclinação da tela
+            const screenSlope = new THREE.Mesh(new THREE.BoxGeometry(2.1, 2, 0.1), cabinetMat);
+            screenSlope.position.set(0, 2.8, 0.9); screenSlope.rotation.x = -0.3;
+            
+            // Marquise Luminosa (Topo)
+            const marquee = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.8, 2.2), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.5, map: arcadeMarqueeTexture }));
+            marquee.position.y = 4.4;
+
+            // Tela
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.4), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity:0.8 }));
+            screen.position.set(0, 2.8, 0.85); screen.rotation.x = -0.3;
+
+            // Painel de Controle (Mesa)
+            const controlPanel = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.2, 1), cabinetMat);
+            controlPanel.position.set(0, 1.8, 1.1);
+            
+            // Joysticks e Botões
+            const joyMat = new THREE.MeshStandardMaterial({color: 0xff0000});
+            const btnMat = new THREE.MeshStandardMaterial({color: 0x00eaff, emissive: 0x00eaff});
+            
+            const joyBase1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1), cabinetMat); joyBase1.position.set(-0.6, 1.9, 1);
+            const joyStick1 = new THREE.Mesh(new THREE.SphereGeometry(0.15), joyMat); joyStick1.position.set(-0.6, 2.1, 1);
+            
+            const joyBase2 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1), cabinetMat); joyBase2.position.set(0.6, 1.9, 1);
+            const joyStick2 = new THREE.Mesh(new THREE.SphereGeometry(0.15), joyMat); joyStick2.position.set(0.6, 2.1, 1);
+
+            const btn1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.1), btnMat); btn1.position.set(-0.2, 1.9, 1.2);
+            const btn2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.1), btnMat); btn2.position.set(0.2, 1.9, 1.2);
+
+            g.add(body, screenSlope, marquee, screen, controlPanel, joyBase1, joyStick1, joyBase2, joyStick2, btn1, btn2);
+            
+            g.position.set(x, y, z); g.rotation.y = rot;
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.5, 5, 2.5), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.y = 2.5; hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" }; g.add(hitBox);
+            scene.add(g); levelObjects.push(g); interactables.push(hitBox); addCollisionBox(x, y, z, 2.2, 4, 2.2);
         }
 
         function createServerRack(x, z, rot) {
