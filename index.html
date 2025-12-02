@@ -1893,7 +1893,7 @@
             
             // 1. "LAN HOUSE" SEGURA (Computadores de Acesso Público) na esquerda
             // Mesa longa
-            const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x333}));
+            const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x555}));
             lanTable.position.set(-20, -0.75, 8); // Ajustado para altura correta
             scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, -0.75, 8, 2, 1.5, 10);
             
@@ -1929,17 +1929,17 @@
 
             createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
-            createNPC(-19, -1.5, 0, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa);
-            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400);
+            createNPC(-19, -1.5, -6, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, Math.PI/2);
+            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI/2);
             
             // NPCS ORIGINAIS - POSICIONAMENTO ESTRATÉGICO
-            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222); // Perto dos computadores
-            createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff); // Perto da entrada
+            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/4); // Perto dos computadores
+            createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2); // Perto da entrada
 
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(7.8, 3.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-            holoMap.rotation.x = -Math.PI / 2; holoMap.position.set(-16, 0.1, 5); scene.add(holoMap); levelObjects.push(holoMap);
+            holoMap.rotation.x = -Math.PI / 2; holoMap.position.set(-16, 0.1, -6); scene.add(holoMap); levelObjects.push(holoMap);
 
-            createTable(-16, -1.5, 5, 0, 8, 4, true);
+            createTable(-16, -1.5, -6, 0, 8, 4, true);
 
             createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
             createScreen(-12, 5, -14.5, Math.PI, window.createScreenTexture("DICA: Use senhas fortes!"));
@@ -1959,7 +1959,7 @@
             createServerRack(5, -8, 0); createServerRack(10, -8, 0);
             createServerRack(5, 8, Math.PI); createServerRack(10, 8, Math.PI);
 
-            const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x001133 }));
+            const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x555 }));
             desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(10, 0.75, 0, 6, 1.5, 3);
 
             // ADICIONADO: TELA DO COMPUTADOR NA MESA (VISUAL)
@@ -1974,8 +1974,8 @@
             pcHit.position.set(10, 1.5, 0); pcHit.userData = { isInteractable: true, type: "PC_MISSION", name: "Terminal de Missão" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000);
-            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0);
+            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000, -Math.PI/2);
+            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0, CONFIG.colors.defaultHair, Math.PI);
 
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
@@ -2102,7 +2102,12 @@
         }
 
         function createWall(x, y, z, w, h, d, texture) {
-            const mat = new THREE.MeshStandardMaterial({ map: texture || wallTextureBase });
+            // FIX: Clonar textura para ajustar repetição por parede
+            const tex = texture ? texture.clone() : wallTextureBase.clone();
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(w / 8, h / 8); // Ajuste de escala
+
+            const mat = new THREE.MeshStandardMaterial({ map: tex });
             const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
             m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
             scene.add(m); levelObjects.push(m); addCollisionBox(x, y, z, w, h, d);
@@ -2150,7 +2155,8 @@
 
         function createTable(x, y, z, rot, width, depth, addChairs = false) {
              const g = new THREE.Group();
-             const top = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: 0x222 })); top.position.y = 1.5; g.add(top);
+             // COR DA MESA MAIS CLARA (0x555)
+             const top = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: 0x556677 })); top.position.y = 1.5; g.add(top);
              const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg1.position.set(-(width / 2 - 0.2), 0.75, 0); g.add(leg1);
              const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg2.position.set(width / 2 - 0.2, 0.75, 0); g.add(leg2);
              g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, width, 1.5, depth);
@@ -2280,8 +2286,9 @@
         }
 
         // --- INTERAÇÃO ---
-        function createNPC(x, y, z, color, name, dialogs, hairStyle = 0, hairColor = CONFIG.colors.defaultHair) {
+        function createNPC(x, y, z, color, name, dialogs, hairStyle = 0, hairColor = CONFIG.colors.defaultHair, rot = 0) {
             const g = new THREE.Group(); g.position.set(x, y, z);
+            g.rotation.y = rot;
             const char = createHumanoid(color, hairStyle, hairColor);
             char.position.y = 0; g.add(char);
             
