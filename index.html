@@ -912,7 +912,8 @@
 
     <div id="screen-menu" class="screen">
         <div>
-            <img src="./assets/img/logo_cyber_agentes.png" width="350" alt="Cyber Agentes Logo" onerror="this.style.display='none'; document.querySelector('h1').style.display='block';" />
+            <img src="./assets/img/logo_cyber_agentes.png" width="350" alt="Cyber Agentes Logo"
+                onerror="this.style.display='none'; document.querySelector('h1').style.display='block';" />
         </div>
         <h1>Missão Segurança</h1>
         <div style="text-align: center;">
@@ -990,7 +991,8 @@
             <p style="margin: 20px 0;">Use <span class="key-icon">W</span><span class="key-icon">A</span><span
                     class="key-icon">S</span><span class="key-icon">D</span> ou o <strong>Joystick</strong> na tela para
                 se mover.</p>
-            <p>Procure por personagens ou objetos com um sinal de <strong>!</strong> amarelo e CHEGUE PERTO deles para interagir.</p>
+            <p>Procure por personagens ou objetos com um sinal de <strong>!</strong> amarelo e CHEGUE PERTO deles para
+                interagir.</p>
             <button class="btn" onclick="closeTutorial()">VAMOS LÁ!</button>
         </div>
     </div>
@@ -1021,9 +1023,10 @@
                         <div class="custom-section">
                             <label>ESTILO DE CABELO</label>
                             <div class="hair-selector">
-                                <button class="hair-arrow-btn" onclick="cycleHairStyle(-1)"> < </button>
-                                <span id="hair-style-label">Careca</span>
-                                <button class="hair-arrow-btn" onclick="cycleHairStyle(1)">></button>
+                                <button class="hair-arrow-btn" onclick="cycleHairStyle(-1)">
+                                    < </button>
+                                        <span id="hair-style-label">Careca</span>
+                                        <button class="hair-arrow-btn" onclick="cycleHairStyle(1)">></button>
                             </div>
                         </div>
                         <div class="custom-section">
@@ -1222,7 +1225,7 @@
 
         let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture, posterTexture;
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
-        let posterRulesTexture, posterDownloadsTexture, posterChatTexture, arcadeMarqueeTexture, arcadeSideTexture; 
+        let posterRulesTexture, posterDownloadsTexture, posterChatTexture, arcadeMarqueeTexture, arcadeSideTexture;
 
         let keys = { w: false, a: false, s: false, d: false };
         let joystickVec = new THREE.Vector3(), cameraAngle = 0;
@@ -1385,7 +1388,7 @@
                     }
                 }
             };
-            
+
             // --- LISTA COMPLETA DE PUZZLES ---
             const puzzles = [
                 // 1. Matemática
@@ -1393,11 +1396,11 @@
                     type: 'math',
                     title: 'HACK MATEMÁTICO',
                     setup: (p) => {
-                         const a = Math.floor(Math.random() * 10);
-                         const b = Math.floor(Math.random() * 10);
-                         const ans = a + b;
-                         const opts = [ans, ans + 1, ans - 1].sort(() => Math.random() - 0.5);
-                         
+                        const a = Math.floor(Math.random() * 10);
+                        const b = Math.floor(Math.random() * 10);
+                        const ans = a + b;
+                        const opts = [ans, ans + 1, ans - 1].sort(() => Math.random() - 0.5);
+
                         return `<div class="arcade-big-text">${a} + ${b} = ?</div>
                                 <div class="arcade-btn-group">
                                     ${opts.map(o => `<div class="arcade-opt-btn" onclick="checkArcadeAnswer('${o}', '${ans}')">${o}</div>`).join('')}
@@ -1510,7 +1513,7 @@
                 fb.style.color = '#ff5555'; fb.innerText = "ERROU! TENTE DE NOVO.";
             }
         };
-        
+
         window.checkReflex = () => {
             const btn = document.getElementById('reflex-btn');
             const fb = document.getElementById('arcade-feedback');
@@ -1588,12 +1591,12 @@
         // --- JOGO DA SEQUÊNCIA (RESTAURADO) ---
         let gameSequence = [], playerSequence = [], isPlayingSequence = false;
         window.startSequenceGame = () => {
-             document.getElementById('btn-start-seq').style.display = 'none';
-             gameSequence = []; playerSequence = []; isPlayingSequence = false;
-             document.getElementById('seq-status').innerText = "Observe a sequência...";
-             addToSequence();
+            document.getElementById('btn-start-seq').style.display = 'none';
+            gameSequence = []; playerSequence = []; isPlayingSequence = false;
+            document.getElementById('seq-status').innerText = "Observe a sequência...";
+            addToSequence();
         };
-        
+
         function addToSequence() {
             gameSequence.push(Math.floor(Math.random() * 4));
             playSequence();
@@ -1625,20 +1628,20 @@
             if (playerSequence[playerSequence.length - 1] !== gameSequence[playerSequence.length - 1]) {
                 document.getElementById('seq-status').innerText = "Ops! Errou. Tente de novo!";
                 document.getElementById('seq-status').style.color = "#ff5555";
-                setTimeout(() => { 
-                    document.getElementById('seq-status').style.color = "#fff"; 
-                    window.startSequenceGame(); 
+                setTimeout(() => {
+                    document.getElementById('seq-status').style.color = "#fff";
+                    window.startSequenceGame();
                 }, 1500);
                 return;
             }
             if (playerSequence.length === gameSequence.length) {
                 if (gameSequence.length >= 3) { // Reduzi para 3 para não ser tão longo
-                     document.getElementById('seq-status').innerText = "PARABÉNS! ACESSO LIBERADO!";
-                     document.getElementById('seq-status').style.color = "#00ff88";
-                     setTimeout(() => {
+                    document.getElementById('seq-status').innerText = "PARABÉNS! ACESSO LIBERADO!";
+                    document.getElementById('seq-status').style.color = "#00ff88";
+                    setTimeout(() => {
                         document.getElementById('pc-view-sequence').classList.add('hidden');
                         document.getElementById('pc-view-desktop').classList.remove('hidden');
-                     }, 1500);
+                    }, 1500);
                 } else {
                     document.getElementById('seq-status').innerText = "Muito bem! Próxima rodada...";
                     isPlayingSequence = false; setTimeout(addToSequence, 1000);
@@ -1649,7 +1652,7 @@
         // --- UI GERAL ---
         window.openFaceLook = () => { document.getElementById('social-app-window').classList.remove('hidden'); };
         window.closeFaceLook = () => { document.getElementById('social-app-window').classList.add('hidden'); };
-        
+
         window.checkPassword = () => {
             const pass = document.getElementById('pc-pass-input').value;
             const feedback = document.getElementById('pass-feedback');
@@ -1683,17 +1686,17 @@
                     player.userData.parts.helmet.material.color.setHex(playerState.helmetColor);
                     if (player.userData.parts.hair) player.userData.parts.hair.visible = !playerState.hasHelmet;
                 }
-                
+
                 // Atualiza cabelo apenas se existir (Humano)
                 if (player.userData.parts.head && player.userData.parts.hair !== undefined) {
-                     const headGroup = player.userData.parts.head;
-                     headGroup.remove(player.userData.parts.hair);
-                     const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
-                     if (newHairMesh) {
+                    const headGroup = player.userData.parts.head;
+                    headGroup.remove(player.userData.parts.hair);
+                    const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
+                    if (newHairMesh) {
                         newHairMesh.visible = !playerState.hasHelmet;
                         headGroup.add(newHairMesh);
                         player.userData.parts.hair = newHairMesh;
-                     }
+                    }
                 }
             }
             startDialog("SISTEMA", ["Excelente, Agente " + playerState.name + "!", "Você atualizou sua identidade com sucesso!"]);
@@ -1831,29 +1834,29 @@
             });
 
             strategicMapTexture = createTex(512, 256, (c) => {
-                 c.fillStyle = 'rgba(0, 10, 30, 0.8)'; c.fillRect(0, 0, 512, 256);
-                 c.strokeStyle = '#00eaff'; c.lineWidth = 2; c.beginPath();
-                 c.moveTo(50, 50); c.lineTo(150, 80); c.lineTo(200, 40); c.lineTo(350, 100); c.lineTo(450, 60);
-                 c.stroke();
+                c.fillStyle = 'rgba(0, 10, 30, 0.8)'; c.fillRect(0, 0, 512, 256);
+                c.strokeStyle = '#00eaff'; c.lineWidth = 2; c.beginPath();
+                c.moveTo(50, 50); c.lineTo(150, 80); c.lineTo(200, 40); c.lineTo(350, 100); c.lineTo(450, 60);
+                c.stroke();
             });
-            
+
             carpetTexture = createTex(512, 512, (c) => {
                 c.fillStyle = '#4a148c'; c.fillRect(0, 0, 512, 512);
                 for (let i = 0; i < 1000; i++) { c.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b'; c.fillRect(Math.random() * 512, Math.random() * 512, 4, 4); }
             });
-            
+
             arcadeMarqueeTexture = createTex(256, 64, (c) => {
-                const g = c.createLinearGradient(0,0,256,0); g.addColorStop(0,'#ff00ff'); g.addColorStop(1,'#00eaff');
-                c.fillStyle = g; c.fillRect(0,0,256,64);
+                const g = c.createLinearGradient(0, 0, 256, 0); g.addColorStop(0, '#ff00ff'); g.addColorStop(1, '#00eaff');
+                c.fillStyle = g; c.fillRect(0, 0, 256, 64);
                 c.fillStyle = '#fff'; c.font = 'bold 30px "Press Start 2P"'; c.textAlign = 'center'; c.textBaseline = 'middle';
                 c.fillText("ARCADE ZONE", 128, 32);
             });
-            
+
             arcadeSideTexture = createTex(256, 512, (c) => {
-                 c.fillStyle = '#220033'; c.fillRect(0,0,256,512);
-                 c.strokeStyle = '#00eaff'; c.lineWidth=5;
-                 c.beginPath(); c.moveTo(20,20); c.lineTo(236, 50); c.lineTo(100, 400); c.stroke();
-                 c.fillStyle = '#ff00ff'; c.beginPath(); c.arc(128, 256, 50, 0, Math.PI*2); c.fill();
+                c.fillStyle = '#220033'; c.fillRect(0, 0, 256, 512);
+                c.strokeStyle = '#00eaff'; c.lineWidth = 5;
+                c.beginPath(); c.moveTo(20, 20); c.lineTo(236, 50); c.lineTo(100, 400); c.stroke();
+                c.fillStyle = '#ff00ff'; c.beginPath(); c.arc(128, 256, 50, 0, Math.PI * 2); c.fill();
             });
 
 
@@ -1861,12 +1864,12 @@
             window.createPosterTexture = (title, text, bgColor) => {
                 return createTex(512, 512, (c) => {
                     c.fillStyle = bgColor || '#111'; c.fillRect(0, 0, 512, 512);
-                    c.strokeStyle = '#ffffff'; c.lineWidth = 10; c.strokeRect(20,20,472,472);
+                    c.strokeStyle = '#ffffff'; c.lineWidth = 10; c.strokeRect(20, 20, 472, 472);
                     c.fillStyle = '#ffffff';
                     c.font = 'bold 60px Arial'; c.textAlign = 'center'; c.fillText(title, 256, 100);
                     c.font = '30px Arial';
                     const lines = text.split('\n');
-                    for(let i = 0; i < lines.length; i++) {
+                    for (let i = 0; i < lines.length; i++) {
                         c.fillText(lines[i], 256, 180 + (i * 40));
                     }
                 });
@@ -1876,11 +1879,11 @@
             posterRulesTexture = window.createPosterTexture("REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
             posterDownloadsTexture = window.createPosterTexture("PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
             posterChatTexture = window.createPosterTexture("CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
-            
+
             // Textura de poster antiga (mantida por compatibilidade, mas não usada)
             posterTexture = createTex(256, 256, (c) => {
                 c.fillStyle = '#111'; c.fillRect(0, 0, 256, 256);
-                c.strokeStyle = '#ffff00'; c.lineWidth = 10; c.strokeRect(10,10,236,236);
+                c.strokeStyle = '#ffff00'; c.lineWidth = 10; c.strokeRect(10, 10, 236, 236);
                 c.fillStyle = '#ffff00'; c.font = 'bold 150px Arial'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('!', 128, 128);
             });
 
@@ -1899,7 +1902,7 @@
             levelObjects.forEach(obj => scene.remove(obj));
             markers.forEach(m => scene.remove(m));
             // Limpa o array de paredes para transparência
-            wallMeshes = []; 
+            wallMeshes = [];
             levelObjects = []; obstacles = []; interactables = []; floors = []; markers = [];
         }
 
@@ -1934,20 +1937,20 @@
 
             // Escadas (Alargadas para 8 e ajustadas)
             // FIX: Ajuste de yStart para -1.52 para evitar Z-fighting no topo
-            createStairs(-10, -1.52, 0, 0.8, 1.5, 8, 5, "left"); 
+            createStairs(-10, -1.52, 0, 0.8, 1.5, 8, 5, "left");
             createStairs(10, -1.52, 0, 0.8, 1.5, 8, 5, "right");
 
             // --- DECORAÇÃO EXTRA (ENRICHED LOBBY) ---
-            
+
             // 1. "LAN HOUSE" SEGURA
-            const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x556677}));
+            const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({ color: 0x556677 }));
             lanTable.position.set(-20, -0.75, 8);
             scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, -0.75, 8, 2, 1.5, 10);
-            
-            for(let i=0; i<3; i++) {
+
+            for (let i = 0; i < 3; i++) {
                 const z = 5 + (i * 3);
-                createPropComputer(-20, 0, z, Math.PI/2); 
-                createChair(-18.5, -1.5, z, -Math.PI/2);
+                createPropComputer(-20, 0, z, Math.PI / 2);
+                createChair(-18.5, -1.5, z, -Math.PI / 2);
             }
 
             // 2. QUADROS DE AVISO / POSTERS (CORRIGIDOS)
@@ -1976,40 +1979,40 @@
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
             pcHit.position.set(0, 1, 0); pcHit.userData = { isInteractable: true, type: "PC_CUSTOM", name: "Personalização" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
-            
-            const totem = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 8), new THREE.MeshStandardMaterial({color: 0x333}));
+
+            const totem = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 8), new THREE.MeshStandardMaterial({ color: 0x333 }));
             totem.position.set(0, 0.5, 0); scene.add(totem); levelObjects.push(totem);
 
             createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
             // CAPITÃO NA SALA DA LAN HOUSE (CORRIGIDO)
-            createTable(-18, -0.75, -10, 0, 6, 3, false); 
+            createTable(-18, -0.75, -10, 0, 6, 3, false);
             // Afastado o capitão e a cadeira para Z = -12.5
-            createChair(-18, -0.75, -12.5, 0); 
-            createNPC(-18, -0.75, -12.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
-            
-            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI/2);
-            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); 
-            createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2);
-            createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI/4);
-            
+            createChair(-18, -0.75, -12.5, 0);
+            createNPC(-18, -0.75, -12.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0);
+
+            createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI / 2);
+            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI / 2);
+            createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI / 2);
+            createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI / 4);
+
             // Novo NPC "Agente Pixel" próximo ao arcade
             // Moved from 15, 8 to 12, 6 to give space
-            createNPC(12, -1.5, 6, 0x00ffff, "Agente Pixel", ["Ei! Quer bater meu recorde no Arcade?", "Lembre-se: Jogos são para diversão, não para bullying."], 1, 0xff00ff, -Math.PI/2);
+            createNPC(12, -1.5, 6, 0x00ffff, "Agente Pixel", ["Ei! Quer bater meu recorde no Arcade?", "Lembre-se: Jogos são para diversão, não para bullying."], 1, 0xff00ff, -Math.PI / 2);
 
             // MAPA HOLOGRÁFICO (CORRIGIDO: PLANO)
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-            holoMap.rotation.x = -Math.PI / 2; 
+            holoMap.rotation.x = -Math.PI / 2;
             // holoMap.rotation.z = Math.PI / 2; // <--- REMOVE THIS to fix rotation
             holoMap.position.set(-18, 1.05, -10); // Altura 1.05
             scene.add(holoMap); levelObjects.push(holoMap);
 
             // ARCADE MACHINE "FUN"
             createFunArcade(18, -1.5, 10, -Math.PI / 2);
-            
+
             // TELA DE DICA (CORRIGIDA: Rotação 0 para ficar de frente)
             createScreen(-12, 5, -14.5, 0, window.createScreenTexture("DICA: Use senhas fortes!"));
-            
+
             if (player) player.position.set(0, 0, 10);
         }
 
@@ -2039,7 +2042,7 @@
             pcHit.position.set(10, 1.5, 0); pcHit.userData = { isInteractable: true, type: "PC_MISSION", name: "Terminal de Missão" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000, -Math.PI/2);
+            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000, -Math.PI / 2);
             createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0, CONFIG.colors.defaultHair, Math.PI);
 
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
@@ -2048,16 +2051,16 @@
         // --- NOVA FUNÇÃO DE ESCADAS (CORRIGIDA) ---
         function createStairs(x, yStart, z, treadLen, heightDiff, stairWidth, steps, direction) {
             const stepHeight = heightDiff / steps;
-            
+
             for (let i = 0; i < steps; i++) {
                 const mesh = new THREE.Mesh(
                     new THREE.BoxGeometry(treadLen, stepHeight, stairWidth),
                     new THREE.MeshStandardMaterial({ map: floorTextureBase })
                 );
-                
+
                 const xPos = direction === "left" ? x + (i * treadLen) : x - (i * treadLen);
-                const yPos = yStart + (i * stepHeight) + (stepHeight/2);
-                
+                const yPos = yStart + (i * stepHeight) + (stepHeight / 2);
+
                 mesh.position.set(xPos, yPos, z);
                 scene.add(mesh); levelObjects.push(mesh); floors.push(mesh);
             }
@@ -2066,13 +2069,13 @@
         // --- OBJETOS DECORATIVOS NOVOS ---
         function createPropComputer(x, y, z, rot) {
             const g = new THREE.Group();
-            const mon = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 0.1), new THREE.MeshStandardMaterial({color:0x222}));
+            const mon = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 0.1), new THREE.MeshStandardMaterial({ color: 0x222 }));
             mon.position.set(0, 0.5, 0); g.add(mon);
-            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.9), new THREE.MeshBasicMaterial({color:0x00eaff}));
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.9), new THREE.MeshBasicMaterial({ color: 0x00eaff }));
             screen.position.set(0, 0.5, 0.06); g.add(screen);
-            const base = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), new THREE.MeshStandardMaterial({color:0x111}));
+            const base = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), new THREE.MeshStandardMaterial({ color: 0x111 }));
             base.position.set(0, 0, 0); g.add(base);
-            const kb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.05, 0.6), new THREE.MeshStandardMaterial({color:0x111}));
+            const kb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.05, 0.6), new THREE.MeshStandardMaterial({ color: 0x111 }));
             kb.position.set(0, 0, 0.5); kb.rotation.x = 0.1; g.add(kb);
             g.position.set(x, y, z); g.rotation.y = rot;
             scene.add(g); levelObjects.push(g);
@@ -2080,8 +2083,8 @@
 
         // Função de Poster Atualizada (CORRIGIDA: Removido flip para consertar orientação)
         function createPoster(x, y, z, rot, title, text, color) {
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({color:0x111}));
-            
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({ color: 0x111 }));
+
             let texture = posterTexture;
             if (title === "REGRAS DO JOGO") texture = posterRulesTexture;
             else if (title === "PERIGO: DOWNLOADS") texture = posterDownloadsTexture;
@@ -2091,9 +2094,9 @@
             // texture.repeat.set(-1, 1); 
             // texture.center.set(0.5, 0.5);
 
-            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide}));
+            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide }));
             paper.position.z = 0.06;
-            const g = new THREE.Group(); g.add(frame); g.add(paper); 
+            const g = new THREE.Group(); g.add(frame); g.add(paper);
             g.position.set(x, y, z);
             g.rotation.y = rot; // Adicionada rotação
             scene.add(g); levelObjects.push(g);
@@ -2101,11 +2104,11 @@
 
         function createSciFiPlant(x, y, z) {
             const g = new THREE.Group();
-            const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.3, 0.8, 6), new THREE.MeshStandardMaterial({color:0x444}));
+            const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.3, 0.8, 6), new THREE.MeshStandardMaterial({ color: 0x444 }));
             pot.position.y = 0.4; g.add(pot);
             const geo = new THREE.ConeGeometry(0.2, 1.5, 4);
-            const mat = new THREE.MeshBasicMaterial({color:0x00ff88, transparent:true, opacity:0.5, wireframe:true});
-            for(let i=0; i<5; i++) {
+            const mat = new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.5, wireframe: true });
+            for (let i = 0; i < 5; i++) {
                 const leaf = new THREE.Mesh(geo, mat); leaf.position.y = 1; leaf.rotation.z = 0.5; leaf.rotation.y = (i / 5) * Math.PI * 2; g.add(leaf);
             }
             g.position.set(x, y, z); scene.add(g); levelObjects.push(g);
@@ -2121,29 +2124,29 @@
         }
 
         // --- OBJETOS 3D EXISTENTES ---
-        
+
         // PORTAL REVERTIDO (SIMPLES E CLÁSSICO)
         function createPortalDoor(x, y, z, target, rot) {
             const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot;
             const frame = new THREE.Mesh(new THREE.TorusGeometry(3.5, 0.2, 16, 50), new THREE.MeshStandardMaterial({ color: 0x222, emissive: 0x00eaff, emissiveIntensity: 0.2 })); frame.position.y = 3; g.add(frame);
-            
+
             // Anel 1 (Original - Azul)
             const energyRing1 = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.1, 16, 50), new THREE.MeshBasicMaterial({ color: 0x00eaff, transparent: true, opacity: 0.6 })); energyRing1.position.y = 3; g.add(energyRing1);
             // Anel 2 (Original - Rosa)
-            const energyRing2 = new THREE.Mesh(new THREE.TorusGeometry(2.5, 0.05, 16, 50), new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.6 })); energyRing2.position.y = 3; energyRing2.rotation.x = Math.PI/4; g.add(energyRing2);
-            
+            const energyRing2 = new THREE.Mesh(new THREE.TorusGeometry(2.5, 0.05, 16, 50), new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.6 })); energyRing2.position.y = 3; energyRing2.rotation.x = Math.PI / 4; g.add(energyRing2);
+
             const particlesGeo = new THREE.BufferGeometry(); const particlesCount = 50; const posArray = new Float32Array(particlesCount * 3);
-            for(let i = 0; i < particlesCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 4; }
+            for (let i = 0; i < particlesCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 4; }
             particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: 0.1, color: 0x00eaff, transparent:true, opacity:0.8 })); particles.position.y = 3; g.add(particles);
-            
+            const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: 0.1, color: 0x00eaff, transparent: true, opacity: 0.8 })); particles.position.y = 3; g.add(particles);
+
             // Animação original
-            g.userData.animate = () => { 
-                energyRing1.rotation.z -= 0.02; 
-                energyRing2.rotation.z += 0.03; energyRing2.rotation.x += 0.01; 
-                particles.rotation.y += 0.01; 
+            g.userData.animate = () => {
+                energyRing1.rotation.z -= 0.02;
+                energyRing2.rotation.z += 0.03; energyRing2.rotation.x += 0.01;
+                particles.rotation.y += 0.01;
             };
-            
+
             const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 4), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.set(0, 3, 0); hitBox.userData = { isInteractable: true, type: "DOOR", target: target }; g.add(hitBox);
             scene.add(g); levelObjects.push(g); interactables.push(hitBox);
         }
@@ -2164,10 +2167,10 @@
 
             // FIX TRANSPARÊNCIA: Habilitar transparência no material
             const mat = new THREE.MeshStandardMaterial({ map: tex, transparent: true, opacity: 1.0 });
-            
+
             const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
             m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true;
-            
+
             scene.add(m); levelObjects.push(m); wallMeshes.push(m); // Adiciona à lista de paredes para raio-x
             addCollisionBox(x, y, z, w, h, d);
         }
@@ -2196,7 +2199,7 @@
         // FUNÇÃO FLIPERAMA 2.0 (MAIS DIVERTIDO E COLORIDO)
         function createFunArcade(x, y, z, rot) {
             const g = new THREE.Group();
-            
+
             // Gabinete Principal (Roxo Neon)
             const cabinetMat = new THREE.MeshStandardMaterial({ color: 0x9900ff, roughness: 0.3, metalness: 0.5 });
             const sideMat = new THREE.MeshBasicMaterial({ map: arcadeSideTexture });
@@ -2206,15 +2209,15 @@
 
             // Painéis Laterais com Arte (Simulado)
             const sideL = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4), sideMat);
-            sideL.position.set(-1.21, 2, 0); sideL.rotation.y = -Math.PI/2;
+            sideL.position.set(-1.21, 2, 0); sideL.rotation.y = -Math.PI / 2;
             const sideR = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 4), sideMat);
-            sideR.position.set(1.21, 2, 0); sideR.rotation.y = Math.PI/2;
+            sideR.position.set(1.21, 2, 0); sideR.rotation.y = Math.PI / 2;
 
             // Tela Inclinada
-            const screenCase = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.8, 0.5), new THREE.MeshStandardMaterial({color:0x222}));
+            const screenCase = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.8, 0.5), new THREE.MeshStandardMaterial({ color: 0x222 }));
             screenCase.position.set(0, 3.0, 0.6);
             screenCase.rotation.x = -0.4;
-            
+
             // Tela Brilhante com Animação de Pixel (Simples cor mudando)
             const screenMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
             const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.5), screenMat);
@@ -2238,9 +2241,9 @@
             controlPanel.rotation.x = 0.2;
 
             // Joysticks
-            const joyStick1 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({color:0xff0000}));
+            const joyStick1 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
             joyStick1.position.set(-0.6, 2.3, 1.0);
-            const joyStick2 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({color:0xffff00}));
+            const joyStick2 = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshStandardMaterial({ color: 0xffff00 }));
             joyStick2.position.set(0.6, 2.3, 1.0);
 
             // Luz Ambiente do Arcade
@@ -2248,15 +2251,15 @@
             arcadeLight.position.set(0, 3, 2);
 
             g.add(body, sideL, sideR, screenCase, marquee, controlPanel, joyStick1, joyStick2, arcadeLight);
-            
+
             g.position.set(x, y, z); g.rotation.y = rot;
-            
+
             // Hitbox
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.8, 5, 2.8), new THREE.MeshBasicMaterial({ visible: false })); 
-            hitBox.position.y = 2.5; 
-            hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" }; 
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(2.8, 5, 2.8), new THREE.MeshBasicMaterial({ visible: false }));
+            hitBox.position.y = 2.5;
+            hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Fliperama" };
             g.add(hitBox);
-            
+
             scene.add(g); levelObjects.push(g); interactables.push(hitBox); addCollisionBox(x, y, z, 2.4, 4, 2.4);
         }
 
@@ -2265,7 +2268,7 @@
             const c = new THREE.Group(); c.scale.set(1.4, 1.4, 1.4);
             const metalMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.4, metalness: 0.8 });
             const armorMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, metalness: 0.6 });
-            
+
             const body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.35), armorMat);
             body.position.y = 1.0; c.add(body);
 
@@ -2284,7 +2287,7 @@
             const legG = new THREE.BoxGeometry(0.15, 0.7, 0.15);
             const lLeg = new THREE.Mesh(legG, armorMat); lLeg.position.set(0.15, 0.35, 0); c.add(lLeg);
             const rLeg = new THREE.Mesh(legG, armorMat); rLeg.position.set(-0.15, 0.35, 0); c.add(rLeg);
-            const pack = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.15), new THREE.MeshStandardMaterial({ color: 0x333 })); 
+            const pack = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.15), new THREE.MeshStandardMaterial({ color: 0x333 }));
             pack.position.set(0, 1.0, -0.25); c.add(pack);
 
             c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack };
@@ -2299,11 +2302,11 @@
         }
 
         function createTable(x, y, z, rot, width, depth, addChairs = false) {
-             const g = new THREE.Group();
-             const top = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: 0x556677 })); top.position.y = 1.5; g.add(top);
-             const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg1.position.set(-(width / 2 - 0.2), 0.75, 0); g.add(leg1);
-             const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg2.position.set(width / 2 - 0.2, 0.75, 0); g.add(leg2);
-             g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, width, 1.5, depth);
+            const g = new THREE.Group();
+            const top = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: 0x556677 })); top.position.y = 1.5; g.add(top);
+            const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg1.position.set(-(width / 2 - 0.2), 0.75, 0); g.add(leg1);
+            const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg2.position.set(width / 2 - 0.2, 0.75, 0); g.add(leg2);
+            g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, width, 1.5, depth);
         }
 
         function createChair(x, y, z, rot) {
@@ -2355,21 +2358,21 @@
             if (styleId === 1) { // Curto
                 hairMesh = new THREE.Group();
                 const base = new THREE.Mesh(new THREE.SphereGeometry(0.26, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2.5), hairMat);
-                base.rotation.x = -Math.PI/2; // Topo da cabeça
+                base.rotation.x = -Math.PI / 2; // Topo da cabeça
                 hairMesh.add(base);
                 for (let i = 0; i < 6; i++) {
                     const spike = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.1, 4), hairMat);
-                    spike.position.set((Math.random()-0.5)*0.3, 0.25, (Math.random()-0.5)*0.3);
-                    spike.rotation.set((Math.random()-0.5), (Math.random()-0.5), (Math.random()-0.5));
+                    spike.position.set((Math.random() - 0.5) * 0.3, 0.25, (Math.random() - 0.5) * 0.3);
+                    spike.rotation.set((Math.random() - 0.5), (Math.random() - 0.5), (Math.random() - 0.5));
                     hairMesh.add(spike);
                 }
             } else if (styleId === 2) { // Médio
-                hairMesh = new THREE.Mesh(new THREE.SphereGeometry(0.27, 32, 16, 0, Math.PI*2, 0, Math.PI/1.8), hairMat);
-                hairMesh.rotation.x = -Math.PI/2;
+                hairMesh = new THREE.Mesh(new THREE.SphereGeometry(0.27, 32, 16, 0, Math.PI * 2, 0, Math.PI / 1.8), hairMat);
+                hairMesh.rotation.x = -Math.PI / 2;
             } else if (styleId === 3) { // Longo
                 hairMesh = new THREE.Group();
-                const top = new THREE.Mesh(new THREE.SphereGeometry(0.27, 32, 16, 0, Math.PI*2, 0, Math.PI/1.8), hairMat);
-                top.rotation.x = -Math.PI/2;
+                const top = new THREE.Mesh(new THREE.SphereGeometry(0.27, 32, 16, 0, Math.PI * 2, 0, Math.PI / 1.8), hairMat);
+                top.rotation.x = -Math.PI / 2;
                 hairMesh.add(top);
                 const pony = new THREE.Mesh(new THREE.CapsuleGeometry(0.08, 0.4, 4, 8), hairMat);
                 pony.position.set(0, -0.1, -0.25);
@@ -2382,10 +2385,10 @@
         function createHumanoid(color, hairStyle = 0, hairColor = CONFIG.colors.defaultHair) {
             const c = new THREE.Group(); c.scale.set(1.4, 1.4, 1.4);
             const mats = { skin: new THREE.MeshStandardMaterial({ color: CONFIG.colors.skin }), shirt: new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.3 }), pants: new THREE.MeshStandardMaterial({ color: 0x111 }), pack: new THREE.MeshStandardMaterial({ color: CONFIG.colors.backpack }) };
-            
+
             // Corpo: Capsula
-            const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.5, 4, 8), mats.shirt); 
-            body.position.y = 1.0; 
+            const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.25, 0.5, 4, 8), mats.shirt);
+            body.position.y = 1.0;
             c.add(body);
 
             const headG = new THREE.Group(); headG.position.y = 1.6;
@@ -2399,24 +2402,24 @@
             const eyeGeo = new THREE.SphereGeometry(0.035); const eyeMat = new THREE.MeshBasicMaterial({ color: 0 });
             const lEye = new THREE.Mesh(eyeGeo, eyeMat); lEye.position.set(0.1, 0.05, 0.22); headG.add(lEye);
             const rEye = new THREE.Mesh(eyeGeo, eyeMat); rEye.position.set(-0.1, 0.05, 0.22); headG.add(rEye);
-            const mouth = new THREE.Mesh(new THREE.CapsuleGeometry(0.02, 0.1, 4, 8), eyeMat); 
+            const mouth = new THREE.Mesh(new THREE.CapsuleGeometry(0.02, 0.1, 4, 8), eyeMat);
             mouth.rotation.z = Math.PI / 2;
-            mouth.position.set(0, -0.1, 0.22); 
+            mouth.position.set(0, -0.1, 0.22);
             headG.add(mouth);
 
             // Capacete (Esfera maior transparente)
-            const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16), new THREE.MeshStandardMaterial({ color: 0x00eaff, transparent:true, opacity:0.4 }));
+            const helmet = new THREE.Mesh(new THREE.SphereGeometry(0.3, 32, 16), new THREE.MeshStandardMaterial({ color: 0x00eaff, transparent: true, opacity: 0.4 }));
             helmet.visible = false; headG.add(helmet); c.add(headG);
 
             // Membros: Capsulas
             const limbG = new THREE.CapsuleGeometry(0.08, 0.6, 4, 8);
             const lArm = new THREE.Mesh(limbG, mats.shirt); lArm.position.set(0.35, 1.0, 0); c.add(lArm);
             const rArm = new THREE.Mesh(limbG, mats.shirt); rArm.position.set(-0.35, 1.0, 0); c.add(rArm);
-            
+
             const legG = new THREE.CapsuleGeometry(0.09, 0.7, 4, 8);
             const lLeg = new THREE.Mesh(legG, mats.pants); lLeg.position.set(0.12, 0.35, 0); c.add(lLeg);
             const rLeg = new THREE.Mesh(legG, mats.pants); rLeg.position.set(-0.12, 0.35, 0); c.add(rLeg);
-            
+
             const pack = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.2), mats.pack); pack.position.set(0, 1.0, -0.25); c.add(pack);
 
             c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack, helmet, hair: hairMesh };
@@ -2429,10 +2432,10 @@
             g.rotation.y = rot;
             const char = createHumanoid(color, hairStyle, hairColor);
             char.position.y = 0; g.add(char);
-            
+
             const ring = new THREE.Mesh(new THREE.RingGeometry(0.8, 0.9, 32), new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide }));
             ring.rotation.x = -Math.PI / 2; ring.position.y = 0.1; g.add(ring);
-            
+
             // Floating exclamation mark or visor to indicate NPC
             const mark = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
             mark.position.y = 2.2;
@@ -2468,7 +2471,7 @@
                         isTransitioning = true;
                         loadScene(data.target);
                         if (missionProgress < 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
-                    } else startDialog("SISTEMA", ["Portal trancado. Fale com a Agente Júlia."]);
+                    } else startDialog("SISTEMA", ["Portal trancado. Você precisa de autorização para usar."]);
                 }
                 return;
             }
@@ -2584,8 +2587,8 @@
             requestAnimationFrame(animate);
             if (player && clock) {
                 const dt = clock.getDelta();
-                markers.forEach(m => { if(m.userData.anim) m.userData.anim(); });
-                levelObjects.forEach(obj => { if(obj.userData.animate) obj.userData.animate(); });
+                markers.forEach(m => { if (m.userData.anim) m.userData.anim(); });
+                levelObjects.forEach(obj => { if (obj.userData.animate) obj.userData.animate(); });
 
                 if (!isDialogOpen) {
                     const m = new THREE.Vector3(0, 0, 0);
@@ -2618,10 +2621,10 @@
                                 const portalPos = obj.getWorldPosition(new THREE.Vector3());
                                 const dx = player.position.x - portalPos.x;
                                 const dz = player.position.z - portalPos.z;
-                                const dist2D = Math.sqrt(dx*dx + dz*dz);
-                                
-                                if (dist2D < 3.5) { // Aumentei o raio de detecção
-                                     handleInteraction(obj);
+                                const dist2D = Math.sqrt(dx * dx + dz * dz);
+
+                                if (dist2D < 1.5) { // Aumentei o raio de detecção
+                                    handleInteraction(obj);
                                 }
                             }
                         });
