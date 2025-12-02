@@ -1981,8 +1981,10 @@
             createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2);
             createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI/4);
 
+            // MAPA HOLOGRÁFICO (CORRIGIDO: Removida a rotação Z)
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-            holoMap.rotation.x = -Math.PI / 2; holoMap.rotation.z = Math.PI / 2; 
+            holoMap.rotation.x = -Math.PI / 2; 
+            // holoMap.rotation.z = Math.PI / 2; // <-- REMOVIDO
             holoMap.position.set(-18, 0.8, -10); scene.add(holoMap); levelObjects.push(holoMap);
 
             // ARCADE MACHINE (Agora com modelo melhorado)
@@ -2103,16 +2105,28 @@
 
         // --- OBJETOS 3D EXISTENTES ---
         
+        // PORTAL ATUALIZADO COM MAIS ANÉIS
         function createPortalDoor(x, y, z, target, rot) {
             const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rot;
             const frame = new THREE.Mesh(new THREE.TorusGeometry(3.5, 0.2, 16, 50), new THREE.MeshStandardMaterial({ color: 0x222, emissive: 0x00eaff, emissiveIntensity: 0.2 })); frame.position.y = 3; g.add(frame);
+            
+            // Anel 1 (Original - Azul)
             const energyRing1 = new THREE.Mesh(new THREE.TorusGeometry(3.0, 0.1, 16, 50), new THREE.MeshBasicMaterial({ color: 0x00eaff, transparent: true, opacity: 0.6 })); energyRing1.position.y = 3; g.add(energyRing1);
+            // Anel 2 (Original - Rosa)
             const energyRing2 = new THREE.Mesh(new THREE.TorusGeometry(2.5, 0.05, 16, 50), new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.6 })); energyRing2.position.y = 3; energyRing2.rotation.x = Math.PI/4; g.add(energyRing2);
+            
             const particlesGeo = new THREE.BufferGeometry(); const particlesCount = 50; const posArray = new Float32Array(particlesCount * 3);
             for(let i = 0; i < particlesCount * 3; i++) { posArray[i] = (Math.random() - 0.5) * 4; }
             particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ size: 0.1, color: 0x00eaff, transparent:true, opacity:0.8 })); particles.position.y = 3; g.add(particles);
-            g.userData.animate = () => { energyRing1.rotation.z -= 0.02; energyRing2.rotation.z += 0.03; energyRing2.rotation.x += 0.01; particles.rotation.y += 0.01; };
+            
+            // Animação atualizada para todos os anéis
+            g.userData.animate = () => { 
+                energyRing1.rotation.z -= 0.02; 
+                energyRing2.rotation.z += 0.03; energyRing2.rotation.x += 0.01; 
+                particles.rotation.y += 0.01; 
+            };
+            
             const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 4), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.set(0, 3, 0); hitBox.userData = { isInteractable: true, type: "DOOR", target: target }; g.add(hitBox);
             scene.add(g); levelObjects.push(g); interactables.push(hitBox);
         }
