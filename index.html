@@ -1205,6 +1205,7 @@
         let player, playerBody;
         let levelObjects = [], obstacles = [], interactables = [], floors = [], markers = [];
         let wallMeshes = []; // Array para controle de transparência
+        let drones = [], mazeDoors = []; // Novos arrays para o labirinto
         let selectedAgentId = null, missionProgress = 0, currentLevel = "LOBBY";
         let isTransitioning = false; // Flag para evitar múltiplas transições
 
@@ -1525,6 +1526,18 @@
             if (val == correct) {
                 fb.style.color = '#00ff88'; fb.innerText = "CORRETO! +100 PONTOS";
                 setTimeout(closePC, 1500);
+                // Check if it's a door puzzle
+                if (window.currentDoor) {
+                    const door = window.currentDoor;
+                    scene.remove(door);
+                    const idx = interactables.indexOf(door.children.find(c => c.userData.isInteractable));
+                    if (idx > -1) interactables.splice(idx, 1);
+                    // Remove collision box
+                    // This is simplified; real collision removal would require tracking ID
+                    obstacles = obstacles.filter(o => !o.containsPoint(door.position)); // Rough removal
+
+                    window.currentDoor = null;
+                }
             } else {
                 fb.style.color = '#ff5555'; fb.innerText = "ERROU! TENTE DE NOVO.";
             }
@@ -1537,6 +1550,14 @@
                 const time = Date.now() - parseInt(btn.dataset.start);
                 fb.style.color = '#00ff88'; fb.innerText = `ÓTIMO! ${time}ms`;
                 setTimeout(closePC, 1500);
+                if (window.currentDoor) {
+                    const door = window.currentDoor;
+                    scene.remove(door);
+                    const idx = interactables.indexOf(door.children.find(c => c.userData.isInteractable));
+                    if (idx > -1) interactables.splice(idx, 1);
+                    obstacles = obstacles.filter(o => !o.containsPoint(door.position));
+                    window.currentDoor = null;
+                }
             } else {
                 fb.style.color = '#ff5555'; fb.innerText = "MUITO CEDO!";
             }
@@ -1914,6 +1935,7 @@
             markers.forEach(m => scene.remove(m));
             // Limpa o array de paredes para transparência
             wallMeshes = [];
+            drones = []; mazeDoors = []; // Limpa labirinto
             levelObjects = []; obstacles = []; interactables = []; floors = []; markers = [];
         }
 
@@ -1923,6 +1945,7 @@
                 clearLevel(); currentLevel = sceneName;
                 if (sceneName === "LOBBY") createLobbyLevel();
                 else if (sceneName === "CYBER_OPS") createRoomLevel();
+                else if (sceneName === "MAZE_LEVEL") createMazeLevel();
                 document.getElementById('transition-screen').style.display = 'none';
                 isTransitioning = false;
                 updateMarkers(); // FIX: Update markers after scene load
@@ -1995,7 +2018,9 @@
             const totem = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 8), new THREE.MeshStandardMaterial({ color: 0x333 }));
             totem.position.set(0, 0.5, 0); scene.add(totem); levelObjects.push(totem);
 
-            createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
+            // Portal logic: Updates based on mission
+            const portalTarget = (missionProgress >= 8) ? "MAZE_LEVEL" : "CYBER_OPS";
+            createPortalDoor(0, 0, -13.8, portalTarget, 0);
 
             // CAPITÃO NA SALA DA LAN HOUSE (CORRIGIDO)
             createTable(-18, -0.75, -10, 0, 6, 3, false);
@@ -2058,6 +2083,77 @@
             createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0, CONFIG.colors.defaultHair, Math.PI);
 
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
+        }
+
+        // --- NOVO NÍVEL: LABIRINTO ---
+        function createMazeLevel() {
+            createFloor(0, 0, 40, 40, serverFloorTexture);
+
+            // Paredes externas
+            createWall(0, 4, -20, 40, 8, 1, serverWallTexture);
+            createWall(0, 4, 20, 40, 8, 1, serverWallTexture);
+            createWall(-20, 4, 0, 1, 8, 40, serverWallTexture);
+            createWall(20, 4, 0, 1, 8, 40, serverWallTexture);
+
+            // Labirinto Simples (Manual)
+            // Corredor central
+            createWall(-10, 4, 0, 1, 8, 30, serverWallTexture);
+            createWall(10, 4, 0, 1, 8, 30, serverWallTexture);
+
+            // Obstáculos
+            createWall(0, 4, 5, 10, 8, 1, serverWallTexture);
+            createWall(0, 4, -10, 10, 8, 1, serverWallTexture);
+
+            // Porta Puzzle 1
+            createPuzzleDoor(0, 2, 5, 'math', 1);
+
+            // Porta Puzzle 2
+            createPuzzleDoor(0, 2, -10, 'quiz', 2);
+
+            // Drones Sentinelas
+            createDrone(-5, 10, [{ x: -5, z: 10 }, { x: -5, z: -10 }]);
+            createDrone(5, -10, [{ x: 5, z: -10 }, { x: 5, z: 10 }]);
+
+            // Objetivo Final
+            const finish = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), new THREE.MeshStandardMaterial({ color: 0x00ff00, emissive: 0x00ff00 }));
+            finish.position.set(0, 1, -18);
+            finish.userData = { isInteractable: true, name: "Final do Labirinto", dialogs: ["Parabéns! Você completou o desafio final!"] };
+            scene.add(finish); levelObjects.push(finish); interactables.push(finish);
+
+            if (player) { player.position.set(0, 0, 18); player.rotation.y = Math.PI; }
+        }
+
+        function createDrone(x, z, path) {
+            const g = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.SphereGeometry(0.5), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+            g.add(body);
+            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshBasicMaterial({ color: 0xffff00 }));
+            eye.position.set(0, 0, 0.4); g.add(eye);
+
+            g.position.set(x, 2, z);
+            g.userData.path = path;
+            g.userData.pathIndex = 0;
+            g.userData.speed = 3;
+
+            scene.add(g); drones.push(g); levelObjects.push(g);
+        }
+
+        function createPuzzleDoor(x, y, z, type, id) {
+            const g = new THREE.Group();
+            const door = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 0.5), new THREE.MeshStandardMaterial({ color: 0xff3333, transparent: true, opacity: 0.7 }));
+            g.add(door);
+            g.position.set(x, y, z);
+
+            // Hitbox for interaction
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(5, 6, 2), new THREE.MeshBasicMaterial({ visible: false }));
+            hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Porta de Segurança" }; // Reusing ARCADE type triggers puzzle logic
+            g.add(hitBox);
+
+            scene.add(g); mazeDoors.push(g); levelObjects.push(g); interactables.push(hitBox);
+            // Store current door to remove on success
+            hitBox.onInteract = () => { window.currentDoor = g; };
+
+            addCollisionBox(x, y, z, 4, 6, 0.5);
         }
 
         // --- NOVA FUNÇÃO DE ESCADAS (CORRIGIDA) ---
@@ -2494,6 +2590,11 @@
                         loadScene(data.target);
                         if (missionProgress <= 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
                     } else startDialog("SISTEMA", ["Portal trancado. Você precisa de autorização para usar."]);
+                } else if (data.target === "MAZE_LEVEL") {
+                    // Logic for Maze Level
+                    isTransitioning = true;
+                    loadScene("MAZE_LEVEL");
+                    updateHUD("Encontre a Saída do Labirinto", "#ffff00");
                 }
                 return;
             }
@@ -2631,6 +2732,30 @@
                 markers.forEach(m => { if (m.userData.anim) m.userData.anim(); });
                 levelObjects.forEach(obj => { if (obj.userData.animate) obj.userData.animate(); });
 
+                // Animação dos Drones
+                drones.forEach(d => {
+                    if (!d.userData.path) return;
+                    const target = d.userData.path[d.userData.pathIndex];
+                    const dir = new THREE.Vector3(target.x - d.position.x, 0, target.z - d.position.z);
+                    if (dir.length() < 0.2) {
+                        d.userData.pathIndex = (d.userData.pathIndex + 1) % d.userData.path.length;
+                    } else {
+                        dir.normalize();
+                        d.position.add(dir.multiplyScalar(d.userData.speed * dt));
+                        d.lookAt(target.x, d.position.y, target.z);
+                    }
+
+                    // Colisão Player-Drone
+                    if (player.position.distanceTo(d.position) < 1.5) {
+                        // Reset position logic
+                        player.position.set(0, 0, 18);
+                        player.rotation.y = Math.PI;
+                        // Optional: Show message
+                        // alert("VOCÊ FOI PEGO!"); // Avoiding alert as per instructions, using simple reset for now
+                    }
+                });
+
+
                 if (!isDialogOpen) {
                     const m = new THREE.Vector3(0, 0, 0);
                     if (keys.w) m.z -= 1; if (keys.s) m.z += 1; if (keys.a) m.x -= 1; if (keys.d) m.x += 1;
@@ -2657,12 +2782,9 @@
                             player.userData.parts.leftArm.rotation.x = Math.sin(walkTime) * 0.6;
                             player.userData.parts.rightArm.rotation.x = -Math.sin(walkTime) * 0.6;
                         }
-
-                        // VERIFICAÇÃO DE PORTAL AUTOMÁTICA (Colisão 2D ajustada)
                         interactables.forEach(obj => {
                             if (obj.userData.type === "DOOR") {
                                 const portalPos = obj.getWorldPosition(new THREE.Vector3());
-                                // Calculamos distância apenas no plano XZ (ignorando altura Y)
                                 const dx = player.position.x - portalPos.x;
                                 const dz = player.position.z - portalPos.z;
                                 const dist2D = Math.sqrt(dx * dx + dz * dz);
