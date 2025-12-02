@@ -1912,11 +1912,13 @@
             createWall(-8, 1, 9, 0.5, 5, 12); createWall(-8, 1, -9, 0.5, 5, 12);
             createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
-            // Escadas (Alargadas para 8)
-            // Esquerda
-            createStairs(-12, -1.5, 0, 8, 1.5, 8, 5, "left"); 
+            // Escadas (Alargadas para 8 e ajustadas)
+            // Esquerda - Conecta de x=-8 a x=-12 (approx), largura z=8
+            // Passar Z-width como `depth` param e X-length como `width` param.
+            // createStairs(x, yStart, z, treadLength, heightDiff, stairWidth, steps, direction)
+            createStairs(-10, -1.5, 0, 0.8, 1.5, 8, 5, "left"); 
             // Direita
-            createStairs(12, -1.5, 0, 8, 1.5, 8, 5, "right");
+            createStairs(10, -1.5, 0, 0.8, 1.5, 8, 5, "right");
 
             // --- DECORAÇÃO EXTRA (ENRICHED LOBBY) ---
             
@@ -1933,9 +1935,18 @@
             }
 
             // 2. QUADROS DE AVISO / POSTERS (Novos e reposicionados)
-            createPoster(-10, 4, -14.9, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
-            createPoster(0, 4, -14.9, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
-            createPoster(10, 4, -14.9, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
+            // Z ajustado para aparecer na frente da parede
+            // Parede fundo: Z = -15. Posters em Z = -14.9.
+            // Se a parede tem espessura 1, a face interna está em -14.5.
+            // Posters devem estar em -14.4
+            createPoster(-10, 4, -14.4, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
+            createPoster(0, 4, -14.4, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
+            // O quadro "Chat Seguro" estava ao contrário (espelhado). Se for o da direita, ele precisa de rotação correta se não estiver na parede do fundo.
+            // Mas aqui estão todos na parede do fundo. A textura canvas pode estar invertida se olhada de frente.
+            // Vamos usar scale.x = -1 no createPoster se necessário, mas normalmente canvas texture é correta.
+            // O problema "ao contrário" pode ser se o plano estiver rodado 180 graus.
+            // Aqui, sem rotação.
+            createPoster(10, 4, -14.4, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
 
             // 3. PLANTAS SCI-FI
             createSciFiPlant(-22, -1.5, -13);
@@ -1964,25 +1975,25 @@
 
             createPortalDoor(0, 0, -13.8, "CYBER_OPS", 0);
 
-            // Mesa do Capitão (Reposicionada para o fundo central)
-            createTable(0, -0.75, -12, Math.PI/2, 6, 3, false); // Rotacionada 90 graus
-
-            // Cadeira do Capitão (Reposicionada atrás da mesa)
-            createChair(0, -0.75, -13.5, 0); // Virada para a frente
+            // CAPITÃO NA SALA DA LAN HOUSE (ESQUERDA)
+            // Planta do fundo esquerda está em x=-22, z=-13.
+            // Lan house tables estão em x=-20, z=8..14.
+            // Capitão deve ficar ao lado da planta, oposto às mesas.
+            // Então x=-20, z=-10 area.
+            createTable(-18, -0.75, -10, 0, 6, 3, false); 
+            createChair(-18, -0.75, -11.5, 0); // Atrás da mesa
 
             // NPCS
-            // Capitão sentado na cadeira
-            createNPC(0, -0.75, -13.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
+            createNPC(-18, -0.75, -11.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0); 
             
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI/2);
-            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); // Virado para a sala
+            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI/2); 
             createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI/2);
-            // NPC Central
             createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI/4);
 
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
-            holoMap.rotation.x = -Math.PI / 2; holoMap.rotation.z = Math.PI / 2; // Rotacionado para acompanhar a mesa
-            holoMap.position.set(0, 0.8, -12); scene.add(holoMap); levelObjects.push(holoMap);
+            holoMap.rotation.x = -Math.PI / 2; holoMap.rotation.z = Math.PI / 2; 
+            holoMap.position.set(-18, 0.8, -10); scene.add(holoMap); levelObjects.push(holoMap);
 
             createArcadeMachine(18, -1.5, 10, -Math.PI / 2);
             createScreen(-12, 5, -14.5, Math.PI, window.createScreenTexture("DICA: Use senhas fortes!"));
@@ -2022,37 +2033,22 @@
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
 
-        // --- NOVA FUNÇÃO DE ESCADAS ---
-        function createStairs(x, yStart, z, width, heightDiff, depth, steps, direction) {
+        // --- NOVA FUNÇÃO DE ESCADAS (CORRIGIDA) ---
+        function createStairs(x, yStart, z, treadLen, heightDiff, stairWidth, steps, direction) {
             const stepHeight = heightDiff / steps;
-            const stepDepth = 1.0; // Profundidade de cada degrau visual
-            const totalDepth = steps * stepDepth; 
             
-            // Ajuste para criar degraus
             for (let i = 0; i < steps; i++) {
-                const h = (i + 1) * stepHeight;
                 const mesh = new THREE.Mesh(
-                    new THREE.BoxGeometry(width, stepHeight, stepDepth),
+                    new THREE.BoxGeometry(treadLen, stepHeight, stairWidth),
                     new THREE.MeshStandardMaterial({ map: floorTextureBase })
                 );
                 
-                // Posicionamento escalonado
-                // Se direction 'left', escada desce para esquerda? 
-                // O pedido era "escada para descer da parte central para laterais".
-                // Central é X=0, Y=0. Lateral é X= +/-16, Y=-1.5.
-                // A escada conecta X=8 a X=12 (aprox).
-                
-                // Vamos simplificar: Criar blocos empilhados
-                // O Y vai descendo.
-                const xPos = direction === "left" ? x + (i * 0.5) : x - (i * 0.5); // Escalonar em X
+                const xPos = direction === "left" ? x + (i * treadLen) : x - (i * treadLen);
                 const yPos = yStart + (i * stepHeight) + (stepHeight/2);
                 
                 mesh.position.set(xPos, yPos, z);
                 scene.add(mesh); levelObjects.push(mesh); floors.push(mesh);
             }
-            
-            // Colisão simplificada (Rampa invisível para física suave)
-            // addCollisionBox(x, yStart + heightDiff/2, z, width, heightDiff, depth);
         }
 
         // --- OBJETOS DECORATIVOS NOVOS ---
@@ -2074,13 +2070,17 @@
         function createPoster(x, y, z, title, text, color) {
             const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({color:0x111}));
             
-            // Seleciona a textura correta baseada no título
-            let texture = posterTexture; // fallback
+            let texture = posterTexture;
             if (title === "REGRAS DO JOGO") texture = posterRulesTexture;
             else if (title === "PERIGO: DOWNLOADS") texture = posterDownloadsTexture;
             else if (title === "CHAT SEGURO") texture = posterChatTexture;
 
-            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({map: texture}));
+            // Espelhando a textura horizontalmente para corrigir o texto "ao contrário"
+            texture.center.set(0.5, 0.5);
+            texture.repeat.set(-1, 1); 
+            texture.flipY = false; // Flip Y might be needed depending on canvas coord system
+
+            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide}));
             paper.position.z = 0.06;
             const g = new THREE.Group(); g.add(frame); g.add(paper); g.position.set(x, y, z);
             scene.add(g); levelObjects.push(g);
