@@ -1894,14 +1894,14 @@
             // 1. "LAN HOUSE" SEGURA (Computadores de Acesso Público) na esquerda
             // Mesa longa
             const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x333}));
-            lanTable.position.set(-20, 0.75, 8);
-            scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, 0.75, 8, 2, 1.5, 10);
+            lanTable.position.set(-20, -0.75, 8); // Ajustado para altura correta
+            scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, -0.75, 8, 2, 1.5, 10);
             
             // 3 Computadores
             for(let i=0; i<3; i++) {
                 const z = 5 + (i * 3);
-                createPropComputer(-20, 1.5, z, -Math.PI/2);
-                createChair(-18.5, 0, z, -Math.PI/2);
+                createPropComputer(-20, 0, z, -Math.PI/2); // Ajustado para altura correta
+                createChair(-18.5, -1.5, z, -Math.PI/2); // Ajustado para altura correta
             }
 
             // 2. QUADROS DE AVISO / POSTERS
@@ -1912,10 +1912,10 @@
             createPoster(15, 4, -13.9, "lock");
 
             // 3. PLANTAS SCI-FI (Decorativas)
-            createSciFiPlant(-22, 0, -13);
-            createSciFiPlant(22, 0, -13);
-            createSciFiPlant(22, 0, 13);
-            createSciFiPlant(-22, 0, 13);
+            createSciFiPlant(-22, -1.5, -13); // Ajustado para altura correta
+            createSciFiPlant(22, -1.5, -13); // Ajustado para altura correta
+            createSciFiPlant(22, -1.5, 13); // Ajustado para altura correta
+            createSciFiPlant(-22, -1.5, 13); // Ajustado para altura correta
 
             // --- FIM DA DECORAÇÃO EXTRA ---
 
@@ -1932,9 +1932,9 @@
             createNPC(-19, -1.5, 0, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa);
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400);
             
-            // NPCS ORIGINAIS
-            createNPC(-10, 0, 8, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222);
-            createNPC(10, 0, 8, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff);
+            // NPCS ORIGINAIS - POSICIONAMENTO ESTRATÉGICO
+            createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222); // Perto dos computadores
+            createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff); // Perto da entrada
 
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(7.8, 3.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             holoMap.rotation.x = -Math.PI / 2; holoMap.position.set(-16, 0.1, 5); scene.add(holoMap); levelObjects.push(holoMap);
