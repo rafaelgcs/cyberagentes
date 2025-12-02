@@ -961,13 +961,13 @@
         <div class="agent-selector">
             <div class="agent-card" id="agent-1" onclick="selectAgent(1)">
                 <div class="agent-icon">🤖</div>
-                <h3 style="color: #fff;">Agente AZUL</h3>
-                <small style="color: #00eaff;">Defensor de Dados</small>
+                <h3 style="color: #fff;">Agente ANDROIDE</h3>
+                <small style="color: #00eaff;">Resistência Digital</small>
             </div>
             <div class="agent-card" id="agent-2" onclick="selectAgent(2)">
-                <div class="agent-icon">👾</div>
-                <h3 style="color: #fff;">Agente ROXO</h3>
-                <small style="color: #d500f9;">Mestre dos Puzzles</small>
+                <div class="agent-icon">🧑‍🚀</div>
+                <h3 style="color: #fff;">Agente HUMANO</h3>
+                <small style="color: #d500f9;">Intuição Humana</small>
             </div>
         </div>
         <button id="btn-start-game" class="btn" style="opacity: 0.5; pointer-events: none;"
@@ -1677,18 +1677,23 @@
 
             if (player && player.userData.parts) {
                 if (player.userData.parts.backpack) player.userData.parts.backpack.material.color.setHex(playerState.backpackColor);
+                // Verificar se o personagem tem capacete/cabelo (robô não tem da mesma forma)
                 if (player.userData.parts.helmet) {
                     player.userData.parts.helmet.visible = playerState.hasHelmet;
                     player.userData.parts.helmet.material.color.setHex(playerState.helmetColor);
                     if (player.userData.parts.hair) player.userData.parts.hair.visible = !playerState.hasHelmet;
                 }
-                const headGroup = player.userData.parts.head;
-                if (player.userData.parts.hair) headGroup.remove(player.userData.parts.hair);
-                const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
-                if (newHairMesh) {
-                    newHairMesh.visible = !playerState.hasHelmet;
-                    headGroup.add(newHairMesh);
-                    player.userData.parts.hair = newHairMesh;
+                
+                // Atualiza cabelo apenas se existir (Humano)
+                if (player.userData.parts.head && player.userData.parts.hair !== undefined) {
+                     const headGroup = player.userData.parts.head;
+                     headGroup.remove(player.userData.parts.hair);
+                     const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
+                     if (newHairMesh) {
+                        newHairMesh.visible = !playerState.hasHelmet;
+                        headGroup.add(newHairMesh);
+                        player.userData.parts.hair = newHairMesh;
+                     }
                 }
             }
             startDialog("SISTEMA", ["Excelente, Agente " + playerState.name + "!", "Você atualizou sua identidade com sucesso!"]);
@@ -2255,6 +2260,37 @@
             scene.add(g); levelObjects.push(g); interactables.push(hitBox); addCollisionBox(x, y, z, 2.4, 4, 2.4);
         }
 
+        // ROBOT CREATION
+        function createRobot(color) {
+            const c = new THREE.Group(); c.scale.set(1.4, 1.4, 1.4);
+            const metalMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.4, metalness: 0.8 });
+            const armorMat = new THREE.MeshStandardMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, metalness: 0.6 });
+            
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.35), armorMat);
+            body.position.y = 1.0; c.add(body);
+
+            const headG = new THREE.Group(); headG.position.y = 1.65;
+            const headGeo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+            headG.add(new THREE.Mesh(headGeo, metalMat));
+            const visor = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.1, 0.1), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+            visor.position.set(0, 0.05, 0.21); headG.add(visor);
+            const antL = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3), metalMat); antL.position.set(0.15, 0.35, 0); headG.add(antL);
+            const antR = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.3), metalMat); antR.position.set(-0.15, 0.35, 0); headG.add(antR);
+            c.add(headG);
+
+            const limbG = new THREE.BoxGeometry(0.12, 0.6, 0.12);
+            const lArm = new THREE.Mesh(limbG, metalMat); lArm.position.set(0.35, 1.0, 0); c.add(lArm);
+            const rArm = new THREE.Mesh(limbG, metalMat); rArm.position.set(-0.35, 1.0, 0); c.add(rArm);
+            const legG = new THREE.BoxGeometry(0.15, 0.7, 0.15);
+            const lLeg = new THREE.Mesh(legG, armorMat); lLeg.position.set(0.15, 0.35, 0); c.add(lLeg);
+            const rLeg = new THREE.Mesh(legG, armorMat); rLeg.position.set(-0.15, 0.35, 0); c.add(rLeg);
+            const pack = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.15), new THREE.MeshStandardMaterial({ color: 0x333 })); 
+            pack.position.set(0, 1.0, -0.25); c.add(pack);
+
+            c.userData.parts = { body, head: headG, leftArm: lArm, rightArm: rArm, leftLeg: lLeg, rightLeg: rLeg, backpack: pack };
+            return c;
+        }
+
         function createServerRack(x, z, rot) {
             const g = new THREE.Group();
             const rack = new THREE.Mesh(new THREE.BoxGeometry(3, 6, 2), new THREE.MeshStandardMaterial({ color: 0x111 })); rack.position.y = 3; g.add(rack);
@@ -2408,7 +2444,11 @@
         }
 
         function createPlayer(id) {
-            player = createHumanoid(id === 2 ? CONFIG.colors.agent2 : CONFIG.colors.agent1, playerState.hairStyle, playerState.hairColor);
+            if (id === 1) {
+                player = createRobot(CONFIG.colors.agent1);
+            } else {
+                player = createHumanoid(CONFIG.colors.agent2, playerState.hairStyle, playerState.hairColor);
+            }
             scene.add(player); playerBody = new THREE.Box3();
         }
 
@@ -2544,8 +2584,6 @@
             requestAnimationFrame(animate);
             if (player && clock) {
                 const dt = clock.getDelta();
-
-                // Animações de ambiente
                 markers.forEach(m => { if(m.userData.anim) m.userData.anim(); });
                 levelObjects.forEach(obj => { if(obj.userData.animate) obj.userData.animate(); });
 
@@ -2553,7 +2591,6 @@
                     const m = new THREE.Vector3(0, 0, 0);
                     if (keys.w) m.z -= 1; if (keys.s) m.z += 1; if (keys.a) m.x -= 1; if (keys.d) m.x += 1;
                     if (joystickVec.lengthSq() > 0) m.add(joystickVec);
-
                     let groundY = 0;
                     const rayOrigin = player.position.clone(); rayOrigin.y += 5;
                     groundRaycaster.set(rayOrigin, new THREE.Vector3(0, -1, 0));
@@ -2576,17 +2613,14 @@
                             player.userData.parts.leftArm.rotation.x = Math.sin(walkTime) * 0.6;
                             player.userData.parts.rightArm.rotation.x = -Math.sin(walkTime) * 0.6;
                         }
-
-                        // VERIFICAÇÃO DE PORTAL AUTOMÁTICA (Colisão 2D ajustada)
                         interactables.forEach(obj => {
                             if (obj.userData.type === "DOOR") {
                                 const portalPos = obj.getWorldPosition(new THREE.Vector3());
-                                // Calculamos distância apenas no plano XZ (ignorando altura Y)
                                 const dx = player.position.x - portalPos.x;
                                 const dz = player.position.z - portalPos.z;
                                 const dist2D = Math.sqrt(dx*dx + dz*dz);
                                 
-                                if (dist2D < 1.5) { // Aumentei o raio de detecção
+                                if (dist2D < 3.5) { // Aumentei o raio de detecção
                                      handleInteraction(obj);
                                 }
                             }
