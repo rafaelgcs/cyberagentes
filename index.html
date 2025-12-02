@@ -1219,7 +1219,7 @@
         const HAIR_STYLES = ["Careca", "Curto Espetado", "Tigela Médio", "Longo Rabo de Cavalo"];
         let uiSelectedHairStyleIndex = 0;
 
-        let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture;
+        let wallTextureBase, doorTextureBase, floorTextureBase, carpetTexture, portalTexture, screenTexture, hologramTexture, posterTexture;
         let serverFloorTexture, serverWallTexture, strategicMapTexture;
 
         let keys = { w: false, a: false, s: false, d: false };
@@ -1834,6 +1834,17 @@
                 for (let i = 0; i < 1000; i++) { c.fillStyle = Math.random() > 0.5 ? '#6a1b9a' : '#38006b'; c.fillRect(Math.random() * 512, Math.random() * 512, 4, 4); }
             });
 
+            // NOVA TEXTURA: Poster de Segurança
+            posterTexture = createTex(256, 256, (c) => {
+                c.fillStyle = '#111'; c.fillRect(0, 0, 256, 256);
+                c.strokeStyle = '#ffff00'; c.lineWidth = 10; c.strokeRect(10,10,236,236);
+                c.fillStyle = '#ffff00';
+                c.font = 'bold 150px Arial';
+                c.textAlign = 'center';
+                c.textBaseline = 'middle';
+                c.fillText('!', 128, 128);
+            });
+
             window.createScreenTexture = (text) => {
                 return createTex(512, 256, (c) => {
                     c.fillStyle = '#000'; c.fillRect(0, 0, 512, 256);
@@ -1868,6 +1879,7 @@
             createFloor(-16, -1.5, 16, 30, carpetTexture);
             createFloor(16, -1.5, 16, 30, carpetTexture);
 
+            // Paredes
             createWall(0, 3, -15, 48, 8, 2);
             createWall(0, 3, 15, 48, 8, 1);
             createWall(-24, 3, 0, 1, 8, 30);
@@ -1876,6 +1888,36 @@
             createWall(24, 3, -9, 1, 8, 12); createWall(24, 3, 9, 1, 8, 12);
             createWall(24, 0, 0, 1, 2, 6); createWall(24, 5.5, 0, 1, 3, 6);
             createWindow(24, 2.5, 0, 3, 6);
+
+            // --- DECORAÇÃO EXTRA (ENRICHED LOBBY) ---
+            
+            // 1. "LAN HOUSE" SEGURA (Computadores de Acesso Público) na esquerda
+            // Mesa longa
+            const lanTable = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 10), new THREE.MeshStandardMaterial({color: 0x333}));
+            lanTable.position.set(-20, 0.75, 8);
+            scene.add(lanTable); levelObjects.push(lanTable); addCollisionBox(-20, 0.75, 8, 2, 1.5, 10);
+            
+            // 3 Computadores
+            for(let i=0; i<3; i++) {
+                const z = 5 + (i * 3);
+                createPropComputer(-20, 1.5, z, -Math.PI/2);
+                createChair(-18.5, 0, z, -Math.PI/2);
+            }
+
+            // 2. QUADROS DE AVISO / POSTERS
+            // Parede Esquerda (fundo)
+            createPoster(-15, 4, -13.9, "warning");
+            createPoster(-5, 4, -13.9, "shield"); // Placeholder textures generated in code later if needed, using simple colored quads for now
+            // Parede Direita
+            createPoster(15, 4, -13.9, "lock");
+
+            // 3. PLANTAS SCI-FI (Decorativas)
+            createSciFiPlant(-22, 0, -13);
+            createSciFiPlant(22, 0, -13);
+            createSciFiPlant(22, 0, 13);
+            createSciFiPlant(-22, 0, 13);
+
+            // --- FIM DA DECORAÇÃO EXTRA ---
 
             const globe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshBasicMaterial({ map: hologramTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             globe.position.set(0, 2.5, 0); scene.add(globe); levelObjects.push(globe);
@@ -1890,7 +1932,7 @@
             createNPC(-19, -1.5, 0, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa);
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400);
             
-            // NOVOS NPCS DE SEGURANÇA
+            // NPCS ORIGINAIS
             createNPC(-10, 0, 8, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222);
             createNPC(10, 0, 8, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff);
 
@@ -1938,7 +1980,62 @@
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
 
-        // --- OBJETOS 3D ---
+        // --- OBJETOS DECORATIVOS NOVOS ---
+        function createPropComputer(x, y, z, rot) {
+            const g = new THREE.Group();
+            // Monitor
+            const mon = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 0.1), new THREE.MeshStandardMaterial({color:0x222}));
+            mon.position.set(0, 0.5, 0); g.add(mon);
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.4, 0.9), new THREE.MeshBasicMaterial({color:0x00eaff}));
+            screen.position.set(0, 0.5, 0.06); g.add(screen);
+            // Base
+            const base = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), new THREE.MeshStandardMaterial({color:0x111}));
+            base.position.set(0, 0, 0); g.add(base);
+            // Teclado
+            const kb = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.05, 0.6), new THREE.MeshStandardMaterial({color:0x111}));
+            kb.position.set(0, 0, 0.5); kb.rotation.x = 0.1; g.add(kb);
+            
+            g.position.set(x, y, z); g.rotation.y = rot;
+            scene.add(g); levelObjects.push(g);
+        }
+
+        function createPoster(x, y, z, type) {
+            let color = 0xffffff;
+            if(type === 'warning') color = 0xffff00;
+            if(type === 'shield') color = 0x00ff00;
+            if(type === 'lock') color = 0x00eaff;
+
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(3, 4, 0.1), new THREE.MeshStandardMaterial({color:0x111}));
+            const paper = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), new THREE.MeshBasicMaterial({color: color, map: posterTexture}));
+            paper.position.z = 0.06;
+            
+            const g = new THREE.Group();
+            g.add(frame); g.add(paper);
+            g.position.set(x, y, z);
+            scene.add(g); levelObjects.push(g);
+        }
+
+        function createSciFiPlant(x, y, z) {
+            const g = new THREE.Group();
+            const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.3, 0.8, 6), new THREE.MeshStandardMaterial({color:0x444}));
+            pot.position.y = 0.4; g.add(pot);
+            
+            // Holographic leaves
+            const geo = new THREE.ConeGeometry(0.2, 1.5, 4);
+            const mat = new THREE.MeshBasicMaterial({color:0x00ff88, transparent:true, opacity:0.5, wireframe:true});
+            
+            for(let i=0; i<5; i++) {
+                const leaf = new THREE.Mesh(geo, mat);
+                leaf.position.y = 1;
+                leaf.rotation.z = 0.5;
+                leaf.rotation.y = (i / 5) * Math.PI * 2;
+                g.add(leaf);
+            }
+            g.position.set(x, y, z);
+            scene.add(g); levelObjects.push(g);
+        }
+
+        // --- OBJETOS 3D EXISTENTES ---
         
         // NOVO: PORTAL 3D "SCI-FI"
         function createPortalDoor(x, y, z, target, rot) {
@@ -2057,6 +2154,20 @@
              const leg1 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg1.position.set(-(width / 2 - 0.2), 0.75, 0); g.add(leg1);
              const leg2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 1.5, depth - 0.5), new THREE.MeshStandardMaterial({ color: 0x555 })); leg2.position.set(width / 2 - 0.2, 0.75, 0); g.add(leg2);
              g.position.set(x, y, z); g.rotation.y = rot; scene.add(g); levelObjects.push(g); addCollisionBox(x, y, z, width, 1.5, depth);
+        }
+
+        function createChair(x, y, z, rot) {
+            const g = new THREE.Group();
+            const seat = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.2), new THREE.MeshStandardMaterial({ color: 0x333 }));
+            seat.position.y = 1; g.add(seat);
+            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 1), new THREE.MeshStandardMaterial({ color: 0x888 }));
+            leg.position.y = 0.5; g.add(leg);
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.1), new THREE.MeshStandardMaterial({ color: 0x888 }));
+            base.position.y = 0.05; g.add(base);
+            const back = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x333 }));
+            back.position.set(0, 1.8, -0.5); g.add(back);
+            g.position.set(x, y, z); g.rotation.y = rot;
+            scene.add(g); levelObjects.push(g);
         }
 
         function createQuestMarker(target) {
@@ -2351,11 +2462,16 @@
                             player.userData.parts.rightArm.rotation.x = -Math.sin(walkTime) * 0.6;
                         }
 
-                        // VERIFICAÇÃO DE PORTAL AUTOMÁTICA (Colisão)
+                        // VERIFICAÇÃO DE PORTAL AUTOMÁTICA (Colisão 2D ajustada)
                         interactables.forEach(obj => {
                             if (obj.userData.type === "DOOR") {
-                                const dist = player.position.distanceTo(obj.getWorldPosition(new THREE.Vector3()));
-                                if (dist < 2.0) { // Limiar de distância para o portal
+                                const portalPos = obj.getWorldPosition(new THREE.Vector3());
+                                // Calculamos distância apenas no plano XZ (ignorando altura Y)
+                                const dx = player.position.x - portalPos.x;
+                                const dz = player.position.z - portalPos.z;
+                                const dist2D = Math.sqrt(dx*dx + dz*dz);
+                                
+                                if (dist2D < 3.5) { // Aumentei o raio de detecção
                                      handleInteraction(obj);
                                 }
                             }
