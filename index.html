@@ -981,6 +981,8 @@
     <!-- CUTSCENE OVERLAY -->
     <div id="cutscene-overlay" class="hidden overlay-full">
         <div id="cutscene-content" class="cutscene-text"></div>
+        <button id="skip-btn" class="btn" style="position:absolute; bottom:20px; right:20px; z-index:201;"
+            onclick="skipCutscene()">PULAR >></button>
     </div>
 
     <!-- TUTORIAL OVERLAY -->
@@ -1279,6 +1281,7 @@
 
         let currentCutsceneLines = [];
         let currentCutsceneIndex = 0;
+        let typeWriterTimeout;
 
         function playCutscene(id) {
             const lines = CUTSCENES[id];
@@ -1300,10 +1303,10 @@
                 if (i < text.length) {
                     element.innerHTML += text.charAt(i);
                     i++;
-                    setTimeout(type, speed);
+                    typeWriterTimeout = setTimeout(type, speed);
                 } else {
                     if (audio) audio.pause();
-                    setTimeout(callback, 2000);
+                    typeWriterTimeout = setTimeout(callback, 2000);
                 }
             }
             type();
@@ -1327,6 +1330,19 @@
                 }
             }
         }
+
+        window.skipCutscene = function () {
+            clearTimeout(typeWriterTimeout);
+            const audio = document.getElementById('typing-audio');
+            if (audio) audio.pause();
+
+            document.getElementById('cutscene-overlay').classList.add('hidden');
+            if (missionProgress === 6) {
+                goToCredits();
+            } else {
+                startGameWorld();
+            }
+        };
 
         // --- TUTORIAL ---
         function showTutorial() {
@@ -1580,10 +1596,10 @@
             document.getElementById('dialog-click-hint').classList.remove('hidden');
             isQuizMode = false;
             if (isCorrect) {
-                currentDialogQueue = ["Resposta Certa! Muito bem!", ...currentDialogQueue];
-                if (missionProgress === 3) { missionProgress = 4; updateHUD("Use o Computador da Missão", "#ff00ff"); }
+                if (missionProgress === 3) { currentDialogQueue = ["Resposta Certa! Muito bem!", ...currentDialogQueue]; missionProgress = 4; updateHUD("Use o Computador da Missão", "#ff00ff"); }
+                if (missionProgress === 6) { currentDialogQueue = ["Maravilha! Fale com a agente Julia para obter mais informações.", ...currentDialogQueue]; missionProgress = 7; updateHUD("Fale com a agente Júlia para obter mais informações.", "#00ff88"); }
             } else {
-                currentDialogQueue = ["Hmm, não é bem isso. Tente pensar em segurança!", "Vamos tentar de novo depois."];
+                currentDialogQueue = ["Hmm, tudo bem, quando quiser, estarei aqui!"];
             }
             advanceDialog();
         }
@@ -1680,27 +1696,22 @@
 
             if (player && player.userData.parts) {
                 if (player.userData.parts.backpack) player.userData.parts.backpack.material.color.setHex(playerState.backpackColor);
-                // Verificar se o personagem tem capacete/cabelo (robô não tem da mesma forma)
                 if (player.userData.parts.helmet) {
                     player.userData.parts.helmet.visible = playerState.hasHelmet;
                     player.userData.parts.helmet.material.color.setHex(playerState.helmetColor);
                     if (player.userData.parts.hair) player.userData.parts.hair.visible = !playerState.hasHelmet;
                 }
-
-                // Atualiza cabelo apenas se existir (Humano)
-                if (player.userData.parts.head && player.userData.parts.hair !== undefined) {
-                    const headGroup = player.userData.parts.head;
-                    headGroup.remove(player.userData.parts.hair);
-                    const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
-                    if (newHairMesh) {
-                        newHairMesh.visible = !playerState.hasHelmet;
-                        headGroup.add(newHairMesh);
-                        player.userData.parts.hair = newHairMesh;
-                    }
+                const headGroup = player.userData.parts.head;
+                if (player.userData.parts.hair) headGroup.remove(player.userData.parts.hair);
+                const newHairMesh = createHair(playerState.hairStyle, playerState.hairColor);
+                if (newHairMesh) {
+                    newHairMesh.visible = !playerState.hasHelmet;
+                    headGroup.add(newHairMesh);
+                    player.userData.parts.hair = newHairMesh;
                 }
             }
             startDialog("SISTEMA", ["Excelente, Agente " + playerState.name + "!", "Você atualizou sua identidade com sucesso!"]);
-            if (missionProgress === 1) { missionProgress = 2; updateHUD("Entre no Portal da Agente Júlia", "#d500f9"); }
+            if (missionProgress === 1) { missionProgress = 2; updateHUD("Pegue sua permissão de uso do portal com a Agente Júlia", "#d500f9"); }
             closePC();
         };
 
@@ -1914,6 +1925,7 @@
                 else if (sceneName === "CYBER_OPS") createRoomLevel();
                 document.getElementById('transition-screen').style.display = 'none';
                 isTransitioning = false;
+                updateMarkers(); // FIX: Update markers after scene load
             }, 500);
         }
 
@@ -2147,7 +2159,11 @@
                 particles.rotation.y += 0.01;
             };
 
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 4), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.set(0, 3, 0); hitBox.userData = { isInteractable: true, type: "DOOR", target: target }; g.add(hitBox);
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(4, 6, 4), new THREE.MeshBasicMaterial({ visible: false })); hitBox.position.set(0, 3, 0);
+            // Adicionando nome do Portal para a função updateMarkers
+            hitBox.userData = { isInteractable: true, type: "DOOR", target: target, name: "Portal" };
+            g.add(hitBox);
+
             scene.add(g); levelObjects.push(g); interactables.push(hitBox);
         }
 
@@ -2336,13 +2352,19 @@
                 if (missionProgress === 0) targetName = "Comandante Motta";
                 else if (missionProgress === 1) targetName = "Personalização";
                 else if (missionProgress === 2) targetName = "Agente Júlia";
-                else if (missionProgress === 5) targetName = "Comandante Motta";
+                else if (missionProgress === 3) targetName = "Portal";
+                else if (missionProgress === 6) targetName = "Comandante Motta";
+                else if (missionProgress === 7) targetName = "Agente Júlia";
+                else if (missionProgress === 8) targetName = "Portal";
             } else if (currentLevel === "CYBER_OPS") {
                 if (missionProgress === 3) targetName = "Capitã Dados";
                 else if (missionProgress === 4) targetName = "Terminal de Missão";
                 else if (missionProgress === 5) targetName = "Robô Fair Play";
+                else if (missionProgress === 6) targetName = "Portal"; // Portal back
             }
+
             if (targetName) {
+                // Search in interactables
                 const target = interactables.find(i => i.userData.name === targetName);
                 if (target) createQuestMarker(target);
             }
@@ -2465,12 +2487,12 @@
                 if (data.target === "LOBBY") {
                     isTransitioning = true;
                     loadScene("LOBBY");
-                    if (missionProgress === 5) { missionProgress = 6; updateHUD("Missão Completa!", "#fff"); startDialog("SISTEMA", ["Parabéns! Você é um expert em segurança!"]); }
+                    if (missionProgress === 6) { updateHUD("Missão Completa!", "#fff"); startDialog("SISTEMA", ["Parabéns! Você é um expert em segurança!"]); }
                 } else if (data.target === "CYBER_OPS") {
-                    if (missionProgress >= 2) {
+                    if (missionProgress > 2) {
                         isTransitioning = true;
                         loadScene(data.target);
-                        if (missionProgress < 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
+                        if (missionProgress <= 3) { missionProgress = 3; updateHUD("Fale com Capitã Dados", "#ff0055"); startDialog("SISTEMA", ["Acesso autorizado. Fale com a Capitã Dados."]); }
                     } else startDialog("SISTEMA", ["Portal trancado. Você precisa de autorização para usar."]);
                 }
                 return;
@@ -2510,15 +2532,32 @@
 
             if (data.name === "Comandante Motta") {
                 if (missionProgress === 0) {
-                    dialogs = ["Bem-vindo! Vá ao Globo Central para criar seu uniforme."];
+                    dialogs = ["Bem-vindo! Fico muito feliz em te ver conosco!", "Todos os agentes novatos podem criar seu uniforme.", "Vá ao Globo Central para criar seu uniforme"];
                     missionProgress = 1; updateHUD("Personalize seu Agente", "#00ff88");
                 } else if (missionProgress === 6) {
-                    dialogs = ["Orgulho da equipe! Continue protegendo seus amigos online."];
+                    dialogs = [
+                        "Orgulho da equipe! Continue protegendo seus amigos online.",
+                        {
+                            question: "Agora que você já é um expert, que tal começar uma nova missão?",
+                            options: [
+                                { text: "Fazer depois", correct: false },
+                                { text: "Iniciar nova missão", correct: true }
+                            ]
+                        }
+                    ];
+                    // updateHUD("Fale com a agente Júlia para obter mais informações.", "#00ff88");
                 }
             } else if (data.name === "Agente Júlia") {
-                if (missionProgress === 2) {
+                if (missionProgress < 2) {
+                    dialogs = ["Fale primeiro com o Capitão Motta"];
+                } else if (missionProgress === 2) {
                     dialogs = ["Ótimo uniforme! O portal está aberto. Entre e procure a Capitã Dados."];
-                    updateHUD("Entre no Portal", "#d500f9");
+                    missionProgress = 3; updateHUD("Entre no Portal", "#d500f9");
+                } else if (missionProgress === 7) {
+                    dialogs = ["O vilão Dr. Malvado roubou os dados de vários colegas!", `Precisamos de você, agente ${playerState.name}!`, "Já configurei o portal para você entrar na base secreta do Dr. Malvado", "Encontre a sala secreta dele e recupere nossos dados!"];
+                    missionProgress = 8; updateHUD("Entre no Portal", "#d500f9");
+                } else {
+                    dialogs = ["Fico feliz em te ver aqui!", "Não passe informações pessoais em redes sociais ou jogos!"];
                 }
             } else if (data.name === "Capitã Dados") {
                 if (missionProgress === 3) {
@@ -2529,7 +2568,7 @@
             } else if (data.name === "Robô Fair Play") {
                 if (missionProgress === 5) {
                     dialogs = ["Vi que você denunciou o golpe. Muito bem!", "Lembre-se: Jogo bom é jogo com respeito. Se alguém for chato, bloqueie!", "Agora pode voltar para o Lobby."];
-                    updateHUD("Volte para o Lobby", "#fff");
+                    missionProgress = 6; updateHUD("Volte para o Lobby", "#fff");
                 } else {
                     dialogs = ["Estou monitorando o respeito nas partidas. Sem xingamentos, ok?"];
                 }
@@ -2587,6 +2626,8 @@
             requestAnimationFrame(animate);
             if (player && clock) {
                 const dt = clock.getDelta();
+
+                // Animações de ambiente
                 markers.forEach(m => { if (m.userData.anim) m.userData.anim(); });
                 levelObjects.forEach(obj => { if (obj.userData.animate) obj.userData.animate(); });
 
@@ -2616,9 +2657,12 @@
                             player.userData.parts.leftArm.rotation.x = Math.sin(walkTime) * 0.6;
                             player.userData.parts.rightArm.rotation.x = -Math.sin(walkTime) * 0.6;
                         }
+
+                        // VERIFICAÇÃO DE PORTAL AUTOMÁTICA (Colisão 2D ajustada)
                         interactables.forEach(obj => {
                             if (obj.userData.type === "DOOR") {
                                 const portalPos = obj.getWorldPosition(new THREE.Vector3());
+                                // Calculamos distância apenas no plano XZ (ignorando altura Y)
                                 const dx = player.position.x - portalPos.x;
                                 const dz = player.position.z - portalPos.z;
                                 const dist2D = Math.sqrt(dx * dx + dz * dz);
