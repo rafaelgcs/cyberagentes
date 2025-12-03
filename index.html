@@ -933,10 +933,15 @@
     </div>
 
     <div id="screen-credits" class="screen hidden">
-        <h2>QUEM FEZ O JOGO?</h2>
+        <h2>CRÉDITOS</h2>
         <div class="credits-content">
             <p><strong>Criação:</strong> Equipe Cyber Agentes</p>
-            <p><strong>Missão:</strong> Ensinar segurança online para todos!</p>
+            <p style="text-align: center; font-size: large;"><strong>Equipe:</strong></p>
+            <p><strong>Roteiro:</strong> Breno Vinícius e Thiago Lima</p>
+            <p><strong>Game Design:</strong> Rafael Guimarães e Thiago Lima</p>
+            <p><strong>Sonoplastia:</strong> Caique </p>
+            <p><strong>Artes e Level Design:</strong> Leandro Motta </p>
+            <p><strong>Programação/Desenvolvimento:</strong> Rafael Guimarães </p>
             <p style="text-align:justify;">
                 <strong>Agradecimentos:</strong>
                 O jogo Cyber Agentes foi desenvolvido com o apoio inestimável da professora orientadora Lynn Alves, que
@@ -2180,7 +2185,6 @@
             createWall(8, 1, 9, 0.5, 5, 12); createWall(8, 1, -9, 0.5, 5, 12);
 
             // Escadas (Alargadas para 8 e ajustadas)
-            // FIX: Ajuste de yStart para -1.52 para evitar Z-fighting no topo
             createStairs(-10, -1.52, 0, 0.8, 1.5, 8, 5, "left");
             createStairs(10, -1.52, 0, 0.8, 1.5, 8, 5, "right");
 
@@ -2197,8 +2201,7 @@
                 createChair(-18.5, -1.5, z, -Math.PI / 2);
             }
 
-            // 2. QUADROS DE AVISO / POSTERS (CORRIGIDOS)
-            // Movidos para a parede da frente (Z=14.4) e rotacionados 180 graus (Math.PI)
+            // 2. QUADROS DE AVISO / POSTERS
             createPoster(-10, 4, 14.4, Math.PI, "REGRAS DO JOGO", "1. Respeito sempre!\n2. Não xingue.\n3. Jogue limpo.\n4. Divirta-se!", "#0000ff");
             createPoster(0, 4, 14.4, Math.PI, "PERIGO: DOWNLOADS", "Não baixe arquivos\nde estranhos.\nPodem conter vírus!", "#ff0000");
             createPoster(10, 4, 14.4, Math.PI, "CHAT SEGURO", "Nunca passe:\n- Endereço\n- Telefone\n- Senha\npara ninguém!", "#00ff00");
@@ -2209,11 +2212,21 @@
             createSciFiPlant(22, -1.5, 13);
             createSciFiPlant(-22, -1.5, 13);
 
+            createSciFiPlant(10, -1.5, 13);
+            createSciFiPlant(10, -1.5, -13);
+            createSciFiPlant(-10, -1.5, 13);
+            createSciFiPlant(-10, -1.5, -13);
+
             // 4. BANCOS CENTRAIS
             createBench(0, 0, 5, 0);
             createBench(0, 0, -5, Math.PI);
 
-            // --- FIM DA DECORAÇÃO EXTRA ---
+            createSofa(10, -1.5, -10, Math.PI / 2);    // Sofá 1: Virado para a Júlia, ao sul
+            createSofa(22, -1.5, -10, -Math.PI / 2);  // Sofá 2: Virado para a Júlia, ao norte
+
+            // Sofás ao longo da parede direita
+            createSofa(14, -1.5, -13, 0);              // Sofá 3: Contra a parede direita (Leste)
+            createSofa(18, -1.5, -13, 0);             // Sofá 4: Contra a parede direita (Leste)
 
             const globe = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshBasicMaterial({ map: hologramTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             globe.position.set(0, 2.5, 0); scene.add(globe); levelObjects.push(globe);
@@ -2231,33 +2244,30 @@
             const portalTarget = (missionProgress >= 8) ? "MAZE_LEVEL" : "CYBER_OPS";
             createPortalDoor(0, 0, -13.8, portalTarget, 0);
 
-            // CAPITÃO NA SALA DA LAN HOUSE (CORRIGIDO)
-            createTable(-18, -0.75, -10, 0, 6, 3, false);
-            // Afastado o capitão e a cadeira para Z = -12.5
-            createChair(-18, -0.75, -12.5, 0);
-            createNPC(-18, -0.75, -12.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0);
+            // CAPITÃO NA SALA DA LAN HOUSE
+            createTable(-16, -0.75, -10, 0, 6, 3, false);
+            createChair(-16, -0.75, -12.5, 0);
+            createNPC(-16, -0.75, -12.5, CONFIG.colors.commander, "Comandante Motta", null, 1, 0xaaaaaa, 0);
 
             createNPC(16, -1.5, 0, CONFIG.colors.npc, "Agente Júlia", null, 3, 0xff4400, -Math.PI / 2);
             createNPC(-22, -1.5, 5, 0xffff00, "Agente Firewall", ["Fique esperto: Não aceite arquivos de estranhos!", "Se alguém te pedir fotos, saia correndo e avise seus pais!"], 2, 0x222222, Math.PI / 2);
             createNPC(20, -1.5, -5, 0x00ff00, "Agente Guardião", ["O respeito é a regra #1 do jogo.", "Se alguém for malvado com você, bloqueie e denuncie!"], 1, 0x3333ff, -Math.PI / 2);
             createNPC(-2, 0, 2, CONFIG.colors.npc, "Agente Info", ["Olá! A plataforma central é segura.", "Use as escadas laterais para acessar as áreas de treinamento."], 2, 0x555555, Math.PI / 4);
 
-            // Novo NPC "Agente Pixel" próximo ao arcade
-            // Moved from 15, 8 to 12, 6 to give space
-            createNPC(12, -1.5, 6, 0x00ffff, "Agente Pixel", ["Ei! Quer bater meu recorde no Arcade?", "Lembre-se: Jogos são para diversão, não para bullying."], 1, 0xff00ff, -Math.PI / 2);
+            // Agente Pixel próximo ao arcade
+            createNPC(13, -1.5, 13, 0x00ffff, "Agente Pixel", ["Ei! Quer bater meu recorde no Arcade?", "Lembre-se: Jogos são para diversão, não para bullying."], 1, 0xff00ff, -Math.PI);
 
-            // MAPA HOLOGRÁFICO (CORRIGIDO: PLANO)
+            // MAPA HOLOGRÁFICO
             const holoMap = new THREE.Mesh(new THREE.PlaneGeometry(5.8, 2.8), new THREE.MeshBasicMaterial({ map: strategicMapTexture, transparent: true, opacity: 0.8, side: THREE.DoubleSide, blending: THREE.AdditiveBlending }));
             holoMap.rotation.x = -Math.PI / 2;
-            // holoMap.rotation.z = Math.PI / 2; // <--- REMOVE THIS to fix rotation
-            holoMap.position.set(-18, 1.05, -10); // Altura 1.05
+            holoMap.position.set(-16, 1.05, -10);
             scene.add(holoMap); levelObjects.push(holoMap);
 
-            // ARCADE MACHINE "FUN"
-            createFunArcade(18, -1.5, 10, -Math.PI / 2);
+            // ARCADE MACHINE
+            createFunArcade(16, -1.5, 13, -Math.PI);
 
-            // TELA DE DICA (CORRIGIDA: Rotação 0 para ficar de frente)
-            createScreen(-12, 5, -14.5, 0, window.createScreenTexture("DICA: Use senhas fortes!"));
+            // TELA DE DICA
+            createScreen(-16, 5, -14.5, 0, window.createScreenTexture("Use sempre senhas fortes e Exclusivas!", ""));
 
             if (player) player.position.set(0, 0, 10);
         }
@@ -2271,25 +2281,27 @@
 
             createPortalDoor(-13.8, 0, 0, "LOBBY", Math.PI / 2);
 
+            createServerRack(-10, -8, 0); createServerRack(-5, -8, 0); createServerRack(0, -8, 0);
             createServerRack(5, -8, 0); createServerRack(10, -8, 0);
+            createServerRack(-10, 8, Math.PI); createServerRack(-5, 8, Math.PI); createServerRack(0, 8, Math.PI);
             createServerRack(5, 8, Math.PI); createServerRack(10, 8, Math.PI);
 
             const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x556677 }));
-            desk.position.set(10, 0.75, 0); scene.add(desk); levelObjects.push(desk); addCollisionBox(10, 0.75, 0, 6, 1.5, 3);
+            desk.position.set(12, 0.75, 0); desk.rotation.y = -Math.PI /2; scene.add(desk); levelObjects.push(desk); addCollisionBox(12, 0.75, 0, 6, 1.5, 3);
 
             const pcScreen = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x111 }));
-            pcScreen.position.set(10, 2.0, 0);
+            pcScreen.position.set(12.11, 2.0, 0); pcScreen.rotation.y = -Math.PI/2;
             scene.add(pcScreen); levelObjects.push(pcScreen);
             const pcDisplay = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.3), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 0.5 }));
-            pcDisplay.position.set(10, 2.0, -0.11); pcDisplay.rotation.y = Math.PI;
+            pcDisplay.position.set(12, 2.0, 0); pcDisplay.rotation.y = -Math.PI / 2;
             scene.add(pcDisplay); levelObjects.push(pcDisplay);
 
             const pcHit = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ visible: false }));
-            pcHit.position.set(10, 1.5, 0); pcHit.userData = { isInteractable: true, type: "PC_MISSION", name: "Terminal de Missão" };
+            pcHit.position.set(12, 1.5, 0); pcHit.userData = { isInteractable: true, type: "PC_MISSION", name: "Terminal de Missão" };
             scene.add(pcHit); levelObjects.push(pcHit); interactables.push(pcHit);
 
-            createNPC(6, 0, 0, 0xff0055, "Capitã Dados", null, 3, 0x000000, -Math.PI / 2);
-            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0, CONFIG.colors.defaultHair, Math.PI);
+            createNPC(6, 0, 5, 0xff0055, "Capitã Dados", null, 3, 0x000000, -Math.PI / 2);
+            createNPC(0, 0, -5, 0x0000ff, "Robô Fair Play", null, 0, CONFIG.colors.defaultHair, 0.4);
 
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
@@ -3244,6 +3256,39 @@
             if (input) input.value = "";
         }
 
+        // --- NOVO: Função para Criar Sofá (Adicionar ANTES de createQuestMarker) ---
+        function createSofa(x, y, z, rot) {
+            const g = new THREE.Group();
+            const width = 3.5; // Sofá mais largo
+            const depth = 1.8;
+            const seatHeight = 0.6;
+            const backHeight = 1.0;
+            const cushionColor = 0x4a148c; // Roxo Escuro
+            const frameColor = 0x222233;
+
+            // Assento
+            const seat = new THREE.Mesh(new THREE.BoxGeometry(width, 0.2, depth), new THREE.MeshStandardMaterial({ color: cushionColor, roughness: 0.8 }));
+            seat.position.y = seatHeight;
+            g.add(seat);
+
+            // Encosto
+            const back = new THREE.Mesh(new THREE.BoxGeometry(width, backHeight, 0.2), new THREE.MeshStandardMaterial({ color: cushionColor, roughness: 0.8 }));
+            back.position.set(0, seatHeight + backHeight / 2, -depth / 2 + 0.1);
+            g.add(back);
+
+            // Pernas
+            const legGeo = new THREE.BoxGeometry(0.2, seatHeight, 0.2);
+            const leg1 = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: frameColor })); leg1.position.set(width / 2 - 0.2, seatHeight / 2, depth / 2 - 0.2); g.add(leg1);
+            const leg2 = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: frameColor })); leg2.position.set(-width / 2 + 0.2, seatHeight / 2, depth / 2 - 0.2); g.add(leg2);
+            const leg3 = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: frameColor })); leg3.position.set(width / 2 - 0.2, seatHeight / 2, -depth / 2 + 0.2); g.add(leg3);
+            const leg4 = new THREE.Mesh(legGeo, new THREE.MeshStandardMaterial({ color: frameColor })); leg4.position.set(-width / 2 + 0.2, seatHeight / 2, -depth / 2 + 0.2); g.add(leg4);
+
+            g.position.set(x, y, z);
+            g.rotation.y = rot;
+            scene.add(g);
+            levelObjects.push(g);
+            addCollisionBox(x, y + seatHeight / 2, z, width, seatHeight + backHeight, depth);
+        }
     </script>
 </body>
 
