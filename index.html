@@ -237,17 +237,30 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80%;
-            max-width: 700px;
+            width: 90%;
+            /* Aumentado para 90% para ser maior que o original */
+            max-width: 800px;
+            /* Aumentei o max-width para 800px */
             background: rgba(10, 10, 40, 0.95);
-            border: 2px solid #ff00ff;
+            border: 3px solid #ff00ff;
+            /* Borda mais grossa */
             border-radius: 15px;
-            padding: 20px;
+            padding: 25px;
+            /* Padding maior */
             display: none;
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.6);
+            /* Sombra mais forte */
             z-index: 20;
             color: #fff;
             cursor: pointer;
+            text-align: left;
+        }
+
+        #dialog-box.mobile-center {
+            bottom: 50%;
+            /* Centraliza verticalmente */
+            transform: translate(-50%, 50%);
+            /* Ajuste para centralização vertical correta */
         }
 
         #npc-name {
@@ -976,7 +989,8 @@
 
     <div id="cutscene-overlay" class="hidden overlay-full">
         <div id="cutscene-content" class="cutscene-text"></div>
-        <button id="skip-btn" class="btn" style="position:absolute; bottom:20px; right:20px; z-index:201;"
+        <button id="skip-btn" class="btn"
+            style="position:absolute; padding: 5px; font-size: small; top:20px; right:20px; z-index:201;"
             onclick="skipCutscene()">PULAR >></button>
     </div>
 
@@ -1262,6 +1276,11 @@
                 "Mas hackers e vilões tentam estragar a diversão.",
                 "A 'Ordem dos Cyber Agentes' precisa de novos recrutas.",
                 "Você foi escolhido para proteger o futuro!"
+            ],
+            end: [
+                "Parabéns! Você agora é um Agente de Segurança da Internet!",
+                "Espero que essa experiência tenha sido incrível para você.",
+                "Aplique os conhecimentos adquiridos em sua vida ;)s"
             ]
         };
 
@@ -1343,6 +1362,22 @@
         // --- ARCADE (RESTAURADO COMPLETO) ---
         let arcadeActive = false;
 
+        function shuffleWord(word) {
+            if (!word) return '';
+
+            // 1. Converte a string para um array de caracteres
+            let chars = Array.from(word);
+
+            // 2. Embaralha o array (Algoritmo de Fisher-Yates, otimizado para arrays)
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]]; // Troca a posição
+            }
+
+            // 3. Retorna a palavra embaralhada
+            return chars.join('');
+        }
+
         function startArcadeGame(overrideType = null) {
             window.arcadeMemState = { cards: [], flippedIndices: [], matchedCount: 0, lockBoard: false };
             window.initArcadeMemory = function (cards) {
@@ -1417,28 +1452,98 @@
                 {
                     type: 'quiz',
                     title: 'QUIZ SEGURO',
-                    q: { text: "Alguém pediu sua foto na internet. O que fazer?", opts: ["Mandar logo", "Não mandar e avisar um adulto", "Mandar só uma"], ans: "Não mandar e avisar um adulto" },
-                    setup: (p) => {
-                        return `<div style="font-size: 1.2rem; margin-bottom: 20px;">${p.q.text}</div>
+                    setup: () => {
+                        const quizQuestions = [
+                            {
+                                text: "Alguém pediu sua foto na internet. O que fazer?",
+                                opts: ["Mandar logo", "Não mandar e avisar um adulto", "Mandar só uma"],
+                                ans: "Não mandar e avisar um adulto"
+                            },
+                            {
+                                text: "Qual senha é mais segura?",
+                                opts: ["Aniversário e nome do pet", "12345678", "Misturar letras maiúsculas, números e símbolos"],
+                                ans: "Misturar letras maiúsculas, números e símbolos"
+                            },
+                            {
+                                text: "Um amigo te manda uma mensagem muito brava. O que fazer?",
+                                opts: ["Responder com mais raiva ainda", "Bloquear a pessoa e sair do jogo", "Conversar com um adulto sobre isso"],
+                                ans: "Conversar com um adulto sobre isso"
+                            },
+                            {
+                                text: "Um link promete itens grátis no seu jogo. Você deve clicar?",
+                                opts: ["Claro, é de graça!", "Perguntar a um adulto antes", "Clicar rapidinho para não dar tempo de pegar vírus"],
+                                ans: "Perguntar a um adulto antes"
+                            },
+                            {
+                                text: "Um desconhecido online começa a fazer perguntas sobre sua escola. O que fazer?",
+                                opts: ["Falar o nome da escola, mas não a sala", "Avisar um adulto imediatamente", "Falar que não gosta da escola para a conversa acabar"],
+                                ans: "Avisar um adulto imediatamente"
+                            },
+                            {
+                                text: "Qual informação você **NÃO** deve compartilhar online?",
+                                opts: ["Seu apelido no jogo", "Nome e endereço de casa", "Seu recorde no jogo"],
+                                ans: "Nome e endereço de casa"
+                            },
+                            {
+                                text: "Se alguém te ofender num jogo, você deve:",
+                                opts: ["Ofender de volta", "Aceitar o que a pessoa disse", "Tirar print, bloquear e pedir ajuda a um adulto"],
+                                ans: "Tirar print, bloquear e pedir ajuda a um adulto"
+                            },
+                            {
+                                text: "Você deve usar a mesma senha para todos os seus jogos e contas?",
+                                opts: ["Sim, para não esquecer", "Não, é mais seguro ter senhas diferentes", "Só para jogos que não importam"],
+                                ans: "Não, é mais seguro ter senhas diferentes"
+                            },
+                            {
+                                text: "Você está jogando com um amigo, e ele pede para usar sua conta. Você deixa?",
+                                opts: ["Sim, confio nele", "Não, senhas são só minhas", "Deixar só por 5 minutos"],
+                                ans: "Não, senhas são só minhas"
+                            },
+                            {
+                                text: "Qual é o objetivo de um *phishing* (golpe de email)?",
+                                opts: ["Dar presentes", "Roubar seus dados pessoais", "Compartilhar notícias"],
+                                ans: "Roubar seus dados pessoais"
+                            },
+                            {
+                                text: "O que fazer se você vir algo estranho ou inapropriado online?",
+                                opts: ["Ignorar e continuar jogando", "Mostrar para um amigo", "Avisar um adulto (pais ou responsáveis)"],
+                                ans: "Avisar um adulto (pais ou responsáveis)"
+                            }
+                        ];
+
+                        // Seleciona uma pergunta aleatoriamente
+                        const selectedQuiz = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+
+                        // Mapeia as opções
+                        const optionsHTML = selectedQuiz.opts.map(o =>
+                            `<div class="arcade-opt-btn" onclick="checkArcadeAnswer('${o}', '${selectedQuiz.ans}')">${o}</div>`
+                        ).join('');
+
+                        return `<div style="font-size: 1.2rem; margin-bottom: 20px;">${selectedQuiz.text}</div>
                                 <div style="display:flex; flex-direction:column; gap:10px;">
-                                    ${p.q.opts.map(o => `<div class="arcade-opt-btn" onclick="checkArcadeAnswer('${o}', '${p.q.ans}')">${o}</div>`).join('')}
+                                    ${optionsHTML}
                                 </div>`;
                     }
                 },
                 // 3. Reflexo
                 {
                     type: 'reflex',
-                    title: 'REFLEXO RÁPIDO',
+                    title: 'LATÊNCIA CRÍTICA',
                     setup: () => {
+                        // O tempo de espera varia de 1 a 3 segundos (1000 + random * 2000)
                         setTimeout(() => {
                             const btn = document.getElementById('reflex-btn');
                             if (btn) {
                                 btn.style.display = 'block';
                                 btn.style.backgroundColor = '#00ff00';
                                 btn.innerText = 'CLIQUE AGORA!';
+                                // Salva a hora exata que o botão mudou para verde
                                 btn.dataset.start = Date.now();
+                                btn.dataset.state = 'ready'; // Novo estado: pronto para clique
+                                document.getElementById('reflex-msg').innerText = "CLIQUE!";
                             }
-                        }, 1000 + Math.random() * 2000);
+                        }, 1000 + Math.random() * 2000); // Tempo de espera aleatório
+
                         return `<div id="reflex-msg">Espere ficar verde...</div>
                                 <div id="reflex-btn" class="arcade-opt-btn" style="display:none; margin-top:20px; background:red;" onclick="checkReflex()">ESPERE...</div>`;
                     }
@@ -1447,27 +1552,63 @@
                 {
                     type: 'unscramble',
                     title: 'DECODIFICADOR',
-                    word: 'SENHA',
-                    scrambled: 'ASNEH',
                     setup: (p) => {
-                        return `<p>Desembaralhe: <strong style="font-size:1.5rem; color:#00eaff;">${p.scrambled}</strong></p>
+                        // Lista de 10 palavras/respostas para escolha aleatória
+                        const wordList = [
+                            'SENHA',
+                            'REDE',
+                            'DADOS',
+                            'VÍRUS',
+                            'CÓDIGO',
+                            'HACKER',
+                            'BITS',
+                            'FIREWALL',
+                            'ROBÔ',
+                            'LINK'
+                        ];
+
+                        const selectedWord = wordList[Math.floor(Math.random() * wordList.length)];
+
+                        // NOVO: Embaralha a palavra original dinamicamente
+                        const scrambledWord = shuffleWord(selectedWord);
+
+                        // O valor correto a ser checado é a palavra original (selectedWord)
+                        return `<p>Desembaralhe: <strong style="font-size:1.5rem; color:#00eaff;">${scrambledWord}</strong></p>
                                 <input type="text" id="unscramble-in" class="cyber-input" style="text-transform:uppercase; margin-top:10px;">
-                                <button class="btn" style="margin-top:10px; font-size:1rem;" onclick="checkUnscramble('${p.word}')">VERIFICAR</button>`;
+                                <button class="btn" style="margin-top:10px; font-size:1rem;" onclick="checkUnscramble('${selectedWord}')">VERIFICAR</button>`;
                     }
                 },
                 // 5. Cor
                 {
                     type: 'color',
                     title: 'ATENÇÃO À COR',
-                    target: 'AZUL',
-                    colorCode: '#00eaff',
-                    setup: (p) => {
-                        return `<div class="arcade-big-text" style="color:${p.colorCode}">CLIQUE NO ${p.target}</div>
+                    setup: () => {
+                        const colors = [
+                            { name: 'AZUL', hex: '#00eaff' },
+                            { name: 'VERMELHO', hex: '#ff0055' },
+                            { name: 'VERDE', hex: '#00ff88' },
+                            { name: 'AMARELO', hex: '#ffd54f' }
+                        ];
+
+                        // 1. Escolhe a cor do botão CORRETO (A COR que o jogador deve clicar)
+                        const targetColorObject = colors[Math.floor(Math.random() * colors.length)];
+                        const correctHex = targetColorObject.hex;
+
+                        // 2. Escolhe a palavra (TEXTO) que será exibida (pode ser a mesma cor ou não)
+                        const textObject = colors[Math.floor(Math.random() * colors.length)];
+                        const textName = textObject.name; // O nome exibido (ex: "VERDE")
+
+                        // 3. Embaralha a ordem dos botões para garantir que o botão correto não esteja sempre no mesmo lugar
+                        const shuffledColors = [...colors].sort(() => 0.5 - Math.random());
+
+                        return `<div class="arcade-big-text" style="color:${correctHex}">CLIQUE NO BOTÃO ${textName}</div>
                                 <div class="arcade-btn-group">
-                                    <div class="arcade-opt-btn" style="background:red;" onclick="checkArcadeAnswer('red', '${p.colorCode}')"></div>
-                                    <div class="arcade-opt-btn" style="background:#00eaff;" onclick="checkArcadeAnswer('#00eaff', '${p.colorCode}')"></div>
-                                    <div class="arcade-opt-btn" style="background:green;" onclick="checkArcadeAnswer('green', '${p.colorCode}')"></div>
-                                    <div class="arcade-opt-btn" style="background:yellow;" onclick="checkArcadeAnswer('yellow', '${p.colorCode}')"></div>
+                                    ${shuffledColors.map(c => `
+                                        <div class="arcade-opt-btn" style="background:${c.hex};" 
+                                             onclick="checkArcadeAnswer('${c.hex}', '${correctHex}')">
+                                            ${c.name}
+                                        </div>
+                                    `).join('')}
                                 </div>`;
                     }
                 },
@@ -1546,12 +1687,52 @@
         window.checkReflex = () => {
             const btn = document.getElementById('reflex-btn');
             const fb = document.getElementById('arcade-feedback');
-            if (btn.style.backgroundColor === 'rgb(0, 255, 0)' || btn.style.backgroundColor === '#00ff00') {
-                const time = Date.now() - parseInt(btn.dataset.start);
-                fb.style.color = '#00ff88'; fb.innerText = `ÓTIMO! ${time}ms`;
-                window.checkArcadeAnswer('success', 'success'); // Chama função unificada de sucesso
+            const state = btn.dataset.state;
+
+            // Se o estado não for 'ready' (ou seja, ainda é vermelho ou ainda está esperando)
+            if (state !== 'ready') {
+                fb.style.color = '#ff5555';
+                fb.innerText = "MUITO CEDO! Tente novamente.";
+
+                // Reinicia o jogo (ou fecha e reabre se for porta)
+                setTimeout(() => {
+                    // Fecha a UI, forçando o jogador a interagir novamente para reiniciar o puzzle
+                    closePC();
+                }, 1500);
+                return;
+            }
+
+            const startTime = parseInt(btn.dataset.start);
+            const endTime = Date.now();
+            const time = endTime - startTime;
+
+            // Trava o estado para evitar múltiplos cliques
+            btn.dataset.state = 'done';
+
+            // CRITÉRIO DE SUCESSO: Abaixo de 500ms é considerado um bom reflexo
+            const SUCCESS_THRESHOLD_MS = 500;
+
+            if (time < SUCCESS_THRESHOLD_MS) {
+                fb.style.color = '#00ff88';
+                fb.innerText = `Boa! Tempo de Reação: ${time}ms`;
+
+                // Sucesso: Abre a porta ou fecha a UI
+                setTimeout(() => {
+                    if (window.currentDoor) {
+                        openCurrentDoor();
+                    } else {
+                        closePC();
+                    }
+                }, 1500);
+
             } else {
-                fb.style.color = '#ff5555'; fb.innerText = "MUITO CEDO!";
+                fb.style.color = '#ffd54f';
+                fb.innerText = `LENTO DEMAIS! Tempo de Reação: ${time}ms. Tente novamente!`;
+
+                // Falha: Fecha a UI, forçando o jogador a reiniciar
+                setTimeout(() => {
+                    closePC();
+                }, 2000);
             }
         };
 
@@ -1603,6 +1784,18 @@
             });
         }
 
+        function playClickSound(id) {
+            const audioPath = `./assets/sounds/wave_${id}.mp3`; // Substitua pelo caminho do seu arquivo de som
+
+            try {
+                const audio = new Audio(audioPath); // Cria o objeto Audio
+                audio.currentTime = 0;
+                audio.play().catch(e => console.error("Falha ao tocar áudio:", e));
+            } catch (e) {
+                console.error("Erro ao carregar ou tocar o áudio:", e);
+            }
+        }
+
         function handleQuizAnswer(isCorrect) {
             const optsDiv = document.getElementById('dialog-options');
             optsDiv.classList.add('hidden');
@@ -1648,8 +1841,11 @@
         function lightUpBtn(id) {
             const btn = document.getElementById('btn-start-id');
             const el = document.getElementById(`btn-${id}`);
+
+            playClickSound(id + 1);
             if (el) {
                 el.classList.add('active');
+
                 setTimeout(() => el.classList.remove('active'), 400);
             }
         }
@@ -1667,7 +1863,7 @@
                 return;
             }
             if (playerSequence.length === gameSequence.length) {
-                if (gameSequence.length >= 3) { // Reduzi para 3 para não ser tão longo
+                if (gameSequence.length >= 5) {
                     document.getElementById('seq-status').innerText = "PARABÉNS! ACESSO LIBERADO!";
                     document.getElementById('seq-status').style.color = "#00ff88";
 
@@ -1756,7 +1952,15 @@
             updateHUD("Fale com o Robô Fair Play", "#00ff88");
         };
 
-        window.closePC = () => { document.getElementById('computer-overlay').style.display = 'none'; };
+        window.closePC = () => {
+            // 1. Fecha o overlay e libera o controle do jogador (Lógica Original)
+            document.getElementById('computer-overlay').style.display = 'none';
+            window.isGameActive = false;
+            window.isPaused = false;
+
+            // 2. NOVO: Reseta todos os estados de puzzle
+            resetPuzzleState();
+        }
         window.goToSelect = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-select').classList.remove('hidden'); };
         window.goToGuide = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-guide').classList.remove('hidden'); };
         window.goToCredits = () => { document.getElementById('screen-menu').classList.add('hidden'); document.getElementById('screen-credits').classList.remove('hidden'); };
@@ -2090,6 +2294,7 @@
             if (player) { player.position.set(-8, 0, 0); player.rotation.y = -Math.PI / 2; }
         }
 
+        window.nextDoorToOpen = 1;
         // --- NOVO NÍVEL: LABIRINTO (CORREDOR E 5 PORTAS) ---
         function createMazeLevel() {
             // Corredor de 20 unidades de largura (X=-10 a X=10)
@@ -2113,7 +2318,7 @@
 
             doorZPositions.forEach((zPos, index) => {
                 const pType = puzzleTypes[index % puzzleTypes.length]; // Cicla os tipos
-                createPuzzleDoor(0, 3, zPos, pType);
+                createPuzzleDoor(0, 3, zPos, pType, index);
 
                 // Adiciona alguns detalhes entre as portas
                 if (Math.random() > 0.5) createServerRack(-8, zPos + 15, Math.PI / 2);
@@ -2164,39 +2369,73 @@
             updateHUD("Passe pelas portas de segurança", "#ffff00");
         }
         // Função Helper para criar Portas de Puzzle
-        function createPuzzleDoor(x, y, z, type) {
+        function createPuzzleDoor(x, y, z, type, doorID) { // Adicionamos 'doorID'
             const g = new THREE.Group();
+            g.userData.doorID = doorID; // NOVO: Identificador único para a porta
 
-            // Moldura: Aumentada de 8 para 18 para fechar o corredor
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(18, 8, 1), new THREE.MeshStandardMaterial({ color: 0x333 }));
+            // Material do Frame (Metal Escuro)
+            const frameMat = new THREE.MeshStandardMaterial({
+                color: 0x222233,
+                metalness: 0.9,
+                roughness: 0.1,
+                emissive: 0x111122,
+                emissiveIntensity: 0.5
+            });
+
+            // Material da Grade (Metal Levemente Brilhante)
+            const barMat = new THREE.MeshStandardMaterial({
+                color: 0x8888aa, // Cinza claro
+                metalness: 0.7,
+                roughness: 0.3,
+                emissive: 0x000011,
+                emissiveIntensity: 0.2
+            });
+
+            // 1. MOLDURA Principal: Mais fina
+            const frameGeo = new THREE.BoxGeometry(18, 9, 0.5); // Largura, Altura, Profundidade
+            const frame = new THREE.Mesh(frameGeo, frameMat);
             g.add(frame);
 
-            // Porta (Laser/Energia)
-            const doorGeo = new THREE.PlaneGeometry(16, 6); // Aumentada de 6 para 16
-            const doorMat = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
-            const door = new THREE.Mesh(doorGeo, doorMat);
-            door.position.z = 0;
-            g.add(door);
+            // 2. GRADE - Barras Verticais (8 barras)
+            const numVertBars = 8;
+            const vertSpacing = 16 / (numVertBars - 1); // Espaço na largura de 16 (16/7)
+            for (let i = 0; i < numVertBars; i++) {
+                const barGeo = new THREE.BoxGeometry(0.15, 8, 0.15); // Finas e altas
+                const bar = new THREE.Mesh(barGeo, barMat);
+                bar.position.set(-8 + i * vertSpacing, 0, 0);
+                g.add(bar);
+            }
+
+            // 3. GRADE - Barras Horizontais (3 barras)
+            const numHorizBars = 3;
+            const horizSpacing = 7 / (numHorizBars - 1); // Espaço na altura de 7 (7/2)
+            for (let i = 0; i < numHorizBars; i++) {
+                const barGeo = new THREE.BoxGeometry(16, 0.15, 0.15); // Longas e finas
+                const bar = new THREE.Mesh(barGeo, barMat);
+                // Posição: -3.5 (base) + 3.5 * i
+                bar.position.set(0, -3.5 + i * horizSpacing * 2.5, 0); // Ajuste a altura para centralizar
+                g.add(bar);
+            }
 
             g.position.set(x, y, z);
             scene.add(g); levelObjects.push(g);
 
-            // Colisão Física: Aumentada de 8 para 18.
-            addCollisionBox(x, y, z, 18, 8, 1);
-            // REMOVIDO: obstacles.push(g);
+            // Adiciona a colisão e o hitbox interativo (mantidos)
+            addCollisionBox(x, y, z, 18, 9, 1);
 
-            // Hitbox Interativa: Aumentada de 8 para 18
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(18, 8, 4), new THREE.MeshBasicMaterial({ visible: false }));
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(18, 9, 4), new THREE.MeshBasicMaterial({ visible: false }));
             hitBox.position.set(x, y, z);
-            hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Porta de Segurança" };
+            hitBox.userData = { isInteractable: true, type: "ARCADE", name: `Porta de Segurança ${doorID}` };
 
             hitBox.onInteract = () => {
                 window.currentDoor = g;
-                startArcadeGame(type); // Passa o tipo específico do puzzle
+                startArcadeGame(type);
             };
 
             scene.add(hitBox); levelObjects.push(hitBox); interactables.push(hitBox);
+            return g; // Retorna o objeto da porta para ser rastreado
         }
+
         function handleBossDefeat() {
             // Remove Boss
             const boss = levelObjects.find(o => o.userData && o.userData.name === "Dr. Malvado");
@@ -2237,7 +2476,7 @@
                     if (missionProgress === 9) { // Retorno vitorioso do Labirinto
                         updateHUD("Missão Completa!", "#fff");
                         startDialog("SISTEMA", ["Parabéns! Você recuperou os dados e venceu o jogo!"]);
-                        setTimeout(() => playCutscene('intro'), 3000);
+                        setTimeout(() => playCutscene('end'), 3000);
                     } else if (missionProgress === 6) {
                         updateHUD("Missão Completa!", "#fff");
                         startDialog("SISTEMA", ["Parabéns! Você é um expert em segurança!"]);
@@ -2351,6 +2590,12 @@
                 } else {
                     dialogs = ["Estou monitorando o respeito nas partidas. Sem xingamentos, ok?"];
                 }
+            } else if (data.name === "Dr. Malvado") {
+                if (missionProgress === 8) {
+                    missionProgress = 9; updateHUD("Acesse o Super Computador do Dr. Malvado!", "#fff");
+                } else if (missionProgress === 9) {
+                    console.log("missao 2 aqui")
+                }
             }
             startDialog(data.name, dialogs);
             updateMarkers();
@@ -2371,7 +2616,26 @@
 
         function setupInputs() {
             const onK = (k, v) => { if (['w', 's', 'a', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k.toLowerCase())) keys[k.toLowerCase().replace('arrow', '').replace('key', '')] = v; };
-            document.addEventListener('keydown', e => { if (e.code === 'Space' || e.code === 'Enter') { const target = getNearestInteractable(); if (target) handleInteraction(target); } else onK(e.key, true); });
+
+            document.addEventListener('keydown', e => {
+                if (e.code === 'Space' || e.code === 'Enter') {
+
+                    // --- CORREÇÃO: Bloqueia a interação quando qualquer UI grande estiver aberta ---
+                    const computerOverlay = document.getElementById('computer-overlay');
+                    const dialogBox = document.getElementById('dialog-box');
+
+                    // Se o overlay do PC OU a caixa de diálogo principal estiver visível, IGNORA a tecla.
+                    // (Assumimos que o style.display padrão é 'none' para os escondidos).
+                    if (computerOverlay.style.display !== 'none' || dialogBox.style.display !== 'none') {
+                        return; // Sai sem processar a interação global
+                    }
+                    // --- FIM CORREÇÃO ---
+
+                    const target = getNearestInteractable();
+                    if (target) handleInteraction(target);
+                } else onK(e.key, true);
+            });
+
             document.addEventListener('keyup', e => onK(e.key, false));
             window.addEventListener('pointerdown', e => { if (!e.target.closest('.screen') && !e.target.closest('#joystick-zone')) { isMouseDown = true; dragStartX = e.clientX; isDraggingView = false; } });
             window.addEventListener('pointermove', e => {
@@ -2387,13 +2651,21 @@
             window.addEventListener('pointerleave', () => { isMouseDown = false; isDraggingView = false; });
 
             const joy = document.getElementById('joystick-zone');
+            const dialog = document.getElementById('dialog-box');
             if ('ontouchstart' in window) {
+                // Se for um dispositivo touch, o joystick é criado
                 const m = nipplejs.create({ zone: joy, mode: 'static', position: { left: '50%', top: '50%' }, color: 'cyan' });
                 m.on('move', (e, d) => { if (d.vector) joystickVec.set(d.vector.x * d.force, 0, -d.vector.y * d.force); });
                 m.on('end', () => joystickVec.set(0, 0, 0));
-            } else joy.style.display = 'none';
-        }
 
+                // NOVO: Adiciona a classe de centralização se o joystick estiver ativo (tela pequena)
+                dialog.classList.add('mobile-center');
+            } else {
+                joy.style.display = 'none';
+                // NOVO: Se não for touch, remove a classe (embora não deva ter sido adicionada)
+                dialog.classList.remove('mobile-center');
+            }
+        }
         function getNearestInteractable() {
             let n = null, md = 5;
             interactables.forEach(o => { const d = player.position.distanceTo(o.getWorldPosition(new THREE.Vector3())); if (d < md) { n = o; md = d; } });
@@ -2872,12 +3144,15 @@
                 else if (missionProgress === 5) targetName = "Robô Fair Play";
                 else if (missionProgress === 6) targetName = "Portal";
             } else if (currentLevel === "MAZE_LEVEL") {
-                targetName = "Porta de Segurança"; // Marcador genérico, ou específico para Boss
                 if (missionProgress === 8) {
                     // Tenta achar o Boss ou o computador
                     const boss = interactables.find(i => i.userData.name === "Dr. Malvado");
                     if (boss) targetName = "Dr. Malvado";
                     else targetName = "Super Computador";
+                } else if (missionProgress === 9) {
+                    targetName = "Super Computador";
+                } else {
+                    targetName = "Portal"; // Marcador genérico, ou específico para Boss
                 }
             }
 
@@ -2888,41 +3163,34 @@
             }
         }
 
+        // --- FUNÇÃO MODIFICADA: openCurrentDoor ---
         function openCurrentDoor() {
             if (window.currentDoor) {
 
-                // 1. REMOÇÃO VISUAL (Mantida)
+                // 1. REMOÇÃO VISUAL
                 window.currentDoor.visible = false;
 
-                // 2. REMOÇÃO DA COLISÃO FÍSICA (Ajustada)
+                // 2. REMOÇÃO DA COLISÃO FÍSICA (Correção da etapa anterior)
                 const doorPosition = window.currentDoor.position;
                 const tempSize = new THREE.Vector3();
 
-                // Procura pelo Box3 no array 'obstacles' que corresponde à porta.
-                // A Box3 da porta (18x8x1) é a única que está exatamente no Z da porta
-                // E tem uma dimensão grande (width=18) para a largura do corredor.
                 const obstacleToRemove = obstacles.find(box => {
-                    box.getSize(tempSize); // Pega as dimensões da Box3
+                    box.getSize(tempSize);
 
-                    // Verifica a posição Z e as dimensões (a Box3 da porta tem profundidade de 1)
                     const isAtDoorZ = box.max.z > doorPosition.z - 0.5 && box.min.z < doorPosition.z + 0.5;
-                    const isDoorSize = tempSize.x > 17 && tempSize.z < 2; // Verifica se é a Box de 18x1
+                    const isDoorSize = tempSize.x > 17 && tempSize.z < 2;
 
                     return isAtDoorZ && isDoorSize;
                 });
 
                 if (obstacleToRemove) {
-                    // Remove a Box3 correta do array `obstacles`.
                     obstacles = obstacles.filter(box => box !== obstacleToRemove);
-                    console.log("Colisão da porta removida com sucesso! Caminho liberado.");
-                } else {
-                    console.warn("ERRO: Não foi possível encontrar a Box3 da porta para remover a colisão.");
                 }
 
-                window.currentDoor = null; // Limpa a referência
+                window.currentDoor = null; // Limpa a referência da porta
             }
 
-            // Fecha a interface do puzzle e libera o controle do jogador
+            // 3. Fecha a interface do puzzle
             const computerOverlay = document.getElementById('computer-overlay');
             if (computerOverlay) {
                 computerOverlay.style.display = 'none';
@@ -2930,7 +3198,40 @@
 
             window.isGameActive = false;
             window.isPaused = false;
+
+            // 4. NOVO: Reseta todos os estados de puzzle
+            resetPuzzleState();
         }
+
+        function resetPuzzleState() {
+            // 1. Limpa o estado da missão/puzzle atual
+            window.currentPC = null;
+            window.currentDoor = null;
+
+            // 2. Reseta o estado do Puzzle de Sequência (o mais complexo)
+            window.currentSequence = [];
+            window.sequenceIndex = 0;
+
+            const sequenceBtn = document.getElementById('sequence-start-btn');
+            if (sequenceBtn) {
+                sequenceBtn.disabled = false;
+                sequenceBtn.innerText = "INICIAR SEQUÊNCIA";
+            }
+
+            const sequenceInput = document.getElementById('sequence-input');
+            if (sequenceInput) sequenceInput.value = "";
+
+            const sequenceFeedback = document.getElementById('sequence-feedback');
+            if (sequenceFeedback) sequenceFeedback.innerText = "";
+
+            // 3. Limpa o feedback e o input dos Puzzles de Arcade/Porta (Math, Quiz)
+            const fb = document.getElementById('arcade-feedback');
+            if (fb) fb.innerText = "";
+
+            const input = document.getElementById('arcade-answer-input');
+            if (input) input.value = "";
+        }
+
     </script>
 </body>
 
