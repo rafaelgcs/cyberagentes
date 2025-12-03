@@ -1348,6 +1348,7 @@
             window.initArcadeMemory = function (cards) {
                 window.arcadeMemState = { cards: cards, flippedIndices: [], matchedCount: 0, lockBoard: false };
             };
+            // --- FUNÇÃO CORRIGIDA: window.arcadeFlip ---
             window.arcadeFlip = function (index) {
                 const state = window.arcadeMemState;
                 const cardEl = document.getElementById(`mem-card-${index}`);
@@ -1374,9 +1375,13 @@
                         state.matchedCount++;
                         state.flippedIndices = [];
                         state.lockBoard = false;
+
                         if (state.matchedCount === state.cards.length / 2) {
+                            // CORREÇÃO APLICADA: Chama openCurrentDoor() no sucesso do Memory Game
                             document.getElementById('arcade-feedback').innerText = "SISTEMA SEGURO! 🛡️";
-                            setTimeout(closePC, 1500);
+                            setTimeout(() => {
+                                openCurrentDoor(); // <--- Abertura da porta
+                            }, 1500);
                         }
                     } else {
                         setTimeout(() => {
@@ -1390,7 +1395,6 @@
                     }
                 }
             };
-
             // --- LISTA COMPLETA DE PUZZLES ---
             const puzzles = [
                 // 1. Matemática
@@ -1511,32 +1515,22 @@
             document.getElementById('computer-overlay').style.display = 'flex';
         }
 
+        // --- FUNÇÃO CORRIGIDA: window.checkArcadeAnswer ---
         window.checkArcadeAnswer = (val, correct) => {
             const fb = document.getElementById('arcade-feedback');
             if (val == correct) {
                 fb.style.color = '#00ff88'; fb.innerText = "CORRETO! +100 PONTOS";
-                setTimeout(closePC, 1500);
 
-                // LÓGICA DE PORTAS DO LABIRINTO
-                if (window.currentDoor) {
-                    const doorGroup = window.currentDoor;
-                    scene.remove(doorGroup);
-                    // Remove da lista de objetos, obstáculos e interativos
-                    const idxObj = levelObjects.indexOf(doorGroup);
-                    if (idxObj > -1) levelObjects.splice(idxObj, 1);
-
-                    // Encontra a hitbox dentro do grupo para remover de interactables
-                    const hitbox = doorGroup.children.find(c => c.userData.isInteractable);
-                    if (hitbox) {
-                        const idxInt = interactables.indexOf(hitbox);
-                        if (idxInt > -1) interactables.splice(idxInt, 1);
+                // LÓGICA DE SUCESSO UNIFICADA
+                setTimeout(() => {
+                    if (window.currentDoor) {
+                        // Se for uma porta, usamos a função centralizada de abertura.
+                        openCurrentDoor();
+                    } else {
+                        // Se for o fliperama do lobby (sem porta), apenas fecha a UI.
+                        closePC();
                     }
-
-                    // Remove colisão (aproximação baseada na posição da porta)
-                    obstacles = obstacles.filter(o => !o.containsPoint(doorGroup.position));
-
-                    window.currentDoor = null;
-                }
+                }, 1500);
 
                 // LÓGICA DO PC FINAL
                 if (window.currentPC === 'PC_FINAL') {
@@ -2098,22 +2092,22 @@
 
         // --- NOVO NÍVEL: LABIRINTO (CORREDOR E 5 PORTAS) ---
         function createMazeLevel() {
-            // Um corredor gigante no eixo Z. De Z=40 (entrada) até Z=-150 (Final)
-            const corridorLength = 200;
+            // Corredor de 20 unidades de largura (X=-10 a X=10)
             const corridorWidth = 20;
+
+            // Ajuste para estender a parede até a sala do boss (Z=-160)
+            const corridorLength = 215;
+            const corridorCenterZ = -55;
 
             // Chão longo
             createFloor(0, 0, corridorWidth, corridorLength, serverFloorTexture);
 
-            // Paredes do corredor
-            createWall(-10, 4, -50, 1, 8, corridorLength, serverWallTexture); // Esquerda
-            createWall(10, 4, -50, 1, 8, corridorLength, serverWallTexture);  // Direita
-            createWall(0, 4, 50, corridorWidth, 8, 1, serverWallTexture);     // Parede Atrás (Início)
+            // Paredes do corredor (estendidas até o fim)
+            createWall(-10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture); // Esquerda
+            createWall(10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture);  // Direita
+            createWall(0, 4, 50, corridorWidth, 8, 1, serverWallTexture);     // Parede Atrás (Início)
 
             // Posições das portas ao longo do corredor
-            // Z começa em 40 (onde o player nasce). Vamos colocar portas a cada 30 unidades.
-            // Portas em: 10, -20, -50, -80, -110
-
             const puzzleTypes = ['math', 'quiz', 'memory', 'reflex', 'unscramble'];
             const doorZPositions = [10, -20, -50, -80, -110];
 
@@ -2128,14 +2122,15 @@
 
 
             // --- SALA DO BOSS (FINAL DO CORREDOR) ---
-            // Z = -130 até -170 (Aprox)
-            const bossRoomZ = -140;
 
-            // Paredes da sala do boss (mais larga)
-            createFloor(0, 0.1, 40, 40, serverFloorTexture); // Chão extra para a sala (levemente acima para evitar z-fight ou cobrir buraco)
-            // Redefinir chão da sala do boss corretamente:
-            const bossRoomCenterZ = -130;
-            // Já coberto pelo chão principal? O chão principal vai até -50 - 100 = -150. Ok.
+            // Adicionando paredes extras para fechar a sala nas laterais (do X=10 ao X=20 e -10 ao -20)
+            // Usando 22 de largura para vedar as laterais.
+            createWall(15, 6, -145, 12, 12, 1, serverWallTexture);
+            createWall(-15, 6, -145, 12, 12, 1, serverWallTexture);
+
+            // As paredes do corredor em X=10 e X=-10 já estão estendidas
+
+            createFloor(0, 0.1, 40, 40, serverFloorTexture); // Chão extra para a sala (levemente acima para cobrir buraco)
 
             // Boss e Computador Final
             createNPC(0, 0, -145, 0xff0000, "Dr. Malvado",
@@ -2153,7 +2148,7 @@
             mainFrame.add(screen);
 
             mainFrame.position.set(0, 0, -155);
-            scene.add(mainFrame); levelObjects.push(mainFrame); addCollisionBox(0, 0, -155, 6, 8, 2);
+            scene.add(mainFrame); levelObjects.push(mainFrame); addCollisionBox(0, 4, -155, 6, 8, 2);
 
             // Hitbox Interativa do Computador
             const bossPC = new THREE.Mesh(new THREE.BoxGeometry(6, 6, 6), new THREE.MeshBasicMaterial({ visible: false }));
@@ -2168,16 +2163,16 @@
             if (player) { player.position.set(0, 0, 40); player.rotation.y = Math.PI; }
             updateHUD("Passe pelas portas de segurança", "#ffff00");
         }
-
         // Função Helper para criar Portas de Puzzle
         function createPuzzleDoor(x, y, z, type) {
             const g = new THREE.Group();
-            // Moldura
-            const frame = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 1), new THREE.MeshStandardMaterial({ color: 0x333 }));
+
+            // Moldura: Aumentada de 8 para 18 para fechar o corredor
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(18, 8, 1), new THREE.MeshStandardMaterial({ color: 0x333 }));
             g.add(frame);
 
             // Porta (Laser/Energia)
-            const doorGeo = new THREE.PlaneGeometry(6, 6);
+            const doorGeo = new THREE.PlaneGeometry(16, 6); // Aumentada de 6 para 16
             const doorMat = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
             const door = new THREE.Mesh(doorGeo, doorMat);
             door.position.z = 0;
@@ -2186,30 +2181,22 @@
             g.position.set(x, y, z);
             scene.add(g); levelObjects.push(g);
 
-            // Colisão Física
-            addCollisionBox(x, y, z, 8, 8, 1);
-            // obstacles.push(g); // Adiciona ao obstáculo para impedir passagem
+            // Colisão Física: Aumentada de 8 para 18.
+            addCollisionBox(x, y, z, 18, 8, 1);
+            // REMOVIDO: obstacles.push(g);
 
-            // Hitbox Interativa
-            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(8, 8, 4), new THREE.MeshBasicMaterial({ visible: false }));
+            // Hitbox Interativa: Aumentada de 8 para 18
+            const hitBox = new THREE.Mesh(new THREE.BoxGeometry(18, 8, 4), new THREE.MeshBasicMaterial({ visible: false }));
             hitBox.position.set(x, y, z);
-            // Reutiliza o tipo ARCADE mas armazena a referência para deletar depois
             hitBox.userData = { isInteractable: true, type: "ARCADE", name: "Porta de Segurança" };
 
-            // Sobrescrever arcadeLogic para este objeto específico seria complexo na estrutura atual,
-            // então vamos usar o callback global window.currentDoor no sistema de Arcade.
             hitBox.onInteract = () => {
                 window.currentDoor = g;
                 startArcadeGame(type); // Passa o tipo específico do puzzle
             };
 
-            // Pequeno hack para interceptar a interação no loop principal, 
-            // já que a lógica principal usa userData.type
-            // Vamos modificar handleInteraction para checar onInteract
-
             scene.add(hitBox); levelObjects.push(hitBox); interactables.push(hitBox);
         }
-
         function handleBossDefeat() {
             // Remove Boss
             const boss = levelObjects.find(o => o.userData && o.userData.name === "Dr. Malvado");
@@ -2250,7 +2237,7 @@
                     if (missionProgress === 9) { // Retorno vitorioso do Labirinto
                         updateHUD("Missão Completa!", "#fff");
                         startDialog("SISTEMA", ["Parabéns! Você recuperou os dados e venceu o jogo!"]);
-                        setTimeout(() => playCutscene('intro'), 3000); // Reutilizando intro ou criar uma 'end'
+                        setTimeout(() => playCutscene('intro'), 3000);
                     } else if (missionProgress === 6) {
                         updateHUD("Missão Completa!", "#fff");
                         startDialog("SISTEMA", ["Parabéns! Você é um expert em segurança!"]);
@@ -2327,17 +2314,27 @@
                             ]
                         }
                     ];
-                    // updateHUD("Fale com a agente Júlia para obter mais informações.", "#00ff88");
                 }
             } else if (data.name === "Agente Júlia") {
+
+                // PROCURA O PORTAL ATIVO NO LOBBY
+                const portal = interactables.find(i => i.userData.name === "Portal" && i.userData.type === "DOOR");
+
                 if (missionProgress < 2) {
                     dialogs = ["Fale primeiro com o Capitão Motta"];
                 } else if (missionProgress === 2) {
                     dialogs = ["Ótimo uniforme! O portal está aberto. Entre e procure a Capitã Dados."];
                     missionProgress = 3; updateHUD("Entre no Portal", "#d500f9");
+                    // O portal já está para CYBER_OPS por padrão, então não precisa de update aqui.
                 } else if (missionProgress === 7) {
                     dialogs = ["O vilão Dr. Malvado roubou os dados de vários colegas!", `Precisamos de você, agente ${playerState.name}!`, "Já configurei o portal para você entrar na base secreta do Dr. Malvado", "Encontre a sala secreta dele e recupere nossos dados!"];
-                    missionProgress = 8; updateHUD("Entre no Portal", "#d500f9");
+                    missionProgress = 8;
+                    updateHUD("Entre no Portal", "#d500f9");
+
+                    // CORREÇÃO: Atualiza o destino do portal na cena em tempo real
+                    if (portal) {
+                        portal.userData.target = "MAZE_LEVEL";
+                    }
                 } else {
                     dialogs = ["Fico feliz em te ver aqui!", "Não passe informações pessoais em redes sociais ou jogos!"];
                 }
@@ -2358,7 +2355,6 @@
             startDialog(data.name, dialogs);
             updateMarkers();
         }
-
         function startDialog(name, texts) {
             if (isDialogOpen) return;
             isDialogOpen = true;
@@ -2892,6 +2888,49 @@
             }
         }
 
+        function openCurrentDoor() {
+            if (window.currentDoor) {
+
+                // 1. REMOÇÃO VISUAL (Mantida)
+                window.currentDoor.visible = false;
+
+                // 2. REMOÇÃO DA COLISÃO FÍSICA (Ajustada)
+                const doorPosition = window.currentDoor.position;
+                const tempSize = new THREE.Vector3();
+
+                // Procura pelo Box3 no array 'obstacles' que corresponde à porta.
+                // A Box3 da porta (18x8x1) é a única que está exatamente no Z da porta
+                // E tem uma dimensão grande (width=18) para a largura do corredor.
+                const obstacleToRemove = obstacles.find(box => {
+                    box.getSize(tempSize); // Pega as dimensões da Box3
+
+                    // Verifica a posição Z e as dimensões (a Box3 da porta tem profundidade de 1)
+                    const isAtDoorZ = box.max.z > doorPosition.z - 0.5 && box.min.z < doorPosition.z + 0.5;
+                    const isDoorSize = tempSize.x > 17 && tempSize.z < 2; // Verifica se é a Box de 18x1
+
+                    return isAtDoorZ && isDoorSize;
+                });
+
+                if (obstacleToRemove) {
+                    // Remove a Box3 correta do array `obstacles`.
+                    obstacles = obstacles.filter(box => box !== obstacleToRemove);
+                    console.log("Colisão da porta removida com sucesso! Caminho liberado.");
+                } else {
+                    console.warn("ERRO: Não foi possível encontrar a Box3 da porta para remover a colisão.");
+                }
+
+                window.currentDoor = null; // Limpa a referência
+            }
+
+            // Fecha a interface do puzzle e libera o controle do jogador
+            const computerOverlay = document.getElementById('computer-overlay');
+            if (computerOverlay) {
+                computerOverlay.style.display = 'none';
+            }
+
+            window.isGameActive = false;
+            window.isPaused = false;
+        }
     </script>
 </body>
 
