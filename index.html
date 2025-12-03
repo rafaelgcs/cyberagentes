@@ -3127,17 +3127,18 @@
         }
 
         function updateMarkers() {
-            markers.forEach(m => scene.remove(m)); markers = [];
+            // Limpa todos os marcadores existentes
+            markers.forEach(m => scene.remove(m));
+            markers = [];
+
             let targetName = "";
+            let targetObj = null;
+
             if (currentLevel === "LOBBY") {
-                if (missionProgress === 0) targetName = "Comandante Motta";
+                if (missionProgress === 0 || missionProgress === 6 || missionProgress === 9) targetName = "Comandante Motta";
                 else if (missionProgress === 1) targetName = "Personalização";
-                else if (missionProgress === 2) targetName = "Agente Júlia";
-                else if (missionProgress === 3) targetName = "Portal";
-                else if (missionProgress === 6) targetName = "Comandante Motta";
-                else if (missionProgress === 7) targetName = "Agente Júlia";
-                else if (missionProgress === 8) targetName = "Portal";
-                else if (missionProgress === 9) targetName = "Comandante Motta";
+                else if (missionProgress === 2 || missionProgress === 7) targetName = "Agente Júlia";
+                else if (missionProgress === 3 || missionProgress === 8) targetName = "Portal";
             } else if (currentLevel === "CYBER_OPS") {
                 if (missionProgress === 3) targetName = "Capitã Dados";
                 else if (missionProgress === 4) targetName = "Terminal de Missão";
@@ -3170,16 +3171,25 @@
                 // 1. REMOÇÃO VISUAL
                 window.currentDoor.visible = false;
 
-                // 2. REMOÇÃO DA COLISÃO FÍSICA (Correção da etapa anterior)
+                // 2. AVANÇA O MARCADOR E REMOVE O HITBOX DA PORTA ANTERIOR
+                const currentDoorID = window.currentDoor.userData.doorID;
+                if (currentDoorID && currentDoorID === window.nextDoorToOpen) {
+                    window.nextDoorToOpen++; // Avança para a próxima porta
+
+                    // Remove o hitbox para que ele não seja reinteragível nem mostre o '!'
+                    interactables = interactables.filter(item =>
+                        !(item.userData.name === `Porta de Segurança ${currentDoorID}`)
+                    );
+                }
+
+                // 3. REMOÇÃO DA COLISÃO FÍSICA (Mantida do passo anterior)
                 const doorPosition = window.currentDoor.position;
                 const tempSize = new THREE.Vector3();
 
                 const obstacleToRemove = obstacles.find(box => {
                     box.getSize(tempSize);
-
                     const isAtDoorZ = box.max.z > doorPosition.z - 0.5 && box.min.z < doorPosition.z + 0.5;
                     const isDoorSize = tempSize.x > 17 && tempSize.z < 2;
-
                     return isAtDoorZ && isDoorSize;
                 });
 
@@ -3198,9 +3208,10 @@
 
             window.isGameActive = false;
             window.isPaused = false;
-
-            // 4. NOVO: Reseta todos os estados de puzzle
             resetPuzzleState();
+
+            // CHAMA updateMarkers para redesenhar o ícone na próxima porta
+            updateMarkers();
         }
 
         function resetPuzzleState() {
