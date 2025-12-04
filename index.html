@@ -2290,10 +2290,10 @@
             createServerRack(5, 8, Math.PI); createServerRack(10, 8, Math.PI);
 
             const desk = new THREE.Mesh(new THREE.BoxGeometry(6, 1.5, 3), new THREE.MeshStandardMaterial({ color: 0x556677 }));
-            desk.position.set(12, 0.75, 0); desk.rotation.y = -Math.PI /2; scene.add(desk); levelObjects.push(desk); addCollisionBox(12, 0.75, 0, 6, 1.5, 3);
+            desk.position.set(12, 0.75, 0); desk.rotation.y = -Math.PI / 2; scene.add(desk); levelObjects.push(desk); addCollisionBox(12, 0.75, 0, 6, 1.5, 3);
 
             const pcScreen = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 0.2), new THREE.MeshStandardMaterial({ color: 0x111 }));
-            pcScreen.position.set(12.11, 2.0, 0); pcScreen.rotation.y = -Math.PI/2;
+            pcScreen.position.set(12.11, 2.0, 0); pcScreen.rotation.y = -Math.PI / 2;
             scene.add(pcScreen); levelObjects.push(pcScreen);
             const pcDisplay = new THREE.Mesh(new THREE.PlaneGeometry(1.8, 1.3), new THREE.MeshBasicMaterial({ color: 0x00ff00, emissive: 0x00ff00, emissiveIntensity: 0.5 }));
             pcDisplay.position.set(12, 2.0, 0); pcDisplay.rotation.y = -Math.PI / 2;
@@ -2314,27 +2314,72 @@
         // --- FUNÇÃO MODIFICADA: createMazeLevel (COM 5 DRONES) ---
 
         function createMazeLevel() {
+            // Corredor de 20 unidades de largura (X=-10 a X=10)
             const corridorWidth = 20;
+
+            // Ajuste para estender a parede até a sala do boss (Z=-160)
             const corridorLength = 215;
             const corridorCenterZ = -55;
 
-            // Chão e Paredes (Mantido)
+            // Chão longo
             createFloor(0, 0, corridorWidth, corridorLength, serverFloorTexture);
-            createWall(-10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture);
-            createWall(10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture);
-            createWall(0, 4, 50, corridorWidth, 8, 1, serverWallTexture);
 
-            // Portas (Mantido)
+            // Paredes do corredor (estendidas até o fim)
+            createWall(-10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture); // Esquerda
+            createWall(10, 4, corridorCenterZ, 1, 8, corridorLength, serverWallTexture);  // Direita
+            createWall(0, 4, 50, corridorWidth, 8, 1, serverWallTexture);     // Parede Atrás (Início)
+
+            // Posições das portas ao longo do corredor
             const puzzleTypes = ['math', 'quiz', 'memory', 'reflex', 'unscramble'];
             const doorZPositions = [10, -20, -50, -80, -110];
 
             doorZPositions.forEach((zPos, index) => {
-                const pType = puzzleTypes[index % puzzleTypes.length];
-                createPuzzleDoor(0, 3, zPos, pType, index + 1);
+                const pType = puzzleTypes[index % puzzleTypes.length]; // Cicla os tipos
+                createPuzzleDoor(0, 3, zPos, pType, index);
 
+                // Adiciona alguns detalhes entre as portas
                 if (Math.random() > 0.5) createServerRack(-8, zPos + 15, Math.PI / 2);
                 if (Math.random() > 0.5) createServerRack(8, zPos + 15, -Math.PI / 2);
             });
+
+
+            // --- SALA DO BOSS (FINAL DO CORREDOR) ---
+
+            // Adicionando paredes extras para fechar a sala nas laterais (do X=10 ao X=20 e -10 ao -20)
+            // Usando 22 de largura para vedar as laterais.
+            createWall(15, 6, -145, 12, 12, 1, serverWallTexture);
+            createWall(-15, 6, -145, 12, 12, 1, serverWallTexture);
+
+            // As paredes do corredor em X=10 e X=-10 já estão estendidas
+
+            createFloor(0, 0.1, 40, 40, serverFloorTexture); // Chão extra para a sala (levemente acima para cobrir buraco)
+
+            // Boss e Computador Final
+            createNPC(0, 0, -145, 0xff0000, "Dr. Malvado",
+                ["Ora, ora... Um Cyber Agente chegou até aqui.", "Eu roubei os dados para mostrar como vocês são frágeis!", "Mas... talvez eu tenha ido longe demais.", "Se você conseguir acessar meu Super Computador, eu me rendo."],
+                0, 0x000000, 0);
+
+            // Super Computador (Atrás do Boss)
+            const mainFrame = new THREE.Group();
+            const frame = new THREE.Mesh(new THREE.BoxGeometry(6, 8, 2), new THREE.MeshStandardMaterial({ color: 0x220000 }));
+            frame.position.y = 4;
+            mainFrame.add(frame);
+
+            const screen = new THREE.Mesh(new THREE.PlaneGeometry(5, 4), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+            screen.position.set(0, 5, 1.1);
+            mainFrame.add(screen);
+
+            mainFrame.position.set(0, 0, -155);
+            scene.add(mainFrame); levelObjects.push(mainFrame); addCollisionBox(0, 4, -155, 6, 8, 2);
+
+            // Hitbox Interativa do Computador
+            const bossPC = new THREE.Mesh(new THREE.BoxGeometry(6, 6, 6), new THREE.MeshBasicMaterial({ visible: false }));
+            bossPC.position.set(0, 3, -152);
+            bossPC.userData = { isInteractable: true, type: "PC_FINAL", name: "Super Computador" };
+            scene.add(bossPC); levelObjects.push(bossPC); interactables.push(bossPC);
+
+            // Parede final
+            createWall(0, 6, -160, 40, 12, 1, serverWallTexture);
 
             // --- DRONES DE PATRULHA (5 no total) ---
 
@@ -2376,11 +2421,10 @@
                 { x: 0, z: -135 }
             ]);
 
-            // ... (Resto do código da sala do Boss e start do player mantido) ...
+            // Player start
             if (player) { player.position.set(0, 0, 40); player.rotation.y = Math.PI; }
             updateHUD("Passe pelas portas de segurança", "#ffff00");
         }
-
         // Função Helper para criar Portas de Puzzle
         function createPuzzleDoor(x, y, z, type, doorID) { // Adicionamos 'doorID'
             const g = new THREE.Group();
